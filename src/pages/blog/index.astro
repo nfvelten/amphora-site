@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+const leituras = (await getCollection('leituras', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const lendo = leituras.filter(l => l.data.status === 'lendo');
+const lidos = leituras.filter(l => l.data.status === 'lido');
+---
+
+<BaseLayout
+  title="Blog"
+  description="Escrita e leituras de Nicholas Velten."
+>
+  <Sidebar slot="sidebar" />
+  <h1 class="page-heading">Blog</h1>
+
+  <section style="margin-bottom: 3rem">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
+      <h2 class="section-heading" style="margin-bottom: 0">Escrita</h2>
+      <a href="/escrita" style="font-size: 0.8rem; color: var(--tx-3)">ver tudo →</a>
+    </div>
+    <ul class="post-list">
+      {posts.map(post => (
+        <li class="post-item">
+          <div class="post-meta">
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </time>
+          </div>
+          <a href={`/posts/${post.id.replace(/\.md$/, '')}`} class="post-title">{post.data.title}</a>
+          {post.data.description && (
+            <p class="post-excerpt">{post.data.description}</p>
+          )}
+        </li>
+      ))}
+      {posts.length === 0 && (
+        <li style="color: var(--tx-3); font-size: 0.9rem;">Nenhum post publicado ainda.</li>
+      )}
+    </ul>
+  </section>
+
+  <section>
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
+      <h2 class="section-heading" style="margin-bottom: 0">Leituras</h2>
+      <a href="/leituras" style="font-size: 0.8rem; color: var(--tx-3)">ver tudo →</a>
+    </div>
+    <ul class="post-list">
+      {lendo.map(l => (
+        <li class="post-item">
+          <div class="post-meta">
+            <span class="status-badge status-lendo">Lendo</span>
+            {l.data.genero && <span>{l.data.genero}</span>}
+          </div>
+          <a href={`/leituras/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+          <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+        </li>
+      ))}
+      {lidos.slice(0, 3).map(l => (
+        <li class="post-item">
+          <div class="post-meta">
+            <time datetime={l.data.date.toISOString()}>
+              {l.data.date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+            </time>
+            {l.data.genero && <span>{l.data.genero}</span>}
+          </div>
+          <a href={`/leituras/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+          <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+        </li>
+      ))}
+      {leituras.length === 0 && (
+        <li style="color: var(--tx-3); font-size: 0.9rem;">Nenhuma leitura registrada ainda.</li>
+      )}
+    </ul>
+  </section>
+</BaseLayout>

@@ -21,8 +21,7 @@ const isActive = (path: string) =>
     <div class="sidebar-text">
       <a href="/" class="sidebar-name">Nicholas Velten</a>
       <nav>
-        <a href="/escrita" class:list={[{ active: isActive('/escrita') || isActive('/posts') }]}>Escrita</a>
-        <a href="/leituras" class:list={[{ active: isActive('/leituras') }]}>Leituras</a>
+        <a href="/blog" class:list={[{ active: isActive('/blog') || isActive('/escrita') || isActive('/posts') || isActive('/leituras') }]}>Blog</a>
         <a href="/matecreations" class:list={[{ active: isActive('/matecreations') }]}>mateCreations</a>
       </nav>
     </div>
