@@ -5,20 +5,31 @@ import Sidebar from '../components/Sidebar.astro';
 
 <BaseLayout
   title="Currículo"
-  description="Trajetória profissional de Nicholas Velten — engenheiro de software full-stack com experiência em Java, TypeScript, Vue.js e Node.js."
+  description="Trajetória profissional de Nicholas Velten — engenheiro de software full-stack com experiência em TypeScript, Node.js, Python, Vue.js e sistemas distribuídos."
 >
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header">
       <h1>Currículo</h1>
       <div class="meta">
-        <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
+        <a href="mailto:nicholasfvelten@gmail.com">nicholasfvelten@gmail.com</a>
         · Paraná, Brasil
         · <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a>
+        · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>
       </div>
     </header>
 
     <div class="prose">
+
+      <h2>Resumo</h2>
+
+      <p>
+        Full-stack developer com 4+ anos construindo sistemas em produção na indústria de
+        telecomunicações. Atualmente na Alloha Fibra — maior ISP independente do Brasil —
+        trabalhando em APIs de performance crítica, monitoramento de infraestrutura de voz e
+        migrações de sistema. Base sólida em TypeScript, Node.js e sistemas distribuídos, com
+        experiência prática em DevOps, observabilidade e infraestrutura em nuvem.
+      </p>
 
       <h2>Experiência</h2>
 
@@ -27,28 +38,13 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>Alloha Fibra</strong>
           <span class="cv-period">jul. 2023 – presente · 2 anos e 9 meses</span>
         </div>
-        <div class="cv-role">Full-stack Software Engineer · São Paulo</div>
-        <p>
-          Tive a oportunidade de atuar em projetos críticos para a empresa, desenvolvendo
-          aplicações e serviços em nuvem para uso interno pelos colaboradores. Minhas
-          principais responsabilidades foram criar novas funcionalidades, manter sistemas
-          existentes e melhorar escalabilidade e performance.
-        </p>
+        <div class="cv-role">Mid-level Full-stack Developer · São Paulo (remoto)</div>
         <ul>
-          <li><strong>Front-end:</strong> React.js, Vue.js, Nuxt.js, Next.js, JavaScript, Tailwind CSS, PHP e jQuery para criar interfaces interativas e responsivas.</li>
-          <li><strong>Back-end:</strong> Node.js, Express.js, Nest.js, TypeScript e Rust para desenvolver e implementar a lógica de negócio e a camada de serviços.</li>
-          <li><strong>Banco de dados:</strong> SQL para modelagem e consulta de dados, garantindo integridade e eficiência no armazenamento de informações.</li>
-          <li><strong>Versionamento:</strong> Git para colaboração e rastreamento de mudanças no código-fonte.</li>
-          <li><strong>Metodologias ágeis:</strong> SCRUM e Kanban para gestão eficiente de projetos e entrega rápida de novas funcionalidades.</li>
-          <li><strong>Arquitetura de software:</strong> OOP, SOLID e Clean Architecture para garantir qualidade e modularidade do código.</li>
-          <li><strong>DevOps:</strong> Docker e Kubernetes para empacotamento, deploy e escalabilidade em nuvem. Uso de Linux para gerenciar ambientes de desenvolvimento e produção.</li>
+          <li>Construiu sistema de monitoramento de canais de voz em Python/Flask, rastreando chamadas inbound/outbound e interações IVR em todos os canais da marca, provendo visibilidade em tempo real da jornada telefônica do cliente.</li>
+          <li>Refatorou endpoints críticos de serviço, melhorando o tempo de resposta em até <strong>60%</strong> via otimização de queries e estratégias de cache com Redis.</li>
+          <li>Participou de todas as fases do ciclo de produto — da concepção ao deploy em nuvem — em sistemas que atendem milhões de clientes.</li>
+          <li><strong>Stack:</strong> Node.js, Vue.js, React, TypeScript, Python, Flask, PostgreSQL, Redis, Docker, Kubernetes, AWS, GCP, New Relic, Grafana, Sentry</li>
         </ul>
-        <p>
-          Ao longo desse período, contribuí para o aumento da eficiência e satisfação dos
-          usuários, colaborando na implementação de novas funcionalidades e melhorias na
-          plataforma. Trabalhei de forma próxima a times distribuídos, garantindo as entregas
-          dentro dos prazos estabelecidos.
-        </p>
       </div>
 
       <div class="cv-entry">
@@ -56,26 +52,15 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>LIGUE</strong> <span class="cv-note">(adquirida pela Alloha Fibra)</span>
           <span class="cv-period">mai. 2022 – jul. 2023 · 1 ano e 3 meses</span>
         </div>
-        <div class="cv-role">Full-stack Software Engineer · Maringá, PR</div>
-        <p>
-          Atuação em projetos críticos para a empresa, desenvolvendo aplicações e serviços
-          em nuvem para uso interno. Responsabilidades: criação de novas funcionalidades,
-          manutenção de sistemas existentes e melhoria de escalabilidade e performance.
-        </p>
+        <div class="cv-role">Mid-level Full-stack Developer · Maringá, PR</div>
         <ul>
-          <li><strong>Front-end:</strong> React.js, Vue.js, Nuxt.js, Next.js, JavaScript, Tailwind CSS, PHP e jQuery.</li>
-          <li><strong>Back-end:</strong> Node.js, Express.js, Nest.js, TypeScript e Rust.</li>
-          <li><strong>Banco de dados:</strong> SQL para modelagem e consulta de dados.</li>
-          <li><strong>Versionamento:</strong> Git.</li>
-          <li><strong>Metodologias ágeis:</strong> SCRUM e Kanban.</li>
-          <li><strong>Arquitetura de software:</strong> OOP, SOLID e Clean Architecture.</li>
-          <li><strong>DevOps:</strong> Docker e Kubernetes. Gerenciamento de ambientes com Linux.</li>
+          <li>Construiu e manteve o TDA — plataforma de atendimento multi-camada (frontend React, BFF Node.js, API de funcionalidades) cobrindo transferências de endereço, acordos de pagamento e fluxos de parcelamento.</li>
+          <li>Implementou gerenciamento de filas assíncronas com Arena + Redis para processar operações de serviço de telecom em escala.</li>
+          <li>Desenvolveu fluxo de negociação financeira para faturas em atraso no app híbrido mobile do portal do cliente.</li>
+          <li>Construiu APIs REST integradas ao sistema geográfico GeoGrid para determinar disponibilidade de fibra óptica, custos de instalação e cobertura por endereço.</li>
+          <li>Contribuiu para o Ares, API com arquitetura DDD para operações de voz e transferência de endereços.</li>
+          <li><strong>Stack:</strong> Node.js, NestJS, React, Vue.js, Nuxt.js, TypeScript, PostgreSQL, Redis, Docker, Kubernetes</li>
         </ul>
-        <p>
-          Contribuí para o aumento da eficiência e satisfação dos usuários, colaborando na
-          implementação de novas funcionalidades e melhorias na plataforma. Trabalho próximo
-          a times distribuídos, garantindo entregas dentro dos prazos estabelecidos.
-        </p>
       </div>
 
       <div class="cv-entry">
@@ -83,22 +68,11 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>Kinebot</strong>
           <span class="cv-period">fev. 2022 – mai. 2022 · 4 meses</span>
         </div>
-        <div class="cv-role">Full-stack Software Engineer · Curitiba, PR</div>
-        <p>
-          Responsável pelo desenvolvimento e manutenção de aplicações web com Node.js, React
-          e Redux. Objetivo principal: escrever código JavaScript limpo e bem estruturado,
-          visando escalabilidade e facilidade de manutenção.
-        </p>
-        <p>
-          Utilizei serviços AWS como Lambda, S3 e RDS para implementar soluções escaláveis
-          e seguras, aproveitando a infraestrutura em nuvem para otimizar a performance
-          das aplicações.
-        </p>
-        <p>
-          Para garantir eficiência e cumprimento de prazos, adotei metodologias ágeis como
-          Scrum e Kanban, participando de daily stand-ups e acompanhando de perto o progresso
-          das tarefas. Essa abordagem permitiu comunicação eficiente e entregas mais precisas.
-        </p>
+        <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remoto)</div>
+        <ul>
+          <li>Desenvolveu features com Node.js, React, Redux e AWS (Lambda, S3, RDS).</li>
+          <li>Adotou metodologias ágeis (Scrum/Kanban) com foco em qualidade e cumprimento de prazos.</li>
+        </ul>
       </div>
 
       <div class="cv-entry">
@@ -106,26 +80,71 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>GetHash</strong>
           <span class="cv-period">out. 2021 – fev. 2022 · 5 meses</span>
         </div>
-        <div class="cv-role">Full-stack Software Engineer · São Paulo</div>
+        <div class="cv-role">Junior Full-stack Developer · São Paulo (remoto)</div>
+        <ul>
+          <li>Construiu soluções para múltiplos clientes com Node.js, React, TypeScript e Next.js.</li>
+          <li>Provisionou e manteve infraestrutura em nuvem com DigitalOcean, Docker, Kubernetes e Rancher; implementou pipelines de CI/CD.</li>
+          <li>Conduziu reuniões com clientes em português e inglês para alinhamento de expectativas e apresentação de progresso.</li>
+        </ul>
+      </div>
+
+      <h2>Projetos pessoais</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>AI Workflow System</strong>
+        </div>
         <p>
-          Participação ativa no desenvolvimento de soluções para diversos clientes, utilizando
-          um conjunto abrangente de tecnologias como Node.js, React, TypeScript e Next.js.
-          Envolvimento desde a concepção até a entrega do projeto.
+          Pipeline de automação pessoal: gravação de voz → transcrição via Whisper → notas
+          estruturadas; ingestão de YouTube/artigos com sumarização por IA; git hooks gerando
+          notas contextuais de projeto em background.
         </p>
+        <div class="cv-role">Bash · Python · Claude API · faster-whisper</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>mateCreations</strong>
+        </div>
         <p>
-          Provisionamento e manutenção de infraestrutura em nuvem com DigitalOcean, Docker,
-          Kubernetes e Rancher. Implementação de processos de CI/CD para integração contínua
-          e entrega eficiente das soluções desenvolvidas.
+          Ecossistema de temas cross-application (Obsidian, Neovim, VS Code, Zen Browser) com
+          pipeline de release automatizado via GitHub Actions. Duas variantes com alternância
+          automática claro/escuro baseada em horário via systemd.
         </p>
+        <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Codex</strong>
+        </div>
         <p>
-          Além do desenvolvimento, participei ativamente da aquisição e gestão de projetos,
-          utilizando Scrum para uma abordagem iterativa e colaborativa. Condução de reuniões
-          com clientes em português e inglês para alinhamento de expectativas, apresentação
-          de progresso e garantia de satisfação de todas as partes envolvidas.
+          App de descoberta de livros multiplataforma (Desktop/Android/iOS) com arquitetura
+          extensível de fontes. Sem anúncios, sem rastreamento.
         </p>
+        <div class="cv-role">Kotlin · Compose Multiplatform · Ktor</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>oracle-k8s</strong>
+        </div>
+        <p>
+          Cluster Kubernetes no Oracle Cloud Free Tier provisionado inteiramente com Terraform
+          (compute, rede, load balancer).
+        </p>
+        <div class="cv-role">Terraform · Kubernetes · OCI</div>
       </div>
 
       <h2>Formação</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Estácio</strong>
+          <span class="cv-period">em andamento</span>
+        </div>
+        <div class="cv-role">Bacharelado em Engenharia de Software</div>
+      </div>
 
       <div class="cv-entry">
         <div class="cv-header">
@@ -139,35 +158,45 @@ import Sidebar from '../components/Sidebar.astro';
 
       <div class="cv-skills">
         <div class="cv-skill-group">
-          <span class="cv-skill-label">Back-end</span>
-          Java · Spring · Node.js · Express.js · Nest.js · TypeScript · Rust
+          <span class="cv-skill-label">Linguagens</span>
+          TypeScript · JavaScript · Python · Java · Rust · Kotlin
         </div>
         <div class="cv-skill-group">
           <span class="cv-skill-label">Front-end</span>
-          React.js · Vue.js · Nuxt.js · Next.js · JavaScript · Tailwind CSS · PHP · jQuery
+          React · Next.js · Vue.js · Nuxt.js · Tailwind CSS · React Native
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Back-end</span>
+          Node.js · NestJS · Express · Flask · Spring Boot · Prisma · Knex
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Banco de dados</span>
+          PostgreSQL · MySQL · Redis
         </div>
         <div class="cv-skill-group">
           <span class="cv-skill-label">Infraestrutura</span>
-          Docker · Kubernetes · AWS · GCP · DigitalOcean · Rancher · CI/CD · Linux
+          Docker · Kubernetes · AWS · GCP · OCI · Terraform · CI/CD · Linux
         </div>
         <div class="cv-skill-group">
-          <span class="cv-skill-label">Práticas</span>
-          TDD · Clean Code · Clean Architecture · Hexagonal Architecture · DDD · SOLID · SCRUM · Kanban
+          <span class="cv-skill-label">Observabilidade</span>
+          New Relic · Grafana · Loki · Sentry · OpenTelemetry
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Arquitetura</span>
+          DDD · Hexagonal Architecture · Clean Architecture · SOLID · Event-Driven
         </div>
         <div class="cv-skill-group">
           <span class="cv-skill-label">Idiomas</span>
-          Português (nativo) · Inglês (fluente)
+          Português (nativo) · Inglês (fluente — C2 EF SET)
         </div>
       </div>
 
       <h2>Certificações</h2>
-      <ul>
-        <li>Domain Driven Design (DDD)</li>
-        <li>TestJS Summit 2023</li>
-        <li>Observabilidade</li>
-        <li>Discover Especializar</li>
-        <li>Circuito Bankless: O Futuro do DeFi</li>
-      </ul>
+      <p style="font-family: system-ui, sans-serif; font-size: 0.875rem; color: var(--tx-2);">
+        Full Cycle — RabbitMQ · Kubernetes · DDD · SOLID · API Gateway · CI/CD ·
+        Hexagonal Architecture · Istio · Observabilidade · Ansible · OpenTelemetry ·
+        EDA · Terraform · Apache Kafka · Kong · GitOps · Event Storming · Docker
+      </p>
 
     </div>
   </article>
