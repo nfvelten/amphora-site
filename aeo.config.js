@@ -69,6 +69,27 @@ Idiomas: Português (nativo), Inglês (fluente).
 Certificações: DDD, TestJS Summit 2023, Observabilidade.`,
     },
     {
+      title: 'amphora — Nicholas Velten',
+      content: `amphora é um sistema pessoal de gestão de conhecimento (PKMS) criado por Nicholas Velten,
+construído sobre Obsidian e Neovim com automações via scripts shell e integração com IA.
+
+O repositório amphora-setup publica a CLI amphora (Rust) e os scripts — instalável em qualquer
+sistema Linux com Obsidian. Configurável via variáveis de ambiente.
+
+Scripts incluídos:
+- daily-note: abre a daily note como scratchpad flutuante no Hyprland
+- meeting-record: grava, transcreve com Whisper e resume reuniões com Claude
+- video-note: baixa legendas do YouTube e resume com Claude
+- newsboat-save: salva e resume artigos do Newsboat
+- vault-log-updates: loga atualizações de pacotes pacman no vault
+
+Integrações:
+- Obsidian: templates para daily note, weekly review, nota técnica e demanda de trabalho
+- Neovim: plugin com task picker, quick capture e navegação entre notas
+- Git hook: loga commits automaticamente na daily note
+- Claude Code: scratchpad flutuante com contexto do vault`,
+    },
+    {
       title: 'mateCreations — Nicholas Velten',
       content: `mateCreations é uma família de temas de cores criada por Nicholas Velten, inspirada no
 mate e no tererê. Disponível em múltiplas plataformas:

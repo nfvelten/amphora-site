@@ -7,22 +7,23 @@ const isActive = (path: string) =>
 ---
 
 <button class="mobile-menu-btn" id="mobile-menu-btn" title="Menu" aria-label="Abrir menu">
-  <img src="/icon.png" alt="Menu" width="28" height="28" />
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <line x1="3" y1="5" x2="17" y2="5" />
+    <line x1="3" y1="10" x2="17" y2="10" />
+    <line x1="3" y1="15" x2="17" y2="15" />
+  </svg>
 </button>
 
 <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-content">
-    <a href="/" class="sidebar-logo">
-      <img src="/icon.png" alt="ânfora" width="40" height="40" />
-    </a>
-
     <div class="sidebar-text">
       <a href="/" class="sidebar-name">Nicholas Velten</a>
       <nav>
         <a href="/blog" class:list={[{ active: isActive('/blog') || isActive('/escrita') || isActive('/posts') || isActive('/leituras') }]}>Blog</a>
         <a href="/matecreations" class:list={[{ active: isActive('/matecreations') }]}>mateCreations</a>
+        <a href="/amphora" class:list={[{ active: isActive('/amphora') }]}>amphora</a>
       </nav>
     </div>
 
