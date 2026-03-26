@@ -70,14 +70,16 @@ const integrations = [
     </header>
     <div class="prose">
       <div class="amphora-intro">
-        <img src="/icon.png" alt="Amphora" class="amphora-logo" />
-        <p>
-          <strong>Amphora</strong> é um sistema pessoal de gestão de conhecimento (PKMS) construído
-          sobre <a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> e
-          <a href="https://neovim.io" target="_blank" rel="noopener">Neovim</a>. Combina daily notes,
-          automações via scripts e integração com IA para capturar, organizar e recuperar conhecimento
-          sem atrito.
-        </p>
+        <div class="amphora-header">
+          <img src="/icon.png" alt="Amphora" class="amphora-logo" />
+          <p>
+            <strong>Amphora</strong> é um sistema pessoal de gestão de conhecimento (PKMS) construído
+            sobre <a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> e
+            <a href="https://neovim.io" target="_blank" rel="noopener">Neovim</a>. Combina daily notes,
+            automações via scripts e integração com IA para capturar, organizar e recuperar conhecimento
+            sem atrito.
+          </p>
+        </div>
         <p>
           O repositório <a href="https://github.com/nfvelten/amphora-setup" target="_blank" rel="noopener">amphora-setup</a>{' '}
           publica a CLI <code>amphora</code> (Rust) e os scripts — instalável em qualquer sistema Linux
@@ -132,13 +134,19 @@ chmod +x amphora && ./amphora install</code></pre>
     margin-bottom: 2rem;
   }
 
+  .amphora-header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
   .amphora-logo {
-    display: block;
     width: 72px;
     height: 72px;
     border-radius: 12px;
+    flex-shrink: 0;
     object-fit: cover;
-    margin-bottom: 1rem;
   }
 
   .install-block {

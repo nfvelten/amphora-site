@@ -57,15 +57,17 @@ const themes = [
     </header>
     <div class="prose">
       <div class="mate-intro">
-        <img
-          src="https://raw.githubusercontent.com/mateCreations/omarchy-yerba-mate/master/images/logo.png"
-          alt="Mate Creations"
-          class="mate-logo"
-        />
-        <p>
-          <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
-          Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
-        </p>
+        <div class="mate-header">
+          <img
+            src="https://raw.githubusercontent.com/mateCreations/omarchy-yerba-mate/master/images/logo.png"
+            alt="Mate Creations"
+            class="mate-logo"
+          />
+          <p>
+            <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
+            Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
+          </p>
+        </div>
         <p>
           <strong>Yerba Mate</strong> é o tema dark: fundo verde-oliva escuro, acentos em ocre,
           azul aço e verde mate. <strong>Tererê</strong> é o light: papel manteiga, âmbar dourado
@@ -110,13 +112,19 @@ const themes = [
     margin-bottom: 2rem;
   }
 
+  .mate-header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
   .mate-logo {
-    display: block;
     width: 72px;
     height: 72px;
     border-radius: 12px;
+    flex-shrink: 0;
     object-fit: cover;
-    margin-bottom: 1rem;
   }
 
   .palette-pair {
