@@ -4,12 +4,6 @@ import Sidebar from '../components/Sidebar.astro';
 
 const scripts = [
   {
-    id: 'daily-note',
-    name: 'daily-note',
-    desc: 'Abre a daily note como scratchpad flutuante no Hyprland. Cria a nota automaticamente pelo template do Obsidian se ainda não existir.',
-    install: 'amphora install scripts',
-  },
-  {
     id: 'meeting-record',
     name: 'meeting-record',
     desc: 'Grava áudio do microfone e transcreve com Whisper ao parar. Salva automaticamente em Work/Meetings/ com data e resumo gerado pelo Claude.',
@@ -61,12 +55,6 @@ const integrations = [
     name: 'Git hook (post-commit)',
     desc: 'Hook que loga commits automaticamente na daily note ao fazer push em qualquer repositório.',
     install: 'amphora install hook',
-  },
-  {
-    id: 'claude',
-    name: 'Claude Code scratchpad',
-    desc: 'Scratchpad flutuante com Claude Code abrindo direto no vault. Configurado com CLAUDE.md e contexto do PKMS.',
-    install: 'amphora install claude',
   },
 ];
 ---
