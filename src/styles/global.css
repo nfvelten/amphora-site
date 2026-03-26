@@ -332,6 +332,7 @@ hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
 
 /* ── Page heading (index, leituras) ─────────────────────────────── */
 .page-heading { margin-bottom: 0.75rem; color: var(--red); }
+.page-desc { color: var(--tx-2); font-size: 0.95rem; margin-bottom: 2rem; }
 
 .section-heading { color: var(--green); margin-bottom: 1.25rem; }
 
