@@ -53,26 +53,24 @@ const themes = [
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header">
-      <h1>mateCreations</h1>
+      <h1>Mate Creations</h1>
     </header>
     <div class="prose">
       <div class="mate-intro">
         <img
           src="https://raw.githubusercontent.com/mateCreations/omarchy-yerba-mate/master/images/logo.png"
-          alt="Mate"
+          alt="Mate Creations"
           class="mate-logo"
         />
-        <div>
-          <p>
-            <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
-            Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
-          </p>
-          <p>
-            <strong>Yerba Mate</strong> é o tema dark: fundo verde-oliva escuro, acentos em ocre,
-            azul aço e verde mate. <strong>Tererê</strong> é o light: papel manteiga, âmbar dourado
-            e vinho fundo. Os dois cobrem o mesmo ambiente — do terminal ao navegador.
-          </p>
-        </div>
+        <p>
+          <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
+          Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
+        </p>
+        <p>
+          <strong>Yerba Mate</strong> é o tema dark: fundo verde-oliva escuro, acentos em ocre,
+          azul aço e verde mate. <strong>Tererê</strong> é o light: papel manteiga, âmbar dourado
+          e vinho fundo. Os dois cobrem o mesmo ambiente — do terminal ao navegador.
+        </p>
       </div>
 
       <div class="palette-pair">
@@ -110,8 +108,8 @@ const themes = [
 <style>
   .mate-intro {
     display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
     margin-bottom: 2rem;
   }
 
@@ -119,7 +117,6 @@ const themes = [
     width: 72px;
     height: 72px;
     border-radius: 12px;
-    flex-shrink: 0;
     object-fit: cover;
   }
 
