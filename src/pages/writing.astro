@@ -29,14 +29,20 @@ function readingTime(body: string | undefined) {
           </time>
           <span>{readingTime(post.body)} min</span>
         </div>
-        <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="post-title">{post.data.title}</a>
+        <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="post-title">
+          <span class="lang-en">{post.data.title}</span>
+          {post.data.title_pt && <span class="lang-pt">{post.data.title_pt}</span>}
+        </a>
         {post.data.description && (
-          <p class="post-excerpt">{post.data.description}</p>
+          <p class="post-excerpt">
+            <span class="lang-en">{post.data.description}</span>
+            {post.data.description_pt && <span class="lang-pt">{post.data.description_pt}</span>}
+          </p>
         )}
       </li>
     ))}
     {posts.length === 0 && (
-      <li style="color: var(--tx-3); font-size: 0.9rem;"><span class="lang-en">No posts published yet.</span><span class="lang-pt">Nenhum post publicado ainda.</span></li>
+      <li class="empty-state"><span class="lang-en">No posts published yet.</span><span class="lang-pt">Nenhum post publicado ainda.</span></li>
     )}
   </ul>
 </BaseLayout>
