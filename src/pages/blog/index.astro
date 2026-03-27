@@ -45,7 +45,7 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
               <span class="lang-pt">{post.data.date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </time>
           </div>
-          <a href={`/posts/${post.id.replace(/\.md$/, '')}`} class="post-title">{post.data.title}</a>
+          <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="post-title">{post.data.title}</a>
           {post.data.description && (
             <p class="post-excerpt">{post.data.description}</p>
           )}
