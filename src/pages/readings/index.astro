@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { getCollection } from 'astro:content';
+
+const leituras = (await getCollection('leituras', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const lendo     = leituras.filter(l => l.data.status === 'lendo');
+const lidos     = leituras.filter(l => l.data.status === 'lido');
+const querLer   = leituras.filter(l => l.data.status === 'quero-ler');
+
+const statusLabelEn: Record<string, string> = {
+  lendo: 'Reading', lido: 'Read', 'quero-ler': 'Want to read',
+};
+const statusLabelPt: Record<string, string> = {
+  lendo: 'Lendo', lido: 'Lido', 'quero-ler': 'Quero ler',
+};
+---
+
+<BaseLayout
+  title="Readings"
+  description="Reading list of Nicholas Velten — books read, in progress and on the queue."
+>
+  <Sidebar slot="sidebar" />
+  <h1 class="page-heading">
+    <span class="lang-en">Readings</span>
+    <span class="lang-pt">Leituras</span>
+  </h1>
+
+  {lendo.length > 0 && (
+    <section style="margin-bottom: 3rem">
+      <h2 class="section-heading">
+        <span class="lang-en">Currently reading</span>
+        <span class="lang-pt">Lendo agora</span>
+      </h2>
+      <ul class="post-list">
+        {lendo.map(l => (
+          <li class="post-item">
+            <div class="post-meta">
+              <span class={`status-badge status-${l.data.status}`}>
+                <span class="lang-en">{statusLabelEn[l.data.status]}</span>
+                <span class="lang-pt">{statusLabelPt[l.data.status]}</span>
+              </span>
+              {l.data.genero && <span>{l.data.genero}</span>}
+            </div>
+            <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+            <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {lidos.length > 0 && (
+    <section style="margin-bottom: 3rem">
+      <h2 class="section-heading">
+        <span class="lang-en">Read</span>
+        <span class="lang-pt">Lidos</span>
+      </h2>
+      <ul class="post-list">
+        {lidos.map(l => (
+          <li class="post-item">
+            <div class="post-meta">
+              <time datetime={l.data.date.toISOString()}>
+                <span class="lang-en">{l.data.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                <span class="lang-pt">{l.data.date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
+              </time>
+              {l.data.genero && <span>{l.data.genero}</span>}
+            </div>
+            <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+            <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {querLer.length > 0 && (
+    <section style="margin-bottom: 3rem">
+      <h2 class="section-heading">
+        <span class="lang-en">Want to read</span>
+        <span class="lang-pt">Quero ler</span>
+      </h2>
+      <ul class="post-list">
+        {querLer.map(l => (
+          <li class="post-item">
+            <div class="post-meta">
+              <span class={`status-badge status-${l.data.status}`}>
+                <span class="lang-en">{statusLabelEn[l.data.status]}</span>
+                <span class="lang-pt">{statusLabelPt[l.data.status]}</span>
+              </span>
+              {l.data.genero && <span>{l.data.genero}</span>}
+            </div>
+            <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+            <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {leituras.length === 0 && (
+    <p style="color: var(--tx-3); font-size: 0.9rem;">
+      <span class="lang-en">No readings logged yet.</span>
+      <span class="lang-pt">Nenhuma leitura registrada ainda.</span>
+    </p>
+  )}
+</BaseLayout>

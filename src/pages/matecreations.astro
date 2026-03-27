@@ -6,7 +6,8 @@ const themes = [
   {
     id: 'nvim',
     name: 'yerba-mate.nvim',
-    desc: 'Colorscheme para Neovim — cobre editor UI, syntax, Treesitter, LSP, Telescope, nvim-cmp e mais.',
+    descEn: 'Colorscheme for Neovim — covers editor UI, syntax, Treesitter, LSP, Telescope, nvim-cmp and more.',
+    descPt: 'Colorscheme para Neovim — cobre editor UI, syntax, Treesitter, LSP, Telescope, nvim-cmp e mais.',
     url: 'https://github.com/mateCreations/yerba-mate.nvim',
     install: '{ "mateCreations/yerba-mate.nvim" }',
     installLabel: 'lazy.nvim',
@@ -14,7 +15,8 @@ const themes = [
   {
     id: 'obsidian',
     name: 'obsidian-yerba-mate',
-    desc: 'Tema para Obsidian com variante dark (Yerba Mate) e light (Tererê). Disponível na galeria de temas da comunidade.',
+    descEn: 'Theme for Obsidian with dark (Yerba Mate) and light (Tererê) variants. Available in the community theme gallery.',
+    descPt: 'Tema para Obsidian com variante dark (Yerba Mate) e light (Tererê). Disponível na galeria de temas da comunidade.',
     url: 'https://github.com/mateCreations/obsidian-yerba-mate',
     install: null,
     installLabel: null,
@@ -22,7 +24,8 @@ const themes = [
   {
     id: 'vscode',
     name: 'vscode-yerba-mate',
-    desc: 'Extensão para Visual Studio Code com variante dark e light.',
+    descEn: 'Extension for Visual Studio Code with dark and light variants.',
+    descPt: 'Extensão para Visual Studio Code com variante dark e light.',
     url: 'https://github.com/mateCreations/vscode-yerba-mate',
     install: null,
     installLabel: null,
@@ -30,7 +33,8 @@ const themes = [
   {
     id: 'omarchy',
     name: 'omarchy-yerba-mate + omarchy-terere',
-    desc: 'Temas de sistema para Omarchy — dark e light para o ambiente desktop inteiro.',
+    descEn: 'System themes for Omarchy — dark and light for the entire desktop environment.',
+    descPt: 'Temas de sistema para Omarchy — dark e light para o ambiente desktop inteiro.',
     url: 'https://github.com/mateCreations',
     install: 'omarchy-theme-install github.com/mateCreations/omarchy-yerba-mate',
     installLabel: 'omarchy',
@@ -38,7 +42,8 @@ const themes = [
   {
     id: 'zen',
     name: 'Yerba Mate + Tererê para Zen Browser',
-    desc: 'Temas para o Zen Browser disponíveis no marketplace oficial.',
+    descEn: 'Yerba Mate and Tererê themes for Zen Browser available on the official marketplace.',
+    descPt: 'Temas para o Zen Browser disponíveis no marketplace oficial.',
     url: 'https://github.com/mateCreations',
     install: null,
     installLabel: null,
@@ -64,14 +69,26 @@ const themes = [
             class="mate-logo"
           />
           <p>
-            <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
-            Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
+            <span class="lang-en">
+              <strong>Yerba Mate</strong> is a theme family inspired by mate and tererê — two sides of the same gourd.
+              Available at <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
+            </span>
+            <span class="lang-pt">
+              <strong>Yerba Mate</strong> é uma família de temas inspirada no mate e no tererê — dois lados da mesma cuia.
+              Disponível em <a href="https://github.com/mateCreations" target="_blank" rel="noopener">mateCreations</a>.
+            </span>
           </p>
         </div>
         <p>
-          <strong>Yerba Mate</strong> é o tema dark: fundo verde-oliva escuro, acentos em ocre,
-          azul aço e verde mate. <strong>Tererê</strong> é o light: papel manteiga, âmbar dourado
-          e vinho fundo. Os dois cobrem o mesmo ambiente — do terminal ao navegador.
+          <span class="lang-en">
+            <strong>Yerba Mate</strong> is the dark theme: dark olive-green background, ochre, steel blue and mate green accents.
+            <strong>Tererê</strong> is the light: butter paper, golden amber and deep wine. Both cover the same environment — from terminal to browser.
+          </span>
+          <span class="lang-pt">
+            <strong>Yerba Mate</strong> é o tema dark: fundo verde-oliva escuro, acentos em ocre,
+            azul aço e verde mate. <strong>Tererê</strong> é o light: papel manteiga, âmbar dourado
+            e vinho fundo. Os dois cobrem o mesmo ambiente — do terminal ao navegador.
+          </span>
         </p>
       </div>
 
@@ -97,7 +114,10 @@ const themes = [
       {themes.map(t => (
         <div class="theme-entry">
           <h3><a href={t.url} target="_blank" rel="noopener">{t.name}</a></h3>
-          <p>{t.desc}</p>
+          <p>
+            <span class="lang-en">{t.descEn}</span>
+            <span class="lang-pt">{t.descPt}</span>
+          </p>
           {t.install && (
             <pre class="theme-install"><code>{t.install}</code></pre>
           )}

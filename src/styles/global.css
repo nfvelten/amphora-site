@@ -576,3 +576,8 @@ hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
     max-width: 100%;
   }
 }
+
+/* ── Language toggle ─────────────────────────────────────────────── */
+.lang-pt { display: none; }
+html[data-lang="pt"] .lang-en { display: none; }
+html[data-lang="pt"] .lang-pt { display: revert; }

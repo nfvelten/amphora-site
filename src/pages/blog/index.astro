@@ -16,23 +16,33 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
 
 <BaseLayout
   title="Blog"
-  description="Escrita e leituras de Nicholas Velten."
+  description="Writing by Nicholas Velten on technology, tools and learnings."
 >
   <Sidebar slot="sidebar" />
   <h1 class="page-heading">Blog</h1>
-  <p class="page-desc">Escrita sobre tecnologia, ferramentas e aprendizados do dia a dia. Sem pauta fixa — só o que vale registrar.</p>
+  <p class="page-desc">
+    <span class="lang-en">Writing about technology, tools and learnings. No fixed agenda — just what's worth writing down.</span>
+    <span class="lang-pt">Escrita sobre tecnologia, ferramentas e aprendizados do dia a dia. Sem pauta fixa — só o que vale registrar.</span>
+  </p>
 
   <section style="margin-bottom: 3rem">
     <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
-      <h2 class="section-heading" style="margin-bottom: 0">Escrita</h2>
-      <a href="/escrita" style="font-size: 0.8rem; color: var(--tx-3)">ver tudo →</a>
+      <h2 class="section-heading" style="margin-bottom: 0">
+        <span class="lang-en">Writing</span>
+        <span class="lang-pt">Escrita</span>
+      </h2>
+      <a href="/writing" style="font-size: 0.8rem; color: var(--tx-3)">
+        <span class="lang-en">see all →</span>
+        <span class="lang-pt">ver tudo →</span>
+      </a>
     </div>
     <ul class="post-list">
       {posts.map(post => (
         <li class="post-item">
           <div class="post-meta">
             <time datetime={post.data.date.toISOString()}>
-              {post.data.date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              <span class="lang-en">{post.data.date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              <span class="lang-pt">{post.data.date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </time>
           </div>
           <a href={`/posts/${post.id.replace(/\.md$/, '')}`} class="post-title">{post.data.title}</a>
@@ -42,24 +52,36 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
         </li>
       ))}
       {posts.length === 0 && (
-        <li style="color: var(--tx-3); font-size: 0.9rem;">Nenhum post publicado ainda.</li>
+        <li style="color: var(--tx-3); font-size: 0.9rem;">
+          <span class="lang-en">No posts published yet.</span>
+          <span class="lang-pt">Nenhum post publicado ainda.</span>
+        </li>
       )}
     </ul>
   </section>
 
   <section>
     <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
-      <h2 class="section-heading" style="margin-bottom: 0">Leituras</h2>
-      <a href="/leituras" style="font-size: 0.8rem; color: var(--tx-3)">ver tudo →</a>
+      <h2 class="section-heading" style="margin-bottom: 0">
+        <span class="lang-en">Readings</span>
+        <span class="lang-pt">Leituras</span>
+      </h2>
+      <a href="/readings" style="font-size: 0.8rem; color: var(--tx-3)">
+        <span class="lang-en">see all →</span>
+        <span class="lang-pt">ver tudo →</span>
+      </a>
     </div>
     <ul class="post-list">
       {lendo.map(l => (
         <li class="post-item">
           <div class="post-meta">
-            <span class="status-badge status-lendo">Lendo</span>
+            <span class="status-badge status-lendo">
+              <span class="lang-en">Reading</span>
+              <span class="lang-pt">Lendo</span>
+            </span>
             {l.data.genero && <span>{l.data.genero}</span>}
           </div>
-          <a href={`/leituras/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+          <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
           <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
         </li>
       ))}
@@ -67,16 +89,20 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
         <li class="post-item">
           <div class="post-meta">
             <time datetime={l.data.date.toISOString()}>
-              {l.data.date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              <span class="lang-en">{l.data.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+              <span class="lang-pt">{l.data.date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
             </time>
             {l.data.genero && <span>{l.data.genero}</span>}
           </div>
-          <a href={`/leituras/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
+          <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
           <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
         </li>
       ))}
       {leituras.length === 0 && (
-        <li style="color: var(--tx-3); font-size: 0.9rem;">Nenhuma leitura registrada ainda.</li>
+        <li style="color: var(--tx-3); font-size: 0.9rem;">
+          <span class="lang-en">No readings logged yet.</span>
+          <span class="lang-pt">Nenhuma leitura registrada ainda.</span>
+        </li>
       )}
     </ul>
   </section>

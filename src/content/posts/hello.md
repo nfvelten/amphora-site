@@ -1,10 +1,10 @@
 ---
-title: Começando
+title: Starting
 date: 2026-03-08
-description: Por que comecei a escrever aqui.
-tags: [notas]
+description: Why I started writing here.
+tags: [notes]
 ---
 
-Escrever em público é um exercício de clareza. Quando você sabe que alguém pode ler, você se obriga a pensar melhor.
+Writing in public is an exercise in clarity. When you know someone might read it, you force yourself to think better.
 
-Este é o começo.
+This is the beginning.

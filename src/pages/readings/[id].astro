@@ -13,7 +13,10 @@ export async function getStaticPaths() {
 const { livro } = Astro.props;
 const { Content } = await render(livro);
 
-const statusLabel: Record<string, string> = {
+const statusLabelEn: Record<string, string> = {
+  lendo: 'Reading', lido: 'Read', 'quero-ler': 'Want to read',
+};
+const statusLabelPt: Record<string, string> = {
   lendo: 'Lendo', lido: 'Lido', 'quero-ler': 'Quero ler',
 };
 ---
@@ -25,7 +28,8 @@ const statusLabel: Record<string, string> = {
 >
   <p style="color: var(--tx-2); font-style: italic; margin-bottom: 0.25rem">{livro.data.autor}</p>
   <span class={`status-badge status-${livro.data.status}`} style="display:inline-block; margin-bottom: 2rem">
-    {statusLabel[livro.data.status]}
+    <span class="lang-en">{statusLabelEn[livro.data.status]}</span>
+    <span class="lang-pt">{statusLabelPt[livro.data.status]}</span>
   </span>
   <Content />
 </PostLayout>

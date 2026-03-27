@@ -11,7 +11,12 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content: ContentEn } = await render(post);
+
+const postsPt = await getCollection('posts-pt', ({ data }) => !data.draft);
+const postPt = postsPt.find(p => p.id === post.id);
+const rendered = postPt ? await render(postPt) : null;
+const ContentPt = rendered?.Content;
 
 function readingTime(body: string | undefined) {
   if (!body) return 1;
@@ -21,10 +26,18 @@ function readingTime(body: string | undefined) {
 
 <PostLayout
   title={post.data.title}
+  titlePt={postPt?.data.title}
   date={post.data.date}
   tags={post.data.tags}
   description={post.data.description}
   readingTime={readingTime(post.body)}
 >
-  <Content />
+  <div class="lang-en">
+    <ContentEn />
+  </div>
+  {ContentPt && (
+    <div class="lang-pt">
+      <ContentPt />
+    </div>
+  )}
 </PostLayout>

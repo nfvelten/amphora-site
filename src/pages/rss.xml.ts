@@ -17,16 +17,16 @@ export async function GET(context: APIContext) {
       link: `/posts/${post.id.replace(/\.mdx?$/, '')}`,
     })),
     ...leituras.map(l => ({
-      title: `Leitura: ${l.data.title}`,
+      title: `Reading: ${l.data.title}`,
       pubDate: l.data.date,
-      description: `Review de "${l.data.title}" de ${l.data.autor}`,
-      link: `/leituras/${l.id.replace(/\.mdx?$/, '')}`,
+      description: `"${l.data.title}" by ${l.data.autor}`,
+      link: `/readings/${l.id.replace(/\.mdx?$/, '')}`,
     })),
   ].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
   return rss({
     title: 'Nicholas Velten',
-    description: 'Escrita, leituras e notas.',
+    description: 'Writing, readings and notes.',
     site: context.site!,
     items,
   });

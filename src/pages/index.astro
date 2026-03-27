@@ -4,30 +4,50 @@ import Sidebar from '../components/Sidebar.astro';
 ---
 
 <BaseLayout
-  title="Nicholas Velten — Engenheiro de Software Full-Stack"
-  description="Site pessoal de Nicholas Velten — escrita sobre tecnologia, projetos open source e leituras."
+  title="Nicholas Velten — Full-Stack Software Engineer"
+  description="Personal site of Nicholas Velten — writing about technology, open source projects and readings."
 >
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header">
       <h1>Nicholas Velten</h1>
-      <div class="meta">Engenheiro de Software Full-Stack · Maringá, Brasil</div>
+      <div class="meta">
+        <span class="lang-en">Full-Stack Software Engineer · Maringá, Brazil</span>
+        <span class="lang-pt">Engenheiro de Software Full-Stack · Maringá, Brasil</span>
+      </div>
     </header>
-    <div class="prose">
+    <div class="prose lang-en">
+      <p>
+        Full-stack software engineer with 4+ years of experience building production systems.
+        This site is where I publish what I'm thinking, learning and reading.
+      </p>
+      <ul>
+        <li><a href="/about">About</a> — who I am, stack, experience and projects</li>
+        <li><a href="/blog">Blog</a> — writing about technology and learnings</li>
+        <li><a href="/readings">Readings</a> — books read, in progress and on the queue</li>
+        <li><a href="/amphora">Amphora</a> — my personal knowledge management system</li>
+        <li><a href="/matecreations">Mate Creations</a> — theme ecosystem for the dev environment</li>
+        <li><a href="/resume">Resume</a> — full professional background</li>
+      </ul>
+      <p>
+        <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a> ·
+        <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
+      </p>
+    </div>
+    <div class="prose lang-pt">
       <p>
         Engenheiro de software full-stack com 4+ anos de experiência construindo sistemas em produção.
         Este site é onde publico o que estou pensando, aprendendo e lendo.
       </p>
-
       <ul>
-        <li><a href="/sobre">Sobre</a> — quem sou, stack, experiência e projetos</li>
+        <li><a href="/about">Sobre</a> — quem sou, stack, experiência e projetos</li>
         <li><a href="/blog">Blog</a> — escrita sobre tecnologia e aprendizados</li>
-        <li><a href="/leituras">Leituras</a> — livros lidos, em andamento e na fila</li>
+        <li><a href="/readings">Leituras</a> — livros lidos, em andamento e na fila</li>
         <li><a href="/amphora">Amphora</a> — meu sistema pessoal de gestão de conhecimento</li>
         <li><a href="/matecreations">Mate Creations</a> — ecossistema de temas para o ambiente de dev</li>
-        <li><a href="/curriculo">Currículo</a> — trajetória profissional completa</li>
+        <li><a href="/resume">Currículo</a> — trajetória profissional completa</li>
       </ul>
-
       <p>
         <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a> ·
         <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a> ·

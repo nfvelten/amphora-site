@@ -6,54 +6,61 @@ const scripts = [
   {
     id: 'meeting-record',
     name: 'meeting-record',
-    desc: 'Grava áudio do microfone e transcreve com Whisper ao parar. Salva automaticamente em Work/Meetings/ com data e resumo gerado pelo Claude.',
+    descEn: 'Records microphone audio and transcribes with Whisper when stopped. Automatically saves to Work/Meetings/ with date and Claude-generated summary.',
+    descPt: 'Grava áudio do microfone e transcreve com Whisper ao parar. Salva automaticamente em Work/Meetings/ com data e resumo gerado pelo Claude.',
     install: null,
   },
   {
     id: 'video-note',
     name: 'video-note',
-    desc: 'Baixa legendas de um vídeo do YouTube, resume com Claude e salva em Personal/Videos/ como nota Obsidian.',
+    descEn: 'Downloads subtitles from a YouTube video, summarizes with Claude and saves to Personal/Videos/ as an Obsidian note.',
+    descPt: 'Baixa legendas de um vídeo do YouTube, resume com Claude e salva em Personal/Videos/ como nota Obsidian.',
     install: null,
   },
   {
     id: 'newsboat-save',
     name: 'newsboat-save',
-    desc: 'Scrape + resumo de artigo a partir do Newsboat. Salva em Personal/Reading/ como nota com título, fonte e conteúdo resumido.',
+    descEn: 'Scrapes and summarizes an article from Newsboat. Saves to Personal/Reading/ as a note with title, source and summarized content.',
+    descPt: 'Scrape + resumo de artigo a partir do Newsboat. Salva em Personal/Reading/ como nota com título, fonte e conteúdo resumido.',
     install: null,
   },
   {
     id: 'vault-log-updates',
     name: 'vault-log-updates',
-    desc: 'Loga atualizações de pacotes pacman em Personal/System/Updates.md. Configurável via variáveis de ambiente.',
+    descEn: 'Logs pacman package updates in Personal/System/Updates.md. Configurable via environment variables.',
+    descPt: 'Loga atualizações de pacotes pacman em Personal/System/Updates.md. Configurável via variáveis de ambiente.',
     install: null,
   },
 ];
 
 const cliCommands = [
-  { cmd: 'amphora install', desc: 'Instala componentes: scripts, hook git, neovim, obsidian, claude' },
-  { cmd: 'amphora check', desc: 'Verifica dependências e estado da instalação' },
-  { cmd: 'amphora update', desc: 'Atualiza scripts e configurações para a versão mais recente' },
-  { cmd: 'amphora guide', desc: 'Abre guia interativo de uso: scripts, hooks, neovim, obsidian' },
-  { cmd: 'amphora uninstall', desc: 'Remove componentes instalados' },
+  { cmd: 'amphora install', descEn: 'Installs components: scripts, git hook, neovim, obsidian, claude', descPt: 'Instala componentes: scripts, hook git, neovim, obsidian, claude' },
+  { cmd: 'amphora check', descEn: 'Checks dependencies and installation state', descPt: 'Verifica dependências e estado da instalação' },
+  { cmd: 'amphora update', descEn: 'Updates scripts and configurations to the latest version', descPt: 'Atualiza scripts e configurações para a versão mais recente' },
+  { cmd: 'amphora guide', descEn: 'Opens interactive usage guide: scripts, hooks, neovim, obsidian', descPt: 'Abre guia interativo de uso: scripts, hooks, neovim, obsidian' },
+  { cmd: 'amphora uninstall', descEn: 'Removes installed components', descPt: 'Remove componentes instalados' },
 ];
 
 const integrations = [
   {
     id: 'obsidian',
     name: 'Obsidian',
-    desc: 'Templates para daily note, weekly review, nota técnica e demanda de trabalho. Configuração de plugins (obsidian-git, dataview, templater, tasks) pronta para uso.',
+    descEn: 'Templates for daily note, weekly review, technical note and work task. Plugin configuration (obsidian-git, dataview, templater, tasks) ready to use.',
+    descPt: 'Templates para daily note, weekly review, nota técnica e demanda de trabalho. Configuração de plugins (obsidian-git, dataview, templater, tasks) pronta para uso.',
     install: 'amphora install obsidian',
   },
   {
     id: 'nvim',
     name: 'Neovim',
-    desc: 'Plugin de vault para Neovim com task picker, quick capture e navegação entre notas via obsidian.nvim. Keymaps em <leader>v e <leader>o.',
+    descEn: 'Vault plugin for Neovim with task picker, quick capture and note navigation via obsidian.nvim. Keymaps at <leader>v and <leader>o.',
+    descPt: 'Plugin de vault para Neovim com task picker, quick capture e navegação entre notas via obsidian.nvim. Keymaps em <leader>v e <leader>o.',
     install: 'amphora install nvim',
   },
   {
     id: 'hook',
     name: 'Git hook (post-commit)',
-    desc: 'Hook que loga commits automaticamente na daily note ao fazer push em qualquer repositório.',
+    descEn: 'Hook that automatically logs commits to the daily note when pushing in any repository.',
+    descPt: 'Hook que loga commits automaticamente na daily note ao fazer push em qualquer repositório.',
     install: 'amphora install hook',
   },
 ];
@@ -73,18 +80,34 @@ const integrations = [
         <div class="amphora-header">
           <img src="/icon.png" alt="Amphora" class="amphora-logo" />
           <p>
-            <strong>Amphora</strong> é um sistema pessoal de gestão de conhecimento (PKMS) construído
-            sobre <a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> e
-            <a href="https://neovim.io" target="_blank" rel="noopener">Neovim</a>. Combina daily notes,
-            automações via scripts e integração com IA para capturar, organizar e recuperar conhecimento
-            sem atrito.
+            <span class="lang-en">
+              <strong>Amphora</strong> is a personal knowledge management system (PKMS) built on{' '}
+              <a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> and{' '}
+              <a href="https://neovim.io" target="_blank" rel="noopener">Neovim</a>. It combines daily notes,
+              script automation and AI integration to capture, organize and retrieve knowledge without friction.
+            </span>
+            <span class="lang-pt">
+              <strong>Amphora</strong> é um sistema pessoal de gestão de conhecimento (PKMS) construído
+              sobre <a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> e
+              <a href="https://neovim.io" target="_blank" rel="noopener">Neovim</a>. Combina daily notes,
+              automações via scripts e integração com IA para capturar, organizar e recuperar conhecimento
+              sem atrito.
+            </span>
           </p>
         </div>
         <p>
-          O repositório <a href="https://github.com/nfvelten/amphora-setup" target="_blank" rel="noopener">amphora-setup</a>{' '}
-          publica a CLI <code>amphora</code> (Rust) e os scripts — instalável em qualquer sistema Linux
-          com Obsidian. Configurável via variáveis de ambiente (<code>AMPHORA_VAULT</code>,
-          <code>AMPHORA_DIR_PERSONAL</code>, <code>AMPHORA_DIR_WORK</code>).
+          <span class="lang-en">
+            The <a href="https://github.com/nfvelten/amphora-setup" target="_blank" rel="noopener">amphora-setup</a>{' '}
+            repository publishes the <code>amphora</code> CLI (Rust) and scripts — installable on any Linux system
+            with Obsidian. Configurable via environment variables (<code>AMPHORA_VAULT</code>,{' '}
+            <code>AMPHORA_DIR_PERSONAL</code>, <code>AMPHORA_DIR_WORK</code>).
+          </span>
+          <span class="lang-pt">
+            O repositório <a href="https://github.com/nfvelten/amphora-setup" target="_blank" rel="noopener">amphora-setup</a>{' '}
+            publica a CLI <code>amphora</code> (Rust) e os scripts — instalável em qualquer sistema Linux
+            com Obsidian. Configurável via variáveis de ambiente (<code>AMPHORA_VAULT</code>,
+            <code>AMPHORA_DIR_PERSONAL</code>, <code>AMPHORA_DIR_WORK</code>).
+          </span>
         </p>
       </div>
 
@@ -99,7 +122,10 @@ chmod +x amphora && ./amphora install</code></pre>
         {cliCommands.map(c => (
           <div class="cmd-row">
             <code class="cmd-name">{c.cmd}</code>
-            <span class="cmd-desc">{c.desc}</span>
+            <span class="cmd-desc">
+              <span class="lang-en">{c.descEn}</span>
+              <span class="lang-pt">{c.descPt}</span>
+            </span>
           </div>
         ))}
       </div>
@@ -109,19 +135,28 @@ chmod +x amphora && ./amphora install</code></pre>
       {scripts.map(s => (
         <div class="theme-entry">
           <h3>{s.name}</h3>
-          <p>{s.desc}</p>
+          <p>
+            <span class="lang-en">{s.descEn}</span>
+            <span class="lang-pt">{s.descPt}</span>
+          </p>
           {s.install && (
             <pre class="theme-install"><code>{s.install}</code></pre>
           )}
         </div>
       ))}
 
-      <h2>Integrações</h2>
+      <h2>
+        <span class="lang-en">Integrations</span>
+        <span class="lang-pt">Integrações</span>
+      </h2>
 
       {integrations.map(i => (
         <div class="theme-entry">
           <h3>{i.name}</h3>
-          <p>{i.desc}</p>
+          <p>
+            <span class="lang-en" set:html={i.descEn} />
+            <span class="lang-pt" set:html={i.descPt} />
+          </p>
           <pre class="theme-install"><code>{i.install}</code></pre>
         </div>
       ))}

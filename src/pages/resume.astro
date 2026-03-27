@@ -1,0 +1,607 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout
+  title="Resume"
+  description="Professional background of Nicholas Velten — full-stack software engineer with experience in TypeScript, Node.js, Python, Vue.js and distributed systems."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1><span class="lang-en">Resume</span><span class="lang-pt">Currículo</span></h1>
+      <div class="meta">
+        <a href="mailto:nicholasfvelten@gmail.com">nicholasfvelten@gmail.com</a>
+        · <span class="lang-en">Paraná, Brazil</span><span class="lang-pt">Paraná, Brasil</span>
+        · <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a>
+        · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </header>
+
+    <div class="prose lang-en">
+
+      <p>
+        Full-stack developer with 4+ years building production systems in the
+        telecommunications industry. Currently at Alloha Fibra — Brazil's largest independent
+        ISP — working on performance-critical APIs, voice infrastructure monitoring and system
+        migrations. Solid foundation in TypeScript, Node.js and distributed systems, with
+        hands-on experience in DevOps, observability and cloud infrastructure.
+      </p>
+
+      <h2>Experience</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Alloha Fibra</strong>
+          <span class="cv-period">Jul. 2023 – present · 2 years 9 months</span>
+        </div>
+        <div class="cv-role">Mid-level Full-stack Developer · São Paulo (remote)</div>
+        <ul>
+          <li>Built a voice channel monitoring system in Python/Flask, tracking inbound/outbound calls and IVR interactions across all brand channels, providing real-time visibility into the customer telephony journey.</li>
+          <li>Refactored critical service endpoints, improving response time by up to <strong>60%</strong> through query optimization and Redis cache strategies.</li>
+          <li>Participated in all phases of the product cycle — from conception to cloud deployment — on systems serving millions of customers.</li>
+          <li><strong>Stack:</strong> Node.js, Vue.js, React, TypeScript, Python, Flask, PostgreSQL, Redis, Docker, Kubernetes, AWS, GCP, New Relic, Grafana, Sentry</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>LIGUE</strong> <span class="cv-note">(acquired by Alloha Fibra)</span>
+          <span class="cv-period">May 2022 – Jul. 2023 · 1 year 3 months</span>
+        </div>
+        <div class="cv-role">Mid-level Full-stack Developer · Maringá, PR</div>
+        <ul>
+          <li>Built and maintained TDA — a multi-layer service platform (React frontend, Node.js BFF, features API) covering address transfers, payment agreements and installment flows.</li>
+          <li>Implemented asynchronous queue management with Arena + Redis to process telecom service operations at scale.</li>
+          <li>Developed a financial negotiation flow for overdue invoices in the customer portal hybrid mobile app.</li>
+          <li>Built REST APIs integrated with the GeoGrid geographic system to determine fiber optic availability, installation costs and coverage by address.</li>
+          <li>Contributed to Ares, a DDD-architecture API for voice operations and address transfers.</li>
+          <li><strong>Stack:</strong> Node.js, NestJS, React, Vue.js, Nuxt.js, TypeScript, PostgreSQL, Redis, Docker, Kubernetes</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Kinebot</strong>
+          <span class="cv-period">Feb. 2022 – May 2022 · 4 months</span>
+        </div>
+        <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remote)</div>
+        <ul>
+          <li>Developed features with Node.js, React, Redux and AWS (Lambda, S3, RDS).</li>
+          <li>Adopted agile methodologies (Scrum/Kanban) with focus on quality and meeting deadlines.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>GetHash</strong>
+          <span class="cv-period">Oct. 2021 – Feb. 2022 · 5 months</span>
+        </div>
+        <div class="cv-role">Junior Full-stack Developer · São Paulo (remote)</div>
+        <ul>
+          <li>Built solutions for multiple clients with Node.js, React, TypeScript and Next.js.</li>
+          <li>Provisioned and maintained cloud infrastructure with DigitalOcean, Docker, Kubernetes and Rancher; implemented CI/CD pipelines.</li>
+          <li>Led client meetings in Portuguese and English for expectation alignment and progress presentations.</li>
+        </ul>
+      </div>
+
+      <h2>Personal projects</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
+        <p>
+          PKMS (Personal Knowledge Management System) built to reduce cognitive load and
+          externalize thinking into structured, retrievable notes. The system goes beyond
+          capture: native Neovim integration for vault editing and navigation, custom Claude
+          Code commands for knowledge management operations directly from the terminal, and
+          cohesive styling of the entire environment (Obsidian, Neovim, terminal) with the
+          same visual theme as Mate Creations. Automation pipeline: voice recording →
+          Whisper transcription → structured notes; YouTube/article ingestion with AI
+          summarization; git hooks generating contextual notes in the background.
+          Transcription also applied to meeting recordings for automatic summary and action
+          item generation.
+        </p>
+        <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
+        <p>
+          Cross-application theme ecosystem (Obsidian, Neovim, VS Code, Zen Browser) with
+          automated release pipeline via GitHub Actions. Two variants with automatic
+          light/dark switching based on time via systemd.
+        </p>
+        <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Web3 Beer Shop</strong>
+          <span class="cv-period">Jul. 2023 – present</span>
+        </div>
+        <p>
+          Platform where users discover beer GIFs, make payments via Solana Pay and interact
+          through Phantom Wallet. AI-generated GIFs stored on IPFS.
+        </p>
+        <div class="cv-role">React.js · Next.js · Solana · IPFS · AI</div>
+      </div>
+
+      <h2>Education</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong>Estácio</strong><span class="cv-period">ongoing</span></div>
+        <div class="cv-role">Bachelor's in Software Engineering</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
+        <div class="cv-role">Associate's in Systems Analysis and Development</div>
+      </div>
+
+      <h2>Skills</h2>
+
+      <div class="cv-skills">
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Languages</span>
+          TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Front-end</span>
+          React · Next.js · Vue.js · Nuxt.js · Tailwind CSS · React Native · CSS · HTML
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Back-end</span>
+          Node.js · NestJS · Express · Spring Boot · Flask · Keycloak · Kong API Gateway · Strapi
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Databases</span>
+          PostgreSQL · MySQL · Redis · Prisma · Knex
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Infrastructure</span>
+          Docker · Kubernetes · AWS · GCP · OCI · Terraform · Ansible · CI/CD · GitOps · Linux
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Observability</span>
+          New Relic · Grafana · Loki · Sentry · OpenTelemetry
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Architecture</span>
+          DDD · Hexagonal Architecture · Clean Architecture · SOLID · Event-Driven · Microservices · TDD · API REST
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Web3 & Blockchain</span>
+          Ethereum · Solana · Web3 · DeFi · Blockchain
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">AI</span>
+          LLMs · Prompt Engineering · Claude API
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Methodologies</span>
+          Scrum · Kanban · Agile
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Languages</span>
+          Portuguese (native) · English (fluent — C2 EF SET)
+        </div>
+      </div>
+
+      <h2>Certifications</h2>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">AI & Engineering</span>
+        <ul class="cv-cert-list">
+          <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, mar. 2026</em></li>
+          <li>The Missing Semester of your CS Education — <em>MIT, fev. 2026</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Entrepreneurship</span>
+        <ul class="cv-cert-list">
+          <li>MIT 15.390 New Enterprises — <em>MIT, nov. 2025</em></li>
+          <li>Startup Secrets — <em>Harvard Innovation Labs, jan. 2026</em></li>
+          <li>How to Start a Startup — <em>Y Combinator, dez. 2025</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Software Architecture</span>
+        <ul class="cv-cert-list">
+          <li>Arquitetura baseada em microsserviços — <em>Full Cycle, mar. 2025</em></li>
+          <li>EDA - Event Driven Architecture — <em>Full Cycle, ago. 2024</em></li>
+          <li>Arquitetura Hexagonal — <em>Full Cycle, ago. 2023</em></li>
+          <li>Domain Driven Design (DDD) — <em>Full Cycle, ago. 2022</em></li>
+          <li>SOLID — <em>Full Cycle, jul. 2022</em></li>
+          <li>Fundamentos da arquitetura de software — <em>Full Cycle, jul. 2022</em></li>
+          <li>Comunicação entre sistemas — <em>Full Cycle, ago. 2023</em></li>
+          <li>Event Storming — <em>Full Cycle, ago. 2022</em></li>
+          <li>Autenticação e Keycloak — <em>Full Cycle, mar. 2025</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">DevOps & Infrastructure</span>
+        <ul class="cv-cert-list">
+          <li>Terraform — <em>Full Cycle, out. 2023</em></li>
+          <li>Kubernetes — <em>Full Cycle, mar. 2022</em></li>
+          <li>Docker — <em>Full Cycle, fev. 2022</em></li>
+          <li>Ansible — <em>Full Cycle, out. 2022</em></li>
+          <li>GitOps — <em>Full Cycle, set. 2022</em></li>
+          <li>Integração Contínua — <em>Full Cycle, jul. 2022</em></li>
+          <li>API Gateway com Kong e Kubernetes — <em>Full Cycle, jan. 2023</em></li>
+          <li>Service Mesh com Istio — <em>Full Cycle, jul. 2023</em></li>
+          <li>GitOps Fundamentals — <em>Codefresh, abr. 2022</em></li>
+          <li>Padrões e técnicas avançadas com Git e Github — <em>Full Cycle, fev. 2022</em></li>
+          <li>Foundations of Git — <em>GitKraken, out. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Observability</span>
+        <ul class="cv-cert-list">
+          <li>OpenTelemetry — <em>Full Cycle, nov. 2022</em></li>
+          <li>Observabilidade — <em>Full Cycle, mar. 2023</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Apache Kafka & Messaging</span>
+        <ul class="cv-cert-list">
+          <li>Apache Kafka — <em>Full Cycle, out. 2023</em></li>
+          <li>RabbitMQ — <em>Full Cycle, jul. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Web & JavaScript Development</span>
+        <ul class="cv-cert-list">
+          <li>NLW Expert — Node.js — <em>Rocketseat, fev. 2024</em></li>
+          <li>TestJS Summit 2023 — <em>GitNation, dez. 2023</em></li>
+          <li>React Summit US 2023 — <em>GitNation, nov. 2023</em></li>
+          <li>Codecon 2023 / 2022 — <em>Codecon</em></li>
+          <li>Discover Especializar / Fundamentar / Conectar — <em>Rocketseat, 2022</em></li>
+          <li>TypeScript Full-stack — <em>OneBitCode, out. 2021</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Go</span>
+        <ul class="cv-cert-list">
+          <li>Microsserviço de Encoder de Vídeo com GoLang — <em>Full Cycle, nov. 2022</em></li>
+          <li>Avançando com Go / Iniciando com Go — <em>School of Net, 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Web3 & Blockchain</span>
+        <ul class="cv-cert-list">
+          <li>Circuito Bankless: O Futuro do DeFi — <em>Bankless Brasil DAO, set. 2023</em></li>
+          <li>How does Ethereum work? A deepdive — <em>Metaschool, ago. 2023</em></li>
+          <li>The Web3 Rabbit Hole Course — <em>Web3 Academy, jul. 2023</em></li>
+          <li>Intro to Push Protocol — <em>Push Chain, jul. 2023</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Security</span>
+        <ul class="cv-cert-list">
+          <li>Introdução ao Pentest na Prática — <em>Desec Security, mai. 2022</em></li>
+          <li>Fundamentos em Cibersegurança — <em>IBSEC, mai. 2022</em></li>
+          <li>Boas práticas de cibersegurança — <em>IBSEC, abr. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Soft Skills & Leadership</span>
+        <ul class="cv-cert-list">
+          <li>Produtividade Inteligente — <em>Escola Conquer, fev. 2023</em></li>
+          <li>Formando Campeões: Liderança F.C. — <em>Escola Conquer, jan. 2023</em></li>
+          <li>Inteligência Emocional 2.0 — <em>Escola Conquer, abr. 2022</em></li>
+          <li>Mindset Ágil — <em>wBrain, mar. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Languages</span>
+        <ul class="cv-cert-list">
+          <li>English Certificate C2 Proficient — <em>EF SET, abr. 2022</em></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="prose lang-pt">
+
+      <p>
+        Full-stack developer com 4+ anos construindo sistemas em produção na indústria de
+        telecomunicações. Atualmente na Alloha Fibra — maior ISP independente do Brasil —
+        trabalhando em APIs de performance crítica, monitoramento de infraestrutura de voz e
+        migrações de sistema. Base sólida em TypeScript, Node.js e sistemas distribuídos, com
+        experiência prática em DevOps, observabilidade e infraestrutura em nuvem.
+      </p>
+
+      <h2>Experiência</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Alloha Fibra</strong>
+          <span class="cv-period">jul. 2023 – presente · 2 anos e 9 meses</span>
+        </div>
+        <div class="cv-role">Mid-level Full-stack Developer · São Paulo (remoto)</div>
+        <ul>
+          <li>Construí sistema de monitoramento de canais de voz em Python/Flask, rastreando chamadas inbound/outbound e interações IVR em todos os canais da marca, provendo visibilidade em tempo real da jornada telefônica do cliente.</li>
+          <li>Refatorei endpoints críticos de serviço, melhorando o tempo de resposta em até <strong>60%</strong> via otimização de queries e estratégias de cache com Redis.</li>
+          <li>Participei de todas as fases do ciclo de produto — da concepção ao deploy em nuvem — em sistemas que atendem milhões de clientes.</li>
+          <li><strong>Stack:</strong> Node.js, Vue.js, React, TypeScript, Python, Flask, PostgreSQL, Redis, Docker, Kubernetes, AWS, GCP, New Relic, Grafana, Sentry</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>LIGUE</strong> <span class="cv-note">(adquirida pela Alloha Fibra)</span>
+          <span class="cv-period">mai. 2022 – jul. 2023 · 1 ano e 3 meses</span>
+        </div>
+        <div class="cv-role">Mid-level Full-stack Developer · Maringá, PR</div>
+        <ul>
+          <li>Construí e mantive o TDA — plataforma de atendimento multi-camada (frontend React, BFF Node.js, API de funcionalidades) cobrindo transferências de endereço, acordos de pagamento e fluxos de parcelamento.</li>
+          <li>Implementei gerenciamento de filas assíncronas com Arena + Redis para processar operações de serviço de telecom em escala.</li>
+          <li>Desenvolvi fluxo de negociação financeira para faturas em atraso no app híbrido mobile do portal do cliente.</li>
+          <li>Construí APIs REST integradas ao sistema geográfico GeoGrid para determinar disponibilidade de fibra óptica, custos de instalação e cobertura por endereço.</li>
+          <li>Contribuí para o Ares, API com arquitetura DDD para operações de voz e transferência de endereços.</li>
+          <li><strong>Stack:</strong> Node.js, NestJS, React, Vue.js, Nuxt.js, TypeScript, PostgreSQL, Redis, Docker, Kubernetes</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Kinebot</strong>
+          <span class="cv-period">fev. 2022 – mai. 2022 · 4 meses</span>
+        </div>
+        <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remoto)</div>
+        <ul>
+          <li>Desenvolvi features com Node.js, React, Redux e AWS (Lambda, S3, RDS).</li>
+          <li>Adotei metodologias ágeis (Scrum/Kanban) com foco em qualidade e cumprimento de prazos.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>GetHash</strong>
+          <span class="cv-period">out. 2021 – fev. 2022 · 5 meses</span>
+        </div>
+        <div class="cv-role">Junior Full-stack Developer · São Paulo (remoto)</div>
+        <ul>
+          <li>Construí soluções para múltiplos clientes com Node.js, React, TypeScript e Next.js.</li>
+          <li>Provisionei e mantive infraestrutura em nuvem com DigitalOcean, Docker, Kubernetes e Rancher; implementei pipelines de CI/CD.</li>
+          <li>Conduzi reuniões com clientes em português e inglês para alinhamento de expectativas e apresentação de progresso.</li>
+        </ul>
+      </div>
+
+      <h2>Projetos pessoais</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
+        <p>PKMS (Personal Knowledge Management System) construído para reduzir carga cognitiva e externalizar o pensamento em notas estruturadas e recuperáveis. O sistema vai além da captura: integração nativa com Neovim para edição e navegação do vault, comandos customizados no Claude Code para operações de knowledge management diretamente do terminal, e estilização coesa de todo o ambiente (Obsidian, Neovim, terminal) com o mesmo tema visual do Mate Creations. Pipeline de automação: gravação de voz → transcrição via Whisper → notas estruturadas; ingestão de YouTube/artigos com sumarização por IA; git hooks gerando notas contextuais em background. Transcrição também aplicada a gravações de reuniões para geração automática de resumos e action items.</p>
+        <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
+        <p>Ecossistema de temas cross-application (Obsidian, Neovim, VS Code, Zen Browser) com pipeline de release automatizado via GitHub Actions. Duas variantes com alternância automática claro/escuro baseada em horário via systemd.</p>
+        <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header">
+          <strong>Web3 Beer Shop</strong>
+          <span class="cv-period">jul. 2023 – presente</span>
+        </div>
+        <p>Plataforma onde usuários descobrem GIFs de cervejas, realizam pagamentos via Solana Pay e interagem pela Phantom Wallet. GIFs gerados por IA, armazenados em IPFS.</p>
+        <div class="cv-role">React.js · Next.js · Solana · IPFS · AI</div>
+      </div>
+
+      <h2>Formação</h2>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong>Estácio</strong><span class="cv-period">em andamento</span></div>
+        <div class="cv-role">Bacharelado em Engenharia de Software</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
+        <div class="cv-role">Tecnólogo em Análise e Desenvolvimento de Sistemas</div>
+      </div>
+
+      <h2>Competências</h2>
+
+      <div class="cv-skills">
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Linguagens</span>
+          TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Front-end</span>
+          React · Next.js · Vue.js · Nuxt.js · Tailwind CSS · React Native · CSS · HTML
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Back-end</span>
+          Node.js · NestJS · Express · Spring Boot · Flask · Keycloak · Kong API Gateway · Strapi
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Banco de dados</span>
+          PostgreSQL · MySQL · Redis · Prisma · Knex
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Infraestrutura</span>
+          Docker · Kubernetes · AWS · GCP · OCI · Terraform · Ansible · CI/CD · GitOps · Linux
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Observabilidade</span>
+          New Relic · Grafana · Loki · Sentry · OpenTelemetry
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Arquitetura</span>
+          DDD · Hexagonal Architecture · Clean Architecture · SOLID · Event-Driven · Microservices · TDD · API REST
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Web3 & Blockchain</span>
+          Ethereum · Solana · Web3 · DeFi · Blockchain
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">IA</span>
+          LLMs · Prompt Engineering · Claude API
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Metodologias</span>
+          Scrum · Kanban · Agile
+        </div>
+        <div class="cv-skill-group">
+          <span class="cv-skill-label">Idiomas</span>
+          Português (nativo) · Inglês (fluente — C2 EF SET)
+        </div>
+      </div>
+
+      <h2>Certificações</h2>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">IA & Engenharia</span>
+        <ul class="cv-cert-list">
+          <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, mar. 2026</em></li>
+          <li>The Missing Semester of your CS Education — <em>MIT, fev. 2026</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Empreendedorismo</span>
+        <ul class="cv-cert-list">
+          <li>MIT 15.390 New Enterprises — <em>MIT, nov. 2025</em></li>
+          <li>Startup Secrets — <em>Harvard Innovation Labs, jan. 2026</em></li>
+          <li>How to Start a Startup — <em>Y Combinator, dez. 2025</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Arquitetura de Software</span>
+        <ul class="cv-cert-list">
+          <li>Arquitetura baseada em microsserviços — <em>Full Cycle, mar. 2025</em></li>
+          <li>EDA - Event Driven Architecture — <em>Full Cycle, ago. 2024</em></li>
+          <li>Arquitetura Hexagonal — <em>Full Cycle, ago. 2023</em></li>
+          <li>Domain Driven Design (DDD) — <em>Full Cycle, ago. 2022</em></li>
+          <li>SOLID — <em>Full Cycle, jul. 2022</em></li>
+          <li>Fundamentos da arquitetura de software — <em>Full Cycle, jul. 2022</em></li>
+          <li>Comunicação entre sistemas — <em>Full Cycle, ago. 2023</em></li>
+          <li>Event Storming — <em>Full Cycle, ago. 2022</em></li>
+          <li>Autenticação e Keycloak — <em>Full Cycle, mar. 2025</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">DevOps & Infraestrutura</span>
+        <ul class="cv-cert-list">
+          <li>Terraform — <em>Full Cycle, out. 2023</em></li>
+          <li>Kubernetes — <em>Full Cycle, mar. 2022</em></li>
+          <li>Docker — <em>Full Cycle, fev. 2022</em></li>
+          <li>Ansible — <em>Full Cycle, out. 2022</em></li>
+          <li>GitOps — <em>Full Cycle, set. 2022</em></li>
+          <li>Integração Contínua — <em>Full Cycle, jul. 2022</em></li>
+          <li>API Gateway com Kong e Kubernetes — <em>Full Cycle, jan. 2023</em></li>
+          <li>Service Mesh com Istio — <em>Full Cycle, jul. 2023</em></li>
+          <li>GitOps Fundamentals — <em>Codefresh, abr. 2022</em></li>
+          <li>Padrões e técnicas avançadas com Git e Github — <em>Full Cycle, fev. 2022</em></li>
+          <li>Foundations of Git — <em>GitKraken, out. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Observabilidade</span>
+        <ul class="cv-cert-list">
+          <li>OpenTelemetry — <em>Full Cycle, nov. 2022</em></li>
+          <li>Observabilidade — <em>Full Cycle, mar. 2023</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Apache Kafka & Mensageria</span>
+        <ul class="cv-cert-list">
+          <li>Apache Kafka — <em>Full Cycle, out. 2023</em></li>
+          <li>RabbitMQ — <em>Full Cycle, jul. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Desenvolvimento Web & JavaScript</span>
+        <ul class="cv-cert-list">
+          <li>NLW Expert — Node.js — <em>Rocketseat, fev. 2024</em></li>
+          <li>TestJS Summit 2023 — <em>GitNation, dez. 2023</em></li>
+          <li>React Summit US 2023 — <em>GitNation, nov. 2023</em></li>
+          <li>Codecon 2023 / 2022 — <em>Codecon</em></li>
+          <li>Discover Especializar / Fundamentar / Conectar — <em>Rocketseat, 2022</em></li>
+          <li>TypeScript Full-stack — <em>OneBitCode, out. 2021</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Go</span>
+        <ul class="cv-cert-list">
+          <li>Microsserviço de Encoder de Vídeo com GoLang — <em>Full Cycle, nov. 2022</em></li>
+          <li>Avançando com Go / Iniciando com Go — <em>School of Net, 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Web3 & Blockchain</span>
+        <ul class="cv-cert-list">
+          <li>Circuito Bankless: O Futuro do DeFi — <em>Bankless Brasil DAO, set. 2023</em></li>
+          <li>How does Ethereum work? A deepdive — <em>Metaschool, ago. 2023</em></li>
+          <li>The Web3 Rabbit Hole Course — <em>Web3 Academy, jul. 2023</em></li>
+          <li>Intro to Push Protocol — <em>Push Chain, jul. 2023</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Segurança</span>
+        <ul class="cv-cert-list">
+          <li>Introdução ao Pentest na Prática — <em>Desec Security, mai. 2022</em></li>
+          <li>Fundamentos em Cibersegurança — <em>IBSEC, mai. 2022</em></li>
+          <li>Boas práticas de cibersegurança — <em>IBSEC, abr. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Soft Skills & Liderança</span>
+        <ul class="cv-cert-list">
+          <li>Produtividade Inteligente — <em>Escola Conquer, fev. 2023</em></li>
+          <li>Formando Campeões: Liderança F.C. — <em>Escola Conquer, jan. 2023</em></li>
+          <li>Inteligência Emocional 2.0 — <em>Escola Conquer, abr. 2022</em></li>
+          <li>Mindset Ágil — <em>wBrain, mar. 2022</em></li>
+        </ul>
+      </div>
+
+      <div class="cv-cert-group">
+        <span class="cv-cert-label">Idiomas</span>
+        <ul class="cv-cert-list">
+          <li>English Certificate C2 Proficient — <em>EF SET, abr. 2022</em></li>
+        </ul>
+      </div>
+
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+.cv-entry { margin-bottom: 2.5rem; }
+.cv-header { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.15rem; }
+.cv-period { margin-left: auto; font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--tx-3); }
+.cv-note { font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--tx-3); font-style: italic; }
+.cv-role { font-family: system-ui, sans-serif; font-size: 0.85rem; color: var(--tx-2); margin-bottom: 0.6rem; }
+.cv-skills { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+.cv-skill-group { font-family: system-ui, sans-serif; font-size: 0.875rem; color: var(--tx-2); }
+.cv-skill-label { font-weight: 600; color: var(--tx); margin-right: 0.5rem; }
+.cv-cert-group { margin-bottom: 1.5rem; }
+.cv-cert-label { font-family: system-ui, sans-serif; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--tx-3); display: block; margin-bottom: 0.4rem; }
+.cv-cert-list { margin: 0; padding-left: 1.2rem; }
+.cv-cert-list li { font-family: system-ui, sans-serif; font-size: 0.875rem; color: var(--tx-2); margin-bottom: 0.25rem; }
+</style>

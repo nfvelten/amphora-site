@@ -73,14 +73,17 @@ const schemaWebPage = {
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- Tema por horário: light 6h–18h, dark fora desse intervalo. Inline para evitar flash. -->
+    <!-- Tema por horário + idioma: sem flash -->
     <script is:inline>
       (function () {
         var h = new Date().getHours();
         document.documentElement.setAttribute('data-theme', (h >= 6 && h < 18) ? 'light' : 'dark');
+        var lang = localStorage.getItem('lang') || 'en';
+        document.documentElement.setAttribute('data-lang', lang);
+        document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />

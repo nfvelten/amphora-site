@@ -4,6 +4,7 @@ const RSS_URL = `${Astro.site ?? 'https://amphora-site.vercel.app'}rss.xml`;
 const currentPath = Astro.url.pathname;
 const isActive = (path: string) =>
   currentPath === path || currentPath.startsWith(path + '/');
+const blogPaths = ['/blog', '/writing', '/posts', '/readings'];
 ---
 
 <button class="mobile-menu-btn" id="mobile-menu-btn" title="Menu" aria-label="Abrir menu">
@@ -21,11 +22,15 @@ const isActive = (path: string) =>
     <div class="sidebar-text">
       <a href="/" class="sidebar-name">Nicholas Velten</a>
       <nav>
-        <a href="/sobre" class:list={[{ active: isActive('/sobre') }]}>Sobre</a>
-        <a href="/blog" class:list={[{ active: isActive('/blog') || isActive('/escrita') || isActive('/posts') || isActive('/leituras') }]}>Blog</a>
+        <a href="/about" class:list={[{ active: isActive('/about') }]}>
+          <span class="lang-en">About</span><span class="lang-pt">Sobre</span>
+        </a>
+        <a href="/blog" class:list={[{ active: blogPaths.some(p => isActive(p)) }]}>Blog</a>
         <a href="/matecreations" class:list={[{ active: isActive('/matecreations') }]}>Mate Creations</a>
         <a href="/amphora" class:list={[{ active: isActive('/amphora') }]}>Amphora</a>
-        <a href="/curriculo" class:list={[{ active: isActive('/curriculo') }]}>Currículo</a>
+        <a href="/resume" class:list={[{ active: isActive('/resume') }]}>
+          <span class="lang-en">Resume</span><span class="lang-pt">Currículo</span>
+        </a>
       </nav>
     </div>
 
@@ -39,8 +44,11 @@ const isActive = (path: string) =>
           </svg>
           <span id="rss-label">RSS</span>
         </button>
-        <div class="rss-tooltip">Copiar link do feed</div>
+        <div class="rss-tooltip"><span class="lang-en">Copy feed link</span><span class="lang-pt">Copiar link do feed</span></div>
       </div>
+      <button class="lang-toggle-btn" id="lang-toggle" title="Toggle language">
+        <span class="lang-en">PT</span><span class="lang-pt">EN</span>
+      </button>
     </div>
   </div>
 
@@ -57,10 +65,11 @@ const isActive = (path: string) =>
 
   btn?.addEventListener('click', async () => {
     const url = btn.dataset.url ?? '';
+    const lang = document.documentElement.getAttribute('data-lang') || 'en';
     try {
       await navigator.clipboard.writeText(url);
       btn.classList.add('copied');
-      if (label) label.textContent = 'Copiado!';
+      if (label) label.textContent = lang === 'pt' ? 'Copiado!' : 'Copied!';
       setTimeout(() => {
         btn.classList.remove('copied');
         if (label) label.textContent = 'RSS';
@@ -68,6 +77,16 @@ const isActive = (path: string) =>
     } catch {
       window.open(url, '_blank');
     }
+  });
+
+  // ── Language toggle ───────────────────────────────────────────────
+  const langToggle = document.getElementById('lang-toggle') as HTMLButtonElement;
+  langToggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-lang') || 'en';
+    const next = current === 'en' ? 'pt' : 'en';
+    document.documentElement.setAttribute('data-lang', next);
+    document.documentElement.lang = next === 'pt' ? 'pt-BR' : 'en';
+    localStorage.setItem('lang', next);
   });
 
   const sidebar = document.getElementById('sidebar') as HTMLElement;
@@ -119,3 +138,28 @@ const isActive = (path: string) =>
     link.addEventListener('click', () => { if (isMobile()) closeMobileSidebar(); });
   });
 </script>
+
+<style>
+  .lang-toggle-btn {
+    background: none;
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    color: var(--tx-3);
+    cursor: pointer;
+    font-family: system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.45rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .lang-toggle-btn:hover {
+    color: var(--tx);
+    border-color: var(--ui-2);
+  }
+  .sidebar-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+</style>

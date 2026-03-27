@@ -5,15 +5,19 @@ import Giscus from '../components/Giscus.astro';
 
 interface Props {
   title: string;
+  titlePt?: string;
   date: Date;
   tags?: string[];
   description?: string;
   readingTime?: number;
 }
 
-const { title, date, tags = [], description, readingTime } = Astro.props;
+const { title, titlePt, date, tags = [], description, readingTime } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('pt-BR', {
+const formattedDateEn = date.toLocaleDateString('en-US', {
+  day: 'numeric', month: 'long', year: 'numeric',
+});
+const formattedDatePt = date.toLocaleDateString('pt-BR', {
   day: 'numeric', month: 'long', year: 'numeric',
 });
 
@@ -26,11 +30,11 @@ const articleSchema = {
   description: description ?? `${title} — Nicholas Velten`,
   datePublished: date.toISOString(),
   url: postUrl,
-  inLanguage: 'pt-BR',
+  inLanguage: 'en',
   author: {
     '@type': 'Person',
     name: 'Nicholas Velten',
-    url: 'https://nicholas-velten.xyz/sobre',
+    url: 'https://nicholas-velten.xyz/about',
   },
   publisher: {
     '@type': 'Person',
@@ -44,10 +48,21 @@ const articleSchema = {
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header">
-      <h1>{title}</h1>
+      <h1>
+        <span class="lang-en">{title}</span>
+        {titlePt && <span class="lang-pt">{titlePt}</span>}
+      </h1>
       <div class="meta">
-        <time datetime={date.toISOString()}>{formattedDate}</time>
-        {readingTime && <span>{readingTime} min de leitura</span>}
+        <time datetime={date.toISOString()}>
+          <span class="lang-en">{formattedDateEn}</span>
+          <span class="lang-pt">{formattedDatePt}</span>
+        </time>
+        {readingTime && (
+          <span>
+            <span class="lang-en">{readingTime} min read</span>
+            <span class="lang-pt">{readingTime} min de leitura</span>
+          </span>
+        )}
         {tags.map(tag => (
           <span class="tag">#{tag}</span>
         ))}

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const updated = '09 de março de 2026';
+const updatedEn = 'March 9, 2026';
+---
+
+<BaseLayout
+  title="Now"
+  description="What Nicholas Velten is doing now — projects, readings and current thoughts."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1><span class="lang-en">Now</span><span class="lang-pt">Agora</span></h1>
+      <div class="meta">
+        <span class="lang-en">Updated {updatedEn}</span>
+        <span class="lang-pt">Atualizado em {updated}</span>
+      </div>
+    </header>
+
+    <div class="prose lang-en">
+      <h2>Vacation</h2>
+      <p>
+        I'm on vacation. Taking the time to organize my personal system, read without guilt,
+        and rest before getting back to work at the end of the month. On Friday I'm heading
+        to Florianópolis — passing through Prudentópolis, staying at Costão do Santinho.
+      </p>
+
+      <h2>Working on</h2>
+      <p>
+        Setting up the development environment from scratch — Neovim integrated with the Obsidian
+        vault, Yerba Mate and Tererê themes running consistently across terminal, editor, Waybar
+        and this site. Also building this site as a space for writing and tracking readings.
+      </p>
+      <p>
+        At work, I have a pending endpoint migration to pick up on 03/23 —
+        Cyclopay-Lyra moving to financial-service.
+      </p>
+
+      <h2>Reading</h2>
+      <p>
+        Reviewing the reading list and picking the next technical book. I'm interested in going
+        deeper into Java and microservices architecture. Also reading comics — went to Shogun
+        Comic Shop last week.
+      </p>
+
+      <h2>Thinking about</h2>
+      <p>
+        Personal knowledge systems: how to keep a vault that truly grows with you, without turning
+        into a graveyard of notes. I also have an open brainstorm about a public book review site
+        integrated with the vault.
+      </p>
+    </div>
+
+    <div class="prose lang-pt">
+      <h2>Férias</h2>
+      <p>
+        Estou de férias. Aproveitando para organizar o sistema pessoal, ler sem culpa e descansar
+        antes de retomar o trabalho no fim do mês. Na sexta vou para Florianópolis — passando por
+        Prudentópolis, hospedagem no Costão do Santinho.
+      </p>
+
+      <h2>Trabalhando em</h2>
+      <p>
+        Configurando o ambiente de desenvolvimento do zero — Neovim integrado ao vault Obsidian,
+        temas Yerba Mate e Tererê rodando de forma unificada no terminal, editor, Waybar e neste site.
+        Também montando este site como espaço de escrita e registro de leituras.
+      </p>
+      <p>
+        No trabalho, tenho uma migração de endpoints pendente para retomar em 23/03 —
+        Cyclopay-Lyra movendo para o financial-service.
+      </p>
+
+      <h2>Lendo</h2>
+      <p>
+        Revisando a lista de leitura e escolhendo o próximo livro técnico. Tenho interesse em
+        aprofundar Java e arquitetura de microsserviços. Também lendo HQs — fui à Shogun Comic Shop
+        semana passada.
+      </p>
+
+      <h2>Pensando sobre</h2>
+      <p>
+        Sistemas pessoais de conhecimento: como manter um vault que realmente cresce junto com você,
+        sem virar um cemitério de notas. Também tenho um brainstorm em aberto sobre um site público
+        de reviews de livros integrado ao vault.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
