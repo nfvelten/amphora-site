@@ -4,6 +4,7 @@ import '@fontsource/eb-garamond/latin-400.css';
 import '@fontsource/eb-garamond/latin-500.css';
 import '@fontsource/eb-garamond/latin-400-italic.css';
 import eb400Url from '@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff2?url';
+import eb500Url from '@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -14,7 +15,7 @@ interface Props {
 const {
   title = 'Nicholas Velten',
   description = 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
-  image = '/og-default.png',
+  image = '/icon.webp',
   jsonLd = null,
 } = Astro.props;
 
@@ -31,29 +32,13 @@ const schemaWebSite = {
   inLanguage: 'pt-BR',
 };
 
-const schemaOrganization = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': 'https://nicholas-velten.xyz/#organization',
-  name: 'Nicholas Velten',
-  url: 'https://nicholas-velten.xyz',
-  logo: {
-    '@type': 'ImageObject',
-    url: 'https://nicholas-velten.xyz/favicon.svg',
-    contentUrl: 'https://nicholas-velten.xyz/favicon.svg',
-  },
-  sameAs: [
-    'https://www.linkedin.com/in/nicholasveltenfullstack',
-  ],
-};
-
 const schemaPerson = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   '@id': 'https://nicholas-velten.xyz/#person',
   name: 'Nicholas Velten',
-  url: 'https://nicholas-velten.xyz/sobre',
-  image: 'https://nicholas-velten.xyz/favicon.svg',
+  url: 'https://nicholas-velten.xyz/about',
+  image: 'https://nicholas-velten.xyz/icon.webp',
   jobTitle: 'Engenheiro de Software Full-Stack',
   worksFor: {
     '@type': 'Organization',
@@ -62,6 +47,7 @@ const schemaPerson = {
   email: 'nikvelten@gmail.com',
   sameAs: [
     'https://www.linkedin.com/in/nicholasveltenfullstack',
+    'https://github.com/nfvelten',
   ],
 };
 
@@ -95,7 +81,8 @@ const schemaWebPage = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <link rel="preload" as="font" type="font/woff2" href={eb400Url} crossorigin />
-    <link rel="dns-prefetch" href="https://giscus.app" />
+    <link rel="preload" as="font" type="font/woff2" href={eb500Url} crossorigin />
+    <link rel="preconnect" href="https://giscus.app" crossorigin />
     <link rel="canonical" href={canonical} />
 
     <!-- SEO -->
@@ -122,7 +109,6 @@ const schemaWebPage = {
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(schemaWebSite)} />
-    <script type="application/ld+json" set:html={JSON.stringify(schemaOrganization)} />
     <script type="application/ld+json" set:html={JSON.stringify(schemaPerson)} />
     <script type="application/ld+json" set:html={JSON.stringify(schemaWebPage)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

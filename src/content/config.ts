@@ -4,8 +4,10 @@ const posts = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    title_pt: z.string().optional(),
     date: z.coerce.date(),
     description: z.string().optional(),
+    description_pt: z.string().optional(),
     tags: z.array(z.string()).optional(),
     draft: z.boolean().optional().default(false),
   }),
@@ -24,15 +26,4 @@ const leituras = defineCollection({
   }),
 });
 
-const postsPt = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    description: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    draft: z.boolean().optional().default(false),
-  }),
-});
-
-export const collections = { posts, 'posts-pt': postsPt, leituras };
+export const collections = { posts, leituras };

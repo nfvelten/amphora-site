@@ -328,6 +328,17 @@ pre {
 
 pre code { background: none; border: none; padding: 0; font-size: 0.875rem; }
 
+/* ── Shiki dual-theme (data-theme) ──────────────────────────────── */
+.shiki, .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+[data-theme='dark'] .shiki,
+[data-theme='dark'] .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
 hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
 
 /* ── Page heading (index, leituras) ─────────────────────────────── */
@@ -335,6 +346,20 @@ hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
 .page-desc { color: var(--tx-2); font-size: 0.95rem; margin-bottom: 2rem; }
 
 .section-heading { color: var(--green); margin-bottom: 1.25rem; }
+
+.blog-section { margin-bottom: 3rem; }
+
+.section-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.section-row .section-heading { margin-bottom: 0; }
+
+.see-all { font-size: 0.8rem; color: var(--tx-3); }
+
+.empty-state { color: var(--tx-3); font-size: 0.9rem; }
 
 .page-intro {
   color: var(--tx-2);
@@ -396,6 +421,13 @@ hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
   font-size: 0.9rem;
   color: var(--tx-2);
   line-height: 1.6;
+}
+
+.reading-autor {
+  margin-top: 0.2rem;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--tx-3);
 }
 
 /* ── Cabeçalho do post ───────────────────────────────────────────── */

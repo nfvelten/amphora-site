@@ -25,13 +25,13 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
     <span class="lang-pt">Escrita sobre tecnologia, ferramentas e aprendizados do dia a dia. Sem pauta fixa — só o que vale registrar.</span>
   </p>
 
-  <section style="margin-bottom: 3rem">
-    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
-      <h2 class="section-heading" style="margin-bottom: 0">
+  <section class="blog-section">
+    <div class="section-row">
+      <h2 class="section-heading">
         <span class="lang-en">Writing</span>
         <span class="lang-pt">Escrita</span>
       </h2>
-      <a href="/writing" style="font-size: 0.8rem; color: var(--tx-3)">
+      <a href="/writing" class="see-all">
         <span class="lang-en">see all →</span>
         <span class="lang-pt">ver tudo →</span>
       </a>
@@ -52,7 +52,7 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
         </li>
       ))}
       {posts.length === 0 && (
-        <li style="color: var(--tx-3); font-size: 0.9rem;">
+        <li class="empty-state">
           <span class="lang-en">No posts published yet.</span>
           <span class="lang-pt">Nenhum post publicado ainda.</span>
         </li>
@@ -60,13 +60,13 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
     </ul>
   </section>
 
-  <section>
-    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1rem">
-      <h2 class="section-heading" style="margin-bottom: 0">
+  <section class="blog-section">
+    <div class="section-row">
+      <h2 class="section-heading">
         <span class="lang-en">Readings</span>
         <span class="lang-pt">Leituras</span>
       </h2>
-      <a href="/readings" style="font-size: 0.8rem; color: var(--tx-3)">
+      <a href="/readings" class="see-all">
         <span class="lang-en">see all →</span>
         <span class="lang-pt">ver tudo →</span>
       </a>
@@ -82,7 +82,7 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
             {l.data.genero && <span>{l.data.genero}</span>}
           </div>
           <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
-          <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+          <p class="post-excerpt reading-autor">{l.data.autor}</p>
         </li>
       ))}
       {lidos.slice(0, 3).map(l => (
@@ -95,11 +95,11 @@ const lidos = leituras.filter(l => l.data.status === 'lido');
             {l.data.genero && <span>{l.data.genero}</span>}
           </div>
           <a href={`/readings/${l.id.replace(/\.md$/, '')}`} class="post-title">{l.data.title}</a>
-          <p class="post-excerpt" style="margin-top: 0.2rem; font-style: italic; font-size: 0.85rem; color: var(--tx-3)">{l.data.autor}</p>
+          <p class="post-excerpt reading-autor">{l.data.autor}</p>
         </li>
       ))}
       {leituras.length === 0 && (
-        <li style="color: var(--tx-3); font-size: 0.9rem;">
+        <li class="empty-state">
           <span class="lang-en">No readings logged yet.</span>
           <span class="lang-pt">Nenhuma leitura registrada ainda.</span>
         </li>

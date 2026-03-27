@@ -8,20 +8,20 @@ export default defineConfig({
   redirects: {
     '/sobre': '/about',
     '/curriculo': '/resume',
-    '/agora': '/now',
     '/escrita': '/writing',
     '/leituras': '/readings',
     '/leituras/[id]': '/readings/[id]',
   },
   integrations: [
     mdx(),
-    sitemap({
-      filter: (page) => !page.includes('/now'),
-    }),
+    sitemap(),
   ],
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
     },
   },
 });

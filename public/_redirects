@@ -1,6 +1,5 @@
 /sobre        /about      301
 /curriculo    /resume     301
-/agora        /now        301
 /escrita      /writing    301
 /leituras     /readings   301
 /leituras/:id /readings/:id 301
