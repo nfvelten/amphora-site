@@ -1,4 +1,9 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
+import '@fontsource/eb-garamond/latin-400.css';
+import '@fontsource/eb-garamond/latin-500.css';
+import '@fontsource/eb-garamond/latin-400-italic.css';
+
 interface Props {
   title?: string;
   description?: string;
@@ -105,11 +110,9 @@ const schemaWebPage = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(image, canonical)} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/icon.png" type="image/png" sizes="500x500" />
+    <link rel="icon" href="/icon.webp" type="image/webp" sizes="500x500" />
+    <ViewTransitions />
     <link rel="alternate" type="application/rss+xml" title="Nicholas Velten" href="/rss.xml" />
     <title>{fullTitle}</title>
 
