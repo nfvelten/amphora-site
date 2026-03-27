@@ -46,9 +46,12 @@ const blogPaths = ['/blog', '/writing', '/posts', '/readings'];
         </button>
         <div class="rss-tooltip"><span class="lang-en">Copy feed link</span><span class="lang-pt">Copiar link do feed</span></div>
       </div>
-      <button class="lang-toggle-btn" id="lang-toggle" title="Toggle language">
-        <span class="lang-en">PT</span><span class="lang-pt">EN</span>
-      </button>
+      <div class="lang-wrap">
+        <button class="lang-toggle-btn" id="lang-toggle">
+          <span class="lang-en">PT</span><span class="lang-pt">EN</span>
+        </button>
+        <div class="lang-tooltip"><span class="lang-en">Switch to Portuguese</span><span class="lang-pt">Switch to English</span></div>
+      </div>
     </div>
   </div>
 
@@ -140,6 +143,30 @@ const blogPaths = ['/blog', '/writing', '/posts', '/readings'];
 </script>
 
 <style>
+  .lang-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  .lang-tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: var(--bg-2);
+    border: 1px solid var(--ui-2);
+    border-radius: 4px;
+    padding: 0.35rem 0.6rem;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: var(--tx-2);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--bg) 0%, transparent 20%);
+    z-index: 10;
+  }
+  .lang-wrap:hover .lang-tooltip { opacity: 1; transform: translateY(0); }
   .lang-toggle-btn {
     background: none;
     border: 1px solid var(--ui);
