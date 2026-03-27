@@ -1,10 +1,8 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import '@fontsource/eb-garamond/latin-400.css';
-import '@fontsource/eb-garamond/latin-500.css';
-import '@fontsource/eb-garamond/latin-400-italic.css';
-import eb400Url from '@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff2?url';
-import eb500Url from '@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff2?url';
+import '@fontsource-variable/eb-garamond/wght.css';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
+import ebVarUrl from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -22,45 +20,42 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://nicholas-velten.xyz');
 const fullTitle = title.includes('Nicholas Velten') ? title : `${title} — Nicholas Velten`;
 
-const schemaWebSite = {
+const schemaGraph = {
   '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  '@id': 'https://nicholas-velten.xyz/#website',
-  url: 'https://nicholas-velten.xyz',
-  name: 'Nicholas Velten',
-  description: 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
-  inLanguage: 'pt-BR',
-};
-
-const schemaPerson = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': 'https://nicholas-velten.xyz/#person',
-  name: 'Nicholas Velten',
-  url: 'https://nicholas-velten.xyz/about',
-  image: 'https://nicholas-velten.xyz/icon.webp',
-  jobTitle: 'Engenheiro de Software Full-Stack',
-  worksFor: {
-    '@type': 'Organization',
-    name: 'Alloha Fibra',
-  },
-  email: 'nikvelten@gmail.com',
-  sameAs: [
-    'https://www.linkedin.com/in/nicholasveltenfullstack',
-    'https://github.com/nfvelten',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://nicholas-velten.xyz/#website',
+      url: 'https://nicholas-velten.xyz',
+      name: 'Nicholas Velten',
+      description: 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
+      inLanguage: 'pt-BR',
+    },
+    {
+      '@type': 'Person',
+      '@id': 'https://nicholas-velten.xyz/#person',
+      name: 'Nicholas Velten',
+      url: 'https://nicholas-velten.xyz/about',
+      image: 'https://nicholas-velten.xyz/icon.webp',
+      jobTitle: 'Engenheiro de Software Full-Stack',
+      worksFor: { '@type': 'Organization', name: 'Alloha Fibra' },
+      email: 'nikvelten@gmail.com',
+      sameAs: [
+        'https://www.linkedin.com/in/nicholasveltenfullstack',
+        'https://github.com/nfvelten',
+      ],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${canonical.toString()}#webpage`,
+      url: canonical.toString(),
+      name: fullTitle,
+      description: description,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': 'https://nicholas-velten.xyz/#website' },
+      about: { '@id': 'https://nicholas-velten.xyz/#person' },
+    },
   ],
-};
-
-const schemaWebPage = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  '@id': `${canonical.toString()}#webpage`,
-  url: canonical.toString(),
-  name: fullTitle,
-  description: description,
-  inLanguage: 'pt-BR',
-  isPartOf: { '@id': 'https://nicholas-velten.xyz/#website' },
-  about: { '@id': 'https://nicholas-velten.xyz/#person' },
 };
 ---
 
@@ -80,8 +75,7 @@ const schemaWebPage = {
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <link rel="preload" as="font" type="font/woff2" href={eb400Url} crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href={eb500Url} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={ebVarUrl} crossorigin />
     <link rel="preconnect" href="https://giscus.app" crossorigin />
     <link rel="canonical" href={canonical} />
 
@@ -108,9 +102,7 @@ const schemaWebPage = {
     <title>{fullTitle}</title>
 
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify(schemaWebSite)} />
-    <script type="application/ld+json" set:html={JSON.stringify(schemaPerson)} />
-    <script type="application/ld+json" set:html={JSON.stringify(schemaWebPage)} />
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <style is:global>

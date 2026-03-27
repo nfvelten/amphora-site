@@ -57,7 +57,7 @@ html {
 body {
   background: var(--bg);
   color: var(--tx);
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: 'EB Garamond Variable', Georgia, serif;
   line-height: 1.75;
   min-height: 100vh;
   transition: background 0.2s, color 0.2s;
