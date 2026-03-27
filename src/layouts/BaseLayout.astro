@@ -126,6 +126,18 @@ const schemaWebPage = {
     <style is:global>
       @import '../styles/global.css';
     </style>
+
+    <script>
+      document.addEventListener('astro:before-swap', (ev) => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        const lang = document.documentElement.getAttribute('data-lang');
+        if (theme) (ev as any).newDocument.documentElement.setAttribute('data-theme', theme);
+        if (lang) {
+          (ev as any).newDocument.documentElement.setAttribute('data-lang', lang);
+          (ev as any).newDocument.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+        }
+      });
+    </script>
   </head>
   <body>
     <div class="wrapper">
