@@ -96,7 +96,7 @@ body {
   gap: 2rem;
   padding: 0 1.5rem;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
   transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
