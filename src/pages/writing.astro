@@ -29,7 +29,7 @@ function readingTime(body: string | undefined) {
           </time>
           <span>{readingTime(post.body)} min</span>
         </div>
-        <a href={`/posts/${post.id.replace(/\.md$/, '')}`} class="post-title">{post.data.title}</a>
+        <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="post-title">{post.data.title}</a>
         {post.data.description && (
           <p class="post-excerpt">{post.data.description}</p>
         )}

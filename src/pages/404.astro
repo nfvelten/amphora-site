@@ -3,14 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 ---
 
-<BaseLayout title="Página não encontrada">
+<BaseLayout title="Page not found">
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header">
       <h1>404</h1>
-      <div class="meta">Página não encontrada</div>
+      <div class="meta">
+        <span class="lang-en">Page not found</span>
+        <span class="lang-pt">Página não encontrada</span>
+      </div>
     </header>
-    <p>O que você procura não está aqui — ou foi movido.</p>
-    <p><a href="/">Voltar para o início →</a></p>
+    <p>
+      <span class="lang-en">What you're looking for isn't here — or has been moved.</span>
+      <span class="lang-pt">O que você procura não está aqui — ou foi movido.</span>
+    </p>
+    <p>
+      <a href="/">
+        <span class="lang-en">Back to home →</span>
+        <span class="lang-pt">Voltar para o início →</span>
+      </a>
+    </p>
   </article>
 </BaseLayout>
