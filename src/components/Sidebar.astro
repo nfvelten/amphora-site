@@ -63,83 +63,87 @@ const blogPaths = ['/blog', '/writing', '/posts', '/readings'];
 </aside>
 
 <script>
-  const btn = document.getElementById('rss-copy') as HTMLButtonElement;
-  const label = document.getElementById('rss-label');
+  function initSidebar() {
+    const btn = document.getElementById('rss-copy') as HTMLButtonElement;
+    const label = document.getElementById('rss-label');
 
-  btn?.addEventListener('click', async () => {
-    const url = btn.dataset.url ?? '';
-    const lang = document.documentElement.getAttribute('data-lang') || 'en';
-    try {
-      await navigator.clipboard.writeText(url);
-      btn.classList.add('copied');
-      if (label) label.textContent = lang === 'pt' ? 'Copiado!' : 'Copied!';
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        if (label) label.textContent = 'RSS';
-      }, 2000);
-    } catch {
-      window.open(url, '_blank');
+    btn?.addEventListener('click', async () => {
+      const url = btn.dataset.url ?? '';
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      try {
+        await navigator.clipboard.writeText(url);
+        btn.classList.add('copied');
+        if (label) label.textContent = lang === 'pt' ? 'Copiado!' : 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          if (label) label.textContent = 'RSS';
+        }, 2000);
+      } catch {
+        window.open(url, '_blank');
+      }
+    });
+
+    // ── Language toggle ───────────────────────────────────────────────
+    const langToggle = document.getElementById('lang-toggle') as HTMLButtonElement;
+    langToggle?.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-lang') || 'en';
+      const next = current === 'en' ? 'pt' : 'en';
+      document.documentElement.setAttribute('data-lang', next);
+      document.documentElement.lang = next === 'pt' ? 'pt-BR' : 'en';
+      localStorage.setItem('lang', next);
+    });
+
+    const sidebar = document.getElementById('sidebar') as HTMLElement;
+    const toggle = document.getElementById('sidebar-toggle') as HTMLButtonElement;
+    const toggleIcon = toggle?.querySelector('svg') as SVGElement;
+    const backdrop = document.getElementById('sidebar-backdrop') as HTMLElement;
+    const mobileBtn = document.getElementById('mobile-menu-btn') as HTMLButtonElement;
+
+    const isMobile = () => window.innerWidth <= 768;
+
+    // ── Desktop: collapse/expand ──────────────────────────────────────
+    if (localStorage.getItem('sidebar-collapsed') === 'true') {
+      sidebar.classList.add('collapsed');
+      document.querySelector('.wrapper')?.classList.add('sidebar-collapsed');
+      if (toggleIcon) toggleIcon.style.transform = 'scaleX(-1)';
+      if (toggle) toggle.title = 'Expandir sidebar';
     }
-  });
 
-  // ── Language toggle ───────────────────────────────────────────────
-  const langToggle = document.getElementById('lang-toggle') as HTMLButtonElement;
-  langToggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-lang') || 'en';
-    const next = current === 'en' ? 'pt' : 'en';
-    document.documentElement.setAttribute('data-lang', next);
-    document.documentElement.lang = next === 'pt' ? 'pt-BR' : 'en';
-    localStorage.setItem('lang', next);
-  });
+    toggle?.addEventListener('click', () => {
+      if (isMobile()) return;
+      const collapsed = sidebar.classList.toggle('collapsed');
+      toggleIcon.style.transform = collapsed ? 'scaleX(-1)' : '';
+      toggle.title = collapsed ? 'Expandir sidebar' : 'Recolher sidebar';
+      document.querySelector('.wrapper')?.classList.toggle('sidebar-collapsed', collapsed);
+      localStorage.setItem('sidebar-collapsed', String(collapsed));
+    });
 
-  const sidebar = document.getElementById('sidebar') as HTMLElement;
-  const toggle = document.getElementById('sidebar-toggle') as HTMLButtonElement;
-  const toggleIcon = toggle?.querySelector('svg') as SVGElement;
-  const backdrop = document.getElementById('sidebar-backdrop') as HTMLElement;
-  const mobileBtn = document.getElementById('mobile-menu-btn') as HTMLButtonElement;
+    // ── Mobile: drawer ────────────────────────────────────────────────
+    function openMobileSidebar() {
+      sidebar.classList.add('mobile-open');
+      backdrop.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }
 
-  const isMobile = () => window.innerWidth <= 768;
+    function closeMobileSidebar() {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
 
-  // ── Desktop: collapse/expand ──────────────────────────────────────
-  if (localStorage.getItem('sidebar-collapsed') === 'true') {
-    sidebar.classList.add('collapsed');
-    document.querySelector('.wrapper')?.classList.add('sidebar-collapsed');
-    if (toggleIcon) toggleIcon.style.transform = 'scaleX(-1)';
-    if (toggle) toggle.title = 'Expandir sidebar';
+    mobileBtn?.addEventListener('click', () => {
+      sidebar.classList.contains('mobile-open') ? closeMobileSidebar() : openMobileSidebar();
+    });
+
+    backdrop?.addEventListener('click', closeMobileSidebar);
+
+    // Fecha o drawer ao navegar para outra página no mobile
+    document.querySelectorAll('.sidebar nav a').forEach(link => {
+      link.addEventListener('click', () => { if (isMobile()) closeMobileSidebar(); });
+    });
   }
 
-  toggle?.addEventListener('click', () => {
-    if (isMobile()) return;
-    const collapsed = sidebar.classList.toggle('collapsed');
-    toggleIcon.style.transform = collapsed ? 'scaleX(-1)' : '';
-    toggle.title = collapsed ? 'Expandir sidebar' : 'Recolher sidebar';
-    document.querySelector('.wrapper')?.classList.toggle('sidebar-collapsed', collapsed);
-    localStorage.setItem('sidebar-collapsed', String(collapsed));
-  });
-
-  // ── Mobile: drawer ────────────────────────────────────────────────
-  function openMobileSidebar() {
-    sidebar.classList.add('mobile-open');
-    backdrop.classList.add('visible');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeMobileSidebar() {
-    sidebar.classList.remove('mobile-open');
-    backdrop.classList.remove('visible');
-    document.body.style.overflow = '';
-  }
-
-  mobileBtn?.addEventListener('click', () => {
-    sidebar.classList.contains('mobile-open') ? closeMobileSidebar() : openMobileSidebar();
-  });
-
-  backdrop?.addEventListener('click', closeMobileSidebar);
-
-  // Fecha o drawer ao navegar para outra página no mobile
-  document.querySelectorAll('.sidebar nav a').forEach(link => {
-    link.addEventListener('click', () => { if (isMobile()) closeMobileSidebar(); });
-  });
+  document.addEventListener('astro:page-load', initSidebar);
 </script>
 
 <style>
