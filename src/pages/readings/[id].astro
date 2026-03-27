@@ -26,8 +26,8 @@ const statusLabelPt: Record<string, string> = {
   date={livro.data.date}
   tags={livro.data.tags}
 >
-  <p style="color: var(--tx-2); font-style: italic; margin-bottom: 0.25rem">{livro.data.autor}</p>
-  <span class={`status-badge status-${livro.data.status}`} style="display:inline-block; margin-bottom: 2rem">
+  <p class="reading-autor">{livro.data.autor}</p>
+  <span class={`status-badge status-${livro.data.status} book-status`}>
     <span class="lang-en">{statusLabelEn[livro.data.status]}</span>
     <span class="lang-pt">{statusLabelPt[livro.data.status]}</span>
   </span>

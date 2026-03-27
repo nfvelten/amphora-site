@@ -1,31 +1,33 @@
 # Nicholas Velten
 
-> Site pessoal de Nicholas Velten — engenheiro de software full-stack com foco em sistemas escaláveis e bem estruturados. Publica escrita sobre tecnologia, registros de leitura e aprendizados técnicos.
+> Personal site of Nicholas Velten — full-stack software engineer focused on scalable, well-structured systems. Publishes writing about technology, reading logs and technical learnings.
 
-## Sobre o autor
+## About the author
 
-Nicholas Velten é engenheiro de software full-stack com cerca de quatro anos de experiência profissional. Trabalha atualmente na Alloha Fibra, desenvolvendo aplicações e serviços com Java, TypeScript, Vue.js e Node.js. Sua experiência abrange telecomunicações, fintechs e startups de produto.
+Nicholas Velten is a full-stack software engineer with around four years of professional experience. Currently works at Alloha Fibra, building applications and services with Java, TypeScript, Vue.js and Node.js. Experience spans telecommunications, fintechs and product startups.
 
-Usa Linux com Hyprland, Neovim como editor e Obsidian para gestão de conhecimento pessoal e técnico.
+Uses Linux with Hyprland, Neovim as editor and Obsidian for personal and technical knowledge management.
 
-Mora em Maringá, Paraná, Brasil.
+Based in Maringá, Paraná, Brazil.
 
-## Conteúdo disponível
+## Available content
 
-- **Escrita** (`/posts`): reflexões sobre tecnologia, ferramentas, desenvolvimento e aprendizados
-- **Leituras** (`/leituras`): registros de livros lidos — ficção científica, HQs e técnicos
-- **Currículo** (`/curriculo`): experiência profissional, habilidades técnicas e formação
-- **Agora** (`/agora`): o que está acontecendo no momento (atualizado periodicamente)
-- **Sobre** (`/sobre`): quem é Nicholas Velten
+- **Writing** (`/posts`): reflections on technology, tools, development and learnings
+- **Readings** (`/readings`): reading logs — science fiction, comics and technical books
+- **Resume** (`/resume`): professional experience, technical skills and education
+- **About** (`/about`): who Nicholas Velten is
+- **Amphora** (`/amphora`): personal knowledge management system built on Obsidian and Neovim
+- **Mate Creations** (`/matecreations`): theme ecosystem for Neovim, VSCode, Obsidian and Zen Browser
 
-## Contato
+## Contact
 
 - Email: nikvelten@gmail.com
 - LinkedIn: https://www.linkedin.com/in/nicholasveltenfullstack
+- GitHub: https://github.com/nfvelten
 
-## Informações técnicas
+## Technical information
 
-- Idioma principal: português (pt-BR)
-- Feed RSS disponível: /rss.xml
+- Primary language: English (en), with Portuguese (pt-BR) toggle
+- RSS feed: /rss.xml
 - Sitemap: /sitemap-index.xml
-- Licença de conteúdo: os textos podem ser citados com atribuição ao autor
+- Content license: texts may be cited with attribution to the author
