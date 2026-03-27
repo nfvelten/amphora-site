@@ -371,8 +371,6 @@ hr { border: none; border-top: 1px solid var(--ui); margin: 2rem 0; }
 /* ── Lista de posts ──────────────────────────────────────────────── */
 .post-list { list-style: none; display: flex; flex-direction: column; gap: 2rem; }
 
-.post-item {}
-
 .post-meta {
   font-family: system-ui, sans-serif;
   font-size: 0.8rem;
