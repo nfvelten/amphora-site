@@ -1,0 +1,205 @@
+---
+title: Building a security proxy for MCP
+title_pt: Construindo um proxy de segurança para MCP
+date: 2026-03-28
+description: MCP became the standard protocol for connecting AI agents to tools. The protocol has no built-in auth layer. Here's why that's a problem and what I built to address it.
+description_pt: O MCP se tornou o protocolo padrão para conectar agentes de IA a ferramentas. O protocolo não tem camada de autenticação embutida. Aqui está por que isso é um problema e o que construí para resolver.
+tags: [technology, security]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+Model Context Protocol (MCP) has become the default way to connect AI agents — Cursor, Claude Code, and others — to external tools: filesystems, databases, APIs. The protocol is well-designed. One thing it deliberately leaves out is authentication and authorization.
+
+That's a reasonable choice for a protocol spec. It's a problem in practice.
+
+---
+
+## The gap
+
+An MCP server exposes tools. Any client that can reach the server can call any tool. There's no concept of per-client permissions, no rate limiting, no audit trail. If you run a filesystem server that can write files and two agents connect — one trusted, one not — they both get the same access.
+
+The standard answer is "put it behind a firewall." That works for a server you control end-to-end. It doesn't work when you want to give different agents different levels of access to the same server, or when you want to know after the fact what each agent actually called.
+
+---
+
+## What I built
+
+[mcp-gateway](https://github.com/nfvelten/mcp-gateway) is a reverse proxy that sits between agents and MCP servers. It enforces per-agent policies before any tool call reaches the upstream.
+
+```
+Agent (Cursor, Claude, etc.)
+        │  JSON-RPC
+        ▼
+  mcp-gateway     ← auth, rate limit, payload filter, audit
+        │
+        ▼
+  MCP Server (filesystem, database, APIs...)
+```
+
+A policy looks like this:
+
+```yaml
+agents:
+  cursor:
+    allowed_tools: [read_file, list_directory]
+    rate_limit: 30
+  claude-code:
+    denied_tools: [write_file, delete_file]
+    rate_limit: 60
+```
+
+Each agent gets an allowlist or denylist. The `tools/list` response is filtered before it reaches the agent — it only sees tools it's allowed to call. Agents not in the config are blocked entirely.
+
+The pipeline applies in order: rate limit → auth → payload filter → upstream.
+
+---
+
+## Why Rust
+
+The proxy sits in the hot path of every tool call. It needs to be fast and correct.
+
+Rust's type system made the architecture natural. Each layer of the pipeline is a trait object. Transport, upstream, and audit backend are all traits — you can swap SQLite for a webhook, or HTTP transport for stdio, without touching the core logic. The policy map is an `Arc<HashMap>` shared across all middleware without copying.
+
+The other reason was cross-compilation. MCP servers run everywhere — Linux, macOS, Windows, ARM boards. Rust compiles to all of them cleanly, especially once you drop OpenSSL for `rustls` (pure Rust TLS, no system dependency).
+
+---
+
+## The tricky parts
+
+**stdio mode.** MCP has two transports: HTTP+SSE and stdio. In stdio mode, the agent and server communicate via stdin/stdout — there's no HTTP request to intercept. The gateway spawns the upstream server as a child process, reads from its stdout, writes to its stdin, and applies policies on each message in both directions. The challenge is that you have to buffer partial reads correctly and not block the write side while waiting for a response.
+
+**Audit log.** `record()` is called in the request path and needs to be non-blocking. I use an unbounded channel: `record()` sends to a background worker that drains to SQLite. On graceful shutdown, `flush()` drops the sender (signals EOF) and awaits the worker. Every write lands before the process exits.
+
+**Session memory.** HTTP mode uses `Mcp-Session-Id` for session tracking. Sessions could accumulate indefinitely. Instead of a background cleanup task, the store purges expired entries on every `create()` call — memory stays bounded with no extra overhead.
+
+**Payload filtering.** Any `tools/call` whose arguments contain a sensitive pattern is blocked before it reaches the upstream. The patterns are user-defined regexes. I use Rust's `regex` crate, which uses a linear-time NFA/DFA engine — no ReDoS risk regardless of what patterns users configure.
+
+---
+
+## What it does now
+
+- Per-agent allowlist / denylist with `tools/list` filtering
+- Sliding-window rate limiting per agent
+- Payload filtering with user-defined regex patterns
+- SQLite audit log with a CLI for querying it
+- Webhook audit backend for external systems
+- Session management with configurable TTL and explicit `DELETE /mcp` invalidation
+- Multiple upstream servers — different agents can route to different backends
+- Prometheus-compatible `/metrics` endpoint
+- TLS support
+- HTTP and stdio transports
+
+The integration test suite runs against a real `@modelcontextprotocol/server-filesystem` instance for stdio mode and a built-in dummy server for HTTP mode. 10/10 and 13/13 respectively.
+
+---
+
+## What's missing
+
+The main gap is that the HTTP transport is a plain reverse proxy — it relays the full JSON-RPC body. MCP's HTTP+SSE transport is stateful in ways that a naive proxy doesn't handle perfectly (the SSE stream, notifications). For simple request-response tool calls it works fine. For streaming-heavy workloads it would need more care.
+
+The other gap is that "agent identity" is currently just the `clientInfo.name` field from the `initialize` message. An agent can claim any name. Real auth would require a pre-shared key or token validated before the session is created. That's straightforward to add — it just changes what the policy key is and how it's resolved.
+
+---
+
+The full source is at [github.com/nfvelten/mcp-gateway](https://github.com/nfvelten/mcp-gateway).
+</En>
+
+<Pt>
+O Model Context Protocol (MCP) se tornou a forma padrão de conectar agentes de IA — Cursor, Claude Code, entre outros — a ferramentas externas: sistemas de arquivos, bancos de dados, APIs. O protocolo é bem projetado. Uma coisa que ele deliberadamente deixa de fora é autenticação e autorização.
+
+Essa é uma escolha razoável para uma especificação de protocolo. É um problema na prática.
+
+---
+
+## O gap
+
+Um servidor MCP expõe tools. Qualquer cliente que consiga alcançar o servidor pode chamar qualquer tool. Não existe conceito de permissões por cliente, sem rate limiting, sem trilha de auditoria. Se você roda um servidor de filesystem que pode escrever arquivos e dois agentes se conectam — um confiável, outro não — os dois recebem o mesmo acesso.
+
+A resposta padrão é "coloca atrás de um firewall." Isso funciona para um servidor que você controla de ponta a ponta. Não funciona quando você quer dar a agentes diferentes níveis de acesso diferentes ao mesmo servidor, ou quando quer saber depois o que cada agente realmente chamou.
+
+---
+
+## O que construí
+
+[mcp-gateway](https://github.com/nfvelten/mcp-gateway) é um proxy reverso que fica entre agentes e servidores MCP. Ele aplica políticas por agente antes que qualquer tool call chegue ao upstream.
+
+```
+Agente (Cursor, Claude, etc.)
+        │  JSON-RPC
+        ▼
+  mcp-gateway     ← auth, rate limit, payload filter, audit
+        │
+        ▼
+  Servidor MCP (filesystem, banco de dados, APIs...)
+```
+
+Uma política fica assim:
+
+```yaml
+agents:
+  cursor:
+    allowed_tools: [read_file, list_directory]
+    rate_limit: 30
+  claude-code:
+    denied_tools: [write_file, delete_file]
+    rate_limit: 60
+```
+
+Cada agente recebe uma allowlist ou denylist. A resposta do `tools/list` é filtrada antes de chegar ao agente — ele só vê as tools que pode chamar. Agentes fora da config são bloqueados completamente.
+
+O pipeline se aplica em ordem: rate limit → auth → payload filter → upstream.
+
+---
+
+## Por que Rust
+
+O proxy fica no caminho crítico de cada tool call. Precisa ser rápido e correto.
+
+O sistema de tipos do Rust tornou a arquitetura natural. Cada camada do pipeline é um trait object. Transport, upstream e audit são todos traits — você pode trocar SQLite por webhook, ou HTTP por stdio, sem tocar na lógica central. O mapa de políticas é um `Arc<HashMap>` compartilhado entre todos os middleware sem copiar.
+
+O outro motivo foi cross-compilation. Servidores MCP rodam em todo lugar — Linux, macOS, Windows, boards ARM. Rust compila para todos de forma limpa, especialmente depois de trocar OpenSSL por `rustls` (TLS puro em Rust, sem dependência de sistema).
+
+---
+
+## As partes difíceis
+
+**Modo stdio.** O MCP tem dois transports: HTTP+SSE e stdio. No modo stdio, agente e servidor se comunicam via stdin/stdout — não há requisição HTTP para interceptar. O gateway spawna o servidor upstream como processo filho, lê do stdout dele, escreve no stdin, e aplica políticas em cada mensagem nos dois sentidos. O desafio é bufferizar leituras parciais corretamente sem bloquear o lado de escrita enquanto espera uma resposta.
+
+**Audit log.** `record()` é chamado no caminho da requisição e precisa ser não-bloqueante. Uso um channel sem limite: `record()` envia para um worker em background que drena para o SQLite. No shutdown gracioso, `flush()` dropa o sender (sinaliza EOF) e aguarda o worker. Cada write aterra antes do processo encerrar.
+
+**Memória de sessões.** O modo HTTP usa `Mcp-Session-Id` para rastrear sessões. Sessões poderiam acumular indefinidamente. Em vez de uma task de limpeza em background, o store purga entradas expiradas em cada chamada de `create()` — a memória fica limitada sem overhead extra.
+
+**Payload filtering.** Qualquer `tools/call` cujos argumentos contenham um padrão sensível é bloqueado antes de chegar ao upstream. Os padrões são regexes definidas pelo usuário. Uso o crate `regex` do Rust, que usa uma engine NFA/DFA de tempo linear — sem risco de ReDoS independentemente dos padrões configurados.
+
+---
+
+## O que tem agora
+
+- Allowlist / denylist por agente com filtragem do `tools/list`
+- Rate limiting por janela deslizante por agente
+- Payload filtering com padrões regex definidos pelo usuário
+- Audit log em SQLite com CLI para consultar
+- Webhook audit para sistemas externos
+- Gerenciamento de sessão com TTL configurável e invalidação explícita via `DELETE /mcp`
+- Múltiplos upstreams — agentes diferentes podem rotear para backends diferentes
+- Endpoint `/metrics` compatível com Prometheus
+- Suporte a TLS
+- Transports HTTP e stdio
+
+A suíte de testes de integração roda contra um `@modelcontextprotocol/server-filesystem` real no modo stdio e um servidor dummy embutido no modo HTTP. 10/10 e 13/13 respectivamente.
+
+---
+
+## O que falta
+
+O gap principal é que o transport HTTP é um proxy reverso simples — ele repassa o body JSON-RPC completo. O transport HTTP+SSE do MCP é stateful de formas que um proxy ingênuo não trata perfeitamente (o stream SSE, notificações). Para tool calls simples de request-response funciona bem. Para workloads com muito streaming precisaria de mais cuidado.
+
+O outro gap é que "identidade do agente" é atualmente só o campo `clientInfo.name` da mensagem `initialize`. Um agente pode reivindicar qualquer nome. Auth real exigiria uma chave pré-compartilhada ou token validado antes de a sessão ser criada. É simples de adicionar — só muda qual é a chave de política e como ela é resolvida.
+
+---
+
+O código completo está em [github.com/nfvelten/mcp-gateway](https://github.com/nfvelten/mcp-gateway).
+</Pt>
