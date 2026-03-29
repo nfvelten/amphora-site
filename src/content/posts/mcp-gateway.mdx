@@ -1,9 +1,9 @@
 ---
 title: Building a security proxy for MCP
 title_pt: Construindo um proxy de segurança para MCP
-date: 2026-03-28
-description: MCP became the standard protocol for connecting AI agents to tools. The protocol has no built-in auth layer. Here's why that's a problem and what I built to address it.
-description_pt: O MCP se tornou o protocolo padrão para conectar agentes de IA a ferramentas. O protocolo não tem camada de autenticação embutida. Aqui está por que isso é um problema e o que construí para resolver.
+date: 2026-03-29
+description: MCP became the standard protocol for connecting AI agents to tools. The protocol has no built-in auth layer. Here's why that's a problem, what I built to address it, and what I learned along the way.
+description_pt: O MCP se tornou o protocolo padrão para conectar agentes de IA a ferramentas. O protocolo não tem camada de autenticação embutida. Aqui está por que isso é um problema, o que construí para resolver, e o que aprendi no processo.
 tags: [technology, security]
 ---
 
@@ -23,17 +23,19 @@ An MCP server exposes tools. Any client that can reach the server can call any t
 
 The standard answer is "put it behind a firewall." That works for a server you control end-to-end. It doesn't work when you want to give different agents different levels of access to the same server, or when you want to know after the fact what each agent actually called.
 
+There's also a subtler problem: AI agents are prompt-injectable. A malicious tool response can instruct an agent to exfiltrate data or call a tool it shouldn't. A proxy that sits in the path of every response can catch this before it reaches the agent — but only if response filtering is built in from the start.
+
 ---
 
 ## What I built
 
-[mcp-gateway](https://github.com/nfvelten/mcp-gateway) is a reverse proxy that sits between agents and MCP servers. It enforces per-agent policies before any tool call reaches the upstream.
+[mcp-shield](https://github.com/nfvelten/mcp-gateway) is a reverse proxy that sits between agents and MCP servers. It enforces per-agent policies before any tool call reaches the upstream.
 
 ```
 Agent (Cursor, Claude, etc.)
         │  JSON-RPC
         ▼
-  mcp-gateway     ← auth, rate limit, payload filter, audit
+  mcp-shield     ← auth, rate limit, payload filter, audit
         │
         ▼
   MCP Server (filesystem, database, APIs...)
@@ -44,14 +46,19 @@ A policy looks like this:
 ```yaml
 agents:
   cursor:
-    allowed_tools: [read_file, list_directory]
+    allowed_tools: [read_*]   # glob wildcards supported
     rate_limit: 30
+    timeout_secs: 10
   claude-code:
     denied_tools: [write_file, delete_file]
     rate_limit: 60
+
+default_policy:               # fallback for unlisted agents
+  denied_tools: [delete_*]
+  rate_limit: 10
 ```
 
-Each agent gets an allowlist or denylist. The `tools/list` response is filtered before it reaches the agent — it only sees tools it's allowed to call. Agents not in the config are blocked entirely.
+Each agent gets an allowlist or denylist (with glob wildcards — `read_*` matches `read_file`, `read_dir`, etc.). The `tools/list` response is filtered before it reaches the agent — it only sees tools it's allowed to call. Agents not in the config fall back to `default_policy`, or are blocked entirely if none is set.
 
 The pipeline applies in order: rate limit → auth → payload filter → upstream.
 
@@ -69,38 +76,44 @@ The other reason was cross-compilation. MCP servers run everywhere — Linux, ma
 
 ## The tricky parts
 
-**stdio mode.** MCP has two transports: HTTP+SSE and stdio. In stdio mode, the agent and server communicate via stdin/stdout — there's no HTTP request to intercept. The gateway spawns the upstream server as a child process, reads from its stdout, writes to its stdin, and applies policies on each message in both directions. The challenge is that you have to buffer partial reads correctly and not block the write side while waiting for a response.
+**stdio mode.** MCP has two transports: HTTP+SSE and stdio. In stdio mode, the agent and server communicate via stdin/stdout — there's no HTTP request to intercept. The gateway spawns the upstream server as a child process, reads from its stdout, writes to its stdin, and applies policies on each message in both directions.
 
-**Audit log.** `record()` is called in the request path and needs to be non-blocking. I use an unbounded channel: `record()` sends to a background worker that drains to SQLite. On graceful shutdown, `flush()` drops the sender (signals EOF) and awaits the worker. Every write lands before the process exits.
+**Redact vs. block.** The first version blocked any request containing a sensitive pattern. That's too coarse — sometimes you want to scrub the value and forward the sanitized request. Adding a `filter_mode: redact` option required threading `FilterMode` through the entire pipeline and writing a recursive JSON value walker (`redact_value`) that replaces matching string leaves with `"[REDACTED]"` while preserving the surrounding structure. Responses are always scrubbed regardless of mode.
 
-**Session memory.** HTTP mode uses `Mcp-Session-Id` for session tracking. Sessions could accumulate indefinitely. Instead of a background cleanup task, the store purges expired entries on every `create()` call — memory stays bounded with no extra overhead.
+**Prompt injection detection.** A `block_prompt_injection: true` flag enables seven built-in regex patterns covering instruction-override attacks, role reassignment, DAN-style jailbreaks, and prompt exfiltration attempts. The tricky part was deciding where these fit in the pipeline: they're checked *after* the `filter_mode` decision, always block, and their patterns don't get redacted — you want a hard rejection, not a scrub-and-forward.
 
-**Payload filtering.** Any `tools/call` whose arguments contain a sensitive pattern is blocked before it reaches the upstream. The patterns are user-defined regexes. I use Rust's `regex` crate, which uses a linear-time NFA/DFA engine — no ReDoS risk regardless of what patterns users configure.
+**OpenTelemetry subscriber initialization.** Adding OTel tracing meant calling `.with(tracing_opentelemetry::layer().with_tracer(t))` conditionally on the `tracing_subscriber` registry. The problem is that each `.with()` changes the concrete type of the registry, making it impossible to branch without boxing or code duplication. The solution was a 4-branch match on `(json_logging, otel_enabled)`, each branch fully written out with concrete types. Ugly, but the compiler is happy.
+
+**Multi-provider JWT.** The `auth:` config needed to accept either a single provider or a list — `#[serde(untagged)]` on an enum handles this transparently. Each provider in the list is tried in order; the first that successfully validates the token wins. OIDC discovery (`{issuer}/.well-known/openid-configuration`) is fetched once and cached for the process lifetime.
+
+**Audit log.** `record()` is called in the request path and must be non-blocking. An unbounded channel separates the write from the disk. On graceful shutdown, `flush()` drops the sender (signals EOF) and awaits the background worker. Every write lands before the process exits.
 
 ---
 
 ## What it does now
 
-- Per-agent allowlist / denylist with `tools/list` filtering
-- Sliding-window rate limiting per agent
-- Payload filtering with user-defined regex patterns
-- SQLite audit log with a CLI for querying it
-- Webhook audit backend for external systems
-- Session management with configurable TTL and explicit `DELETE /mcp` invalidation
-- Multiple upstream servers — different agents can route to different backends
-- Prometheus-compatible `/metrics` endpoint
-- TLS support
-- HTTP and stdio transports
-
-The integration test suite runs against a real `@modelcontextprotocol/server-filesystem` instance for stdio mode and a built-in dummy server for HTTP mode. 10/10 and 13/13 respectively.
+- Per-agent allowlist / denylist with glob wildcards and `tools/list` filtering
+- Sliding-window rate limiting: per-agent, per-tool, per-IP
+- JWT / OIDC authentication — single provider or a list; Google, GitHub Actions, Auth0, Okta presets; JWKS caching
+- Payload filtering with user-defined regexes; `block` or `redact` mode
+- Response filtering — sensitive patterns scrubbed from upstream responses before reaching the agent
+- Built-in prompt injection detection
+- SQLite audit log with CLI; webhook backend; fan-out to multiple backends simultaneously
+- Circuit breaker on each upstream — automatic half-open probe after recovery timeout
+- `/health` endpoint reporting per-upstream status
+- Config hot-reload via `SIGUSR1` or automatically every 30 seconds
+- `X-Request-Id` on every response, recorded in audit and OTel spans
+- Prometheus-compatible `/metrics`
+- OpenTelemetry tracing via OTLP
+- HTTP and stdio transports; TLS support
 
 ---
 
-## What's missing
+## The landscape
 
-The main gap is that the HTTP transport is a plain reverse proxy — it relays the full JSON-RPC body. MCP's HTTP+SSE transport is stateful in ways that a naive proxy doesn't handle perfectly (the SSE stream, notifications). For simple request-response tool calls it works fine. For streaming-heavy workloads it would need more care.
+There are now several projects solving adjacent problems. [agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation, 2,200+ stars) is the most mature — Rust core, WASM plugin system, multi-protocol. It's the right choice if you're building platform-level infrastructure.
 
-The other gap is that "agent identity" is currently just the `clientInfo.name` field from the `initialize` message. An agent can claim any name. Real auth would require a pre-shared key or token validated before the session is created. That's straightforward to add — it just changes what the policy key is and how it's resolved.
+mcp-shield is a different bet: a focused security proxy you can install with `cargo install mcp-shield` and configure with a single YAML file. No container runtime, no Kubernetes, no commercial tier. The tradeoff is that it won't grow into a service mesh — that's by design.
 
 ---
 
@@ -118,19 +131,21 @@ Essa é uma escolha razoável para uma especificação de protocolo. É um probl
 
 Um servidor MCP expõe tools. Qualquer cliente que consiga alcançar o servidor pode chamar qualquer tool. Não existe conceito de permissões por cliente, sem rate limiting, sem trilha de auditoria. Se você roda um servidor de filesystem que pode escrever arquivos e dois agentes se conectam — um confiável, outro não — os dois recebem o mesmo acesso.
 
-A resposta padrão é "coloca atrás de um firewall." Isso funciona para um servidor que você controla de ponta a ponta. Não funciona quando você quer dar a agentes diferentes níveis de acesso diferentes ao mesmo servidor, ou quando quer saber depois o que cada agente realmente chamou.
+A resposta padrão é "coloca atrás de um firewall." Isso funciona para um servidor que você controla de ponta a ponta. Não funciona quando você quer dar a agentes diferentes níveis de acesso ao mesmo servidor, ou quando quer saber depois o que cada agente realmente chamou.
+
+Existe também um problema mais sutil: agentes de IA são suscetíveis a prompt injection. Uma resposta maliciosa de uma tool pode instruir o agente a exfiltrar dados ou chamar uma tool que não deveria. Um proxy no caminho de cada resposta pode interceptar isso antes de chegar ao agente — mas só se o response filtering for parte do design desde o início.
 
 ---
 
 ## O que construí
 
-[mcp-gateway](https://github.com/nfvelten/mcp-gateway) é um proxy reverso que fica entre agentes e servidores MCP. Ele aplica políticas por agente antes que qualquer tool call chegue ao upstream.
+[mcp-shield](https://github.com/nfvelten/mcp-gateway) é um proxy reverso que fica entre agentes e servidores MCP. Ele aplica políticas por agente antes que qualquer tool call chegue ao upstream.
 
 ```
 Agente (Cursor, Claude, etc.)
         │  JSON-RPC
         ▼
-  mcp-gateway     ← auth, rate limit, payload filter, audit
+  mcp-shield     ← auth, rate limit, payload filter, audit
         │
         ▼
   Servidor MCP (filesystem, banco de dados, APIs...)
@@ -141,14 +156,19 @@ Uma política fica assim:
 ```yaml
 agents:
   cursor:
-    allowed_tools: [read_file, list_directory]
+    allowed_tools: [read_*]   # wildcards glob suportados
     rate_limit: 30
+    timeout_secs: 10
   claude-code:
     denied_tools: [write_file, delete_file]
     rate_limit: 60
+
+default_policy:               # fallback para agentes não listados
+  denied_tools: [delete_*]
+  rate_limit: 10
 ```
 
-Cada agente recebe uma allowlist ou denylist. A resposta do `tools/list` é filtrada antes de chegar ao agente — ele só vê as tools que pode chamar. Agentes fora da config são bloqueados completamente.
+Cada agente recebe uma allowlist ou denylist (com wildcards glob — `read_*` faz match em `read_file`, `read_dir`, etc.). A resposta do `tools/list` é filtrada antes de chegar ao agente — ele só vê as tools que pode chamar. Agentes fora da config herdam `default_policy`, ou são bloqueados completamente se não houver.
 
 O pipeline se aplica em ordem: rate limit → auth → payload filter → upstream.
 
@@ -166,38 +186,44 @@ O outro motivo foi cross-compilation. Servidores MCP rodam em todo lugar — Lin
 
 ## As partes difíceis
 
-**Modo stdio.** O MCP tem dois transports: HTTP+SSE e stdio. No modo stdio, agente e servidor se comunicam via stdin/stdout — não há requisição HTTP para interceptar. O gateway spawna o servidor upstream como processo filho, lê do stdout dele, escreve no stdin, e aplica políticas em cada mensagem nos dois sentidos. O desafio é bufferizar leituras parciais corretamente sem bloquear o lado de escrita enquanto espera uma resposta.
+**Modo stdio.** O MCP tem dois transports: HTTP+SSE e stdio. No modo stdio, agente e servidor se comunicam via stdin/stdout — não há requisição HTTP para interceptar. O gateway spawna o servidor upstream como processo filho, lê do stdout dele, escreve no stdin, e aplica políticas em cada mensagem nos dois sentidos.
 
-**Audit log.** `record()` é chamado no caminho da requisição e precisa ser não-bloqueante. Uso um channel sem limite: `record()` envia para um worker em background que drena para o SQLite. No shutdown gracioso, `flush()` dropa o sender (sinaliza EOF) e aguarda o worker. Cada write aterra antes do processo encerrar.
+**Redact vs. block.** A primeira versão bloqueava qualquer requisição com padrão sensível. Isso é grosseiro demais — às vezes você quer remover o valor e encaminhar a requisição sanitizada. Adicionar `filter_mode: redact` exigiu passar `FilterMode` por todo o pipeline e escrever um walker recursivo de JSON (`redact_value`) que substitui folhas de string que fazem match por `"[REDACTED]"` preservando a estrutura. Respostas são sempre sanitizadas independente do modo.
 
-**Memória de sessões.** O modo HTTP usa `Mcp-Session-Id` para rastrear sessões. Sessões poderiam acumular indefinidamente. Em vez de uma task de limpeza em background, o store purga entradas expiradas em cada chamada de `create()` — a memória fica limitada sem overhead extra.
+**Detecção de prompt injection.** A flag `block_prompt_injection: true` habilita sete padrões regex cobrindo ataques de override de instrução, reassignment de papel, jailbreaks estilo DAN, e exfiltração de prompt. A parte difícil foi decidir onde isso se encaixa no pipeline: são checados *depois* da decisão de `filter_mode`, sempre bloqueiam, e seus padrões não são redactados — você quer rejeição hard, não scrub-and-forward.
 
-**Payload filtering.** Qualquer `tools/call` cujos argumentos contenham um padrão sensível é bloqueado antes de chegar ao upstream. Os padrões são regexes definidas pelo usuário. Uso o crate `regex` do Rust, que usa uma engine NFA/DFA de tempo linear — sem risco de ReDoS independentemente dos padrões configurados.
+**Inicialização do subscriber OpenTelemetry.** Adicionar tracing OTel significava chamar `.with(tracing_opentelemetry::layer().with_tracer(t))` condicionalmente no registry do `tracing_subscriber`. O problema é que cada `.with()` muda o tipo concreto do registry, tornando impossível branchar sem boxing ou duplicação de código. A solução foi um match de 4 branches em `(json_logging, otel_enabled)`, cada branch escrito completamente com tipos concretos. Feio, mas o compilador fica feliz.
+
+**JWT multi-provider.** A config `auth:` precisava aceitar tanto um provider único quanto uma lista — `#[serde(untagged)]` num enum cuida disso de forma transparente. Cada provider na lista é tentado em ordem; o primeiro que valida o token com sucesso vence. A descoberta OIDC (`{issuer}/.well-known/openid-configuration`) é buscada uma vez e cacheada pelo tempo de vida do processo.
+
+**Audit log.** `record()` é chamado no caminho da requisição e precisa ser não-bloqueante. Um channel separa a escrita do disco. No shutdown gracioso, `flush()` dropa o sender (sinaliza EOF) e aguarda o worker em background. Cada write aterra antes do processo encerrar.
 
 ---
 
 ## O que tem agora
 
-- Allowlist / denylist por agente com filtragem do `tools/list`
-- Rate limiting por janela deslizante por agente
-- Payload filtering com padrões regex definidos pelo usuário
-- Audit log em SQLite com CLI para consultar
-- Webhook audit para sistemas externos
-- Gerenciamento de sessão com TTL configurável e invalidação explícita via `DELETE /mcp`
-- Múltiplos upstreams — agentes diferentes podem rotear para backends diferentes
-- Endpoint `/metrics` compatível com Prometheus
-- Suporte a TLS
-- Transports HTTP e stdio
-
-A suíte de testes de integração roda contra um `@modelcontextprotocol/server-filesystem` real no modo stdio e um servidor dummy embutido no modo HTTP. 10/10 e 13/13 respectivamente.
+- Allowlist / denylist por agente com wildcards glob e filtragem do `tools/list`
+- Rate limiting por janela deslizante: por agente, por tool, por IP
+- Autenticação JWT / OIDC — provider único ou lista; presets Google, GitHub Actions, Auth0, Okta; cache de JWKS
+- Payload filtering com regexes do usuário; modo `block` ou `redact`
+- Response filtering — padrões sensíveis removidos das respostas do upstream antes de chegar ao agente
+- Detecção de prompt injection built-in
+- Audit log em SQLite com CLI; backend webhook; fan-out para múltiplos backends simultaneamente
+- Circuit breaker em cada upstream — probe automático half-open após timeout de recovery
+- Endpoint `/health` reportando status por upstream
+- Config hot-reload via `SIGUSR1` ou automaticamente a cada 30 segundos
+- `X-Request-Id` em cada resposta, gravado no audit e nos spans OTel
+- `/metrics` compatível com Prometheus
+- Tracing OpenTelemetry via OTLP
+- Transports HTTP e stdio; suporte a TLS
 
 ---
 
-## O que falta
+## O cenário
 
-O gap principal é que o transport HTTP é um proxy reverso simples — ele repassa o body JSON-RPC completo. O transport HTTP+SSE do MCP é stateful de formas que um proxy ingênuo não trata perfeitamente (o stream SSE, notificações). Para tool calls simples de request-response funciona bem. Para workloads com muito streaming precisaria de mais cuidado.
+Há vários projetos resolvendo problemas adjacentes. O [agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation, 2.200+ stars) é o mais maduro — core em Rust, sistema de plugins WASM, multi-protocolo. É a escolha certa se você está construindo infraestrutura de nível de plataforma.
 
-O outro gap é que "identidade do agente" é atualmente só o campo `clientInfo.name` da mensagem `initialize`. Um agente pode reivindicar qualquer nome. Auth real exigiria uma chave pré-compartilhada ou token validado antes de a sessão ser criada. É simples de adicionar — só muda qual é a chave de política e como ela é resolvida.
+O mcp-shield é uma aposta diferente: um proxy de segurança focado que você instala com `cargo install mcp-shield` e configura com um único arquivo YAML. Sem container runtime, sem Kubernetes, sem tier comercial. O tradeoff é que ele não vai crescer em um service mesh — isso é intencional.
 
 ---
 
