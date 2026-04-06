@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const projects = [
+  {
+    name: 'Arbitus',
+    tagline: 'Security proxy for AI agents and MCP servers',
+    taglinePt: 'Proxy de segurança para agentes de IA e servidores MCP',
+    description: 'Open-source proxy that enforces per-agent policies — auth, rate limiting, payload filtering, HITL, and audit — before any tool call reaches your MCP server.',
+    descriptionPt: 'Proxy open-source que aplica políticas por agente — autenticação, rate limiting, filtragem de payload, HITL e auditoria — antes que qualquer tool call chegue ao servidor upstream.',
+    href: '/arbitus',
+    github: 'https://github.com/nfvelten/arbitus',
+    logo: '/arbitus-logo.png',
+    tags: ['Rust', 'MCP', 'Security'],
+  },
+  {
+    name: 'Amphora',
+    tagline: 'Personal knowledge management system',
+    taglinePt: 'Sistema pessoal de gestão de conhecimento',
+    description: 'A PKMS built on Obsidian and Neovim. Combines daily notes, script automation and AI integration to capture, organize and retrieve knowledge without friction.',
+    descriptionPt: 'Um PKMS construído sobre Obsidian e Neovim. Combina daily notes, automações via scripts e integração com IA para capturar, organizar e recuperar conhecimento sem atrito.',
+    href: '/amphora',
+    github: 'https://github.com/nfvelten/amphora-setup',
+    logo: '/icon.webp',
+    tags: ['Rust', 'Obsidian', 'Neovim'],
+  },
+  {
+    name: 'Mate Creations',
+    tagline: 'Yerba Mate & Tererê theme family',
+    taglinePt: 'Família de temas Yerba Mate e Tererê',
+    description: 'A cohesive theme family for Neovim, VSCode, Obsidian, Omarchy and Zen Browser — dark (Yerba Mate) and light (Tererê) covering the entire desktop.',
+    descriptionPt: 'Família de temas para Neovim, VSCode, Obsidian, Omarchy e Zen Browser — dark (Yerba Mate) e light (Tererê) cobrindo o ambiente inteiro.',
+    href: '/matecreations',
+    github: 'https://github.com/mateCreations',
+    logo: null,
+    tags: ['Themes', 'Neovim', 'VSCode'],
+  },
+];
+---
+
+<BaseLayout
+  title="projects"
+  description="Open-source projects by Nicholas Velten: Arbitus, Amphora, and Mate Creations."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>
+        <span class="lang-en">Projects</span>
+        <span class="lang-pt">Projetos</span>
+      </h1>
+    </header>
+    <div class="prose">
+      <div class="projects-list">
+        {projects.map(p => (
+          <a href={p.href} class="project-card">
+            <div class="project-logo">
+              {p.logo
+                ? <img src={p.logo} alt={p.name} width="40" height="40" />
+                : <span class="project-initial">{p.name[0]}</span>
+              }
+            </div>
+            <div class="project-body">
+              <div class="project-top">
+                <h2>{p.name}</h2>
+                <div class="project-tags">
+                  {p.tags.map(t => <span class="tag">{t}</span>)}
+                </div>
+              </div>
+              <p class="project-tagline">
+                <span class="lang-en">{p.tagline}</span>
+                <span class="lang-pt">{p.taglinePt}</span>
+              </p>
+              <p class="project-desc">
+                <span class="lang-en">{p.description}</span>
+                <span class="lang-pt">{p.descriptionPt}</span>
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .project-card {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    border: 1px solid var(--ui);
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .project-card:hover {
+    border-color: var(--ui-2);
+  }
+
+  .project-logo {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .project-logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .project-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--tx-2);
+  }
+
+  .project-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .project-top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.2rem;
+  }
+
+  .project-top h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    color: var(--tx-3);
+    font-family: system-ui, sans-serif;
+  }
+
+  .project-tagline {
+    font-size: 0.85rem;
+    color: var(--tx-2);
+    margin-bottom: 0.4rem;
+  }
+
+  .project-desc {
+    font-size: 0.82rem;
+    color: var(--tx-3);
+    line-height: 1.5;
+    margin: 0;
+  }
+</style>

@@ -26,9 +26,9 @@ const blogPaths = ['/blog', '/writing', '/posts', '/readings'];
           <span class="lang-en">About</span><span class="lang-pt">Sobre</span>
         </a>
         <a href="/blog" class:list={[{ active: blogPaths.some(p => isActive(p)) }]}>Blog</a>
-        <a href="/matecreations" class:list={[{ active: isActive('/matecreations') }]}>Mate Creations</a>
-        <a href="/amphora" class:list={[{ active: isActive('/amphora') }]}>Amphora</a>
-        <a href="/arbitus" class:list={[{ active: isActive('/arbitus') }]}>Arbitus</a>
+        <a href="/projects" class:list={[{ active: isActive('/projects') || isActive('/matecreations') || isActive('/amphora') || isActive('/arbitus') }]}>
+          <span class="lang-en">Projects</span><span class="lang-pt">Projetos</span>
+        </a>
         <a href="/resume" class:list={[{ active: isActive('/resume') }]}>
           <span class="lang-en">Resume</span><span class="lang-pt">Currículo</span>
         </a>
