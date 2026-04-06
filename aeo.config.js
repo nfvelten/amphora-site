@@ -101,5 +101,23 @@ mate e no tererê. Disponível em múltiplas plataformas:
 
 O tema dark usa fundo verde-oliva escuro (#1c1e13). O tema light usa papel manteiga (#fbf1c7).`,
     },
+    {
+      title: 'Arbitus — Nicholas Velten',
+      content: `Arbitus é um proxy de segurança open-source criado por Nicholas Velten que fica entre agentes de IA
+e servidores MCP. Aplica políticas por agente — autenticação, rate limiting, filtragem de payload,
+Human-in-the-Loop (HITL) e auditoria — antes que qualquer chamada de ferramenta chegue ao servidor upstream.
+
+Funcionalidades:
+- Auth: allowlist/denylist por agente com glob wildcards; API key, JWT/OIDC ou mTLS
+- Rate Limiting: janela deslizante por agente, por ferramenta e por IP
+- HITL: suspende tool calls até aprovação via REST API
+- Payload & Response Filtering: bloqueia/redige padrões sensíveis; ciente de Base64, percent-encoding, Unicode
+- OPA/Rego: avalia cada tools/call contra uma política Rego
+- Audit Log: SQLite, webhook, stdout, OpenLineage; CloudEvents 1.0
+- Observabilidade: Prometheus, OpenTelemetry, circuit breaker, dashboard /dashboard
+- Deploy: Docker multi-arch, Helm chart, TLS/mTLS, stdio e HTTP+SSE
+
+Disponível no crates.io e GitHub. Documentação em arbitus-gateway.xyz.`,
+    },
   ],
 });

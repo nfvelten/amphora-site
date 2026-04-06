@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const features = [
+  {
+    id: 'auth',
+    name: 'Auth & Access Control',
+    descEn: 'Per-agent allowlist/denylist with glob wildcards. API key, JWT/OIDC, or mTLS. Agents only see the tools, resources, and prompts they are allowed to call.',
+    descPt: 'Allowlist/denylist por agente com glob wildcards. API key, JWT/OIDC ou mTLS. Agentes só veem as ferramentas, recursos e prompts que têm permissão para usar.',
+  },
+  {
+    id: 'ratelimit',
+    name: 'Rate Limiting',
+    descEn: 'Per-agent sliding window, per-tool limits, and per-IP limit. Standard X-RateLimit-* headers included.',
+    descPt: 'Janela deslizante por agente, limites por ferramenta e por IP. Headers X-RateLimit-* padrão incluídos.',
+  },
+  {
+    id: 'hitl',
+    name: 'Human-in-the-Loop (HITL)',
+    descEn: 'Suspend tool calls until an operator approves or rejects via REST API. Keeps humans in control of sensitive operations.',
+    descPt: 'Suspende chamadas de ferramentas até um operador aprovar ou rejeitar via REST API. Mantém humanos no controle de operações sensíveis.',
+  },
+  {
+    id: 'filtering',
+    name: 'Payload & Response Filtering',
+    descEn: 'Block or redact sensitive patterns in requests and responses. Encoding-aware: Base64, percent-encoding, Unicode.',
+    descPt: 'Bloqueie ou redija padrões sensíveis em requisições e respostas. Ciente de encodings: Base64, percent-encoding, Unicode.',
+  },
+  {
+    id: 'audit',
+    name: 'Audit Log',
+    descEn: 'Every request recorded with X-Request-Id. Fan-out to SQLite, webhook, stdout, or OpenLineage. CloudEvents 1.0 support for SIEM ingestion.',
+    descPt: 'Cada requisição registrada com X-Request-Id. Fan-out para SQLite, webhook, stdout ou OpenLineage. Suporte a CloudEvents 1.0 para SIEM.',
+  },
+  {
+    id: 'opa',
+    name: 'OPA / Rego Policy Engine',
+    descEn: 'Evaluate every tools/call against a Rego policy file. Input exposes agent, tool, arguments, and client IP for fine-grained control.',
+    descPt: 'Avalia cada tools/call contra um arquivo de política Rego. O input expõe agente, ferramenta, argumentos e IP do cliente para controle fino.',
+  },
+  {
+    id: 'observability',
+    name: 'Observability',
+    descEn: 'Prometheus-compatible /metrics, OpenTelemetry traces, circuit breaker, config hot-reload on SIGUSR1, and a /dashboard audit viewer.',
+    descPt: 'Métricas compatíveis com Prometheus, traces via OpenTelemetry, circuit breaker, hot-reload de config no SIGUSR1 e viewer /dashboard.',
+  },
+  {
+    id: 'deployment',
+    name: 'Deployment',
+    descEn: 'Multi-arch Docker image, Helm chart with sidecar pattern, TLS/mTLS, stdio and HTTP+SSE transport, graceful shutdown.',
+    descPt: 'Imagem Docker multi-arch, Helm chart com padrão sidecar, TLS/mTLS, transporte stdio e HTTP+SSE, desligamento gracioso.',
+  },
+];
+---
+
+<BaseLayout
+  title="arbitus"
+  description="Arbitus — security proxy for AI agents and MCP servers. Enforces per-agent policies: auth, rate limiting, payload filtering, HITL, audit."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>Arbitus</h1>
+    </header>
+    <div class="prose">
+      <div class="arbitus-intro">
+        <div class="arbitus-header">
+          <img src="/arbitus-logo.png" alt="Arbitus" class="arbitus-logo" width="72" height="72" loading="eager" decoding="async" />
+          <p>
+            <span class="lang-en">
+              <strong>Arbitus</strong> is an open-source security proxy that sits between AI agents
+              and <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP servers</a>.
+              It enforces per-agent policies — auth, rate limiting, payload filtering, and audit —
+              before any tool call reaches the upstream server.
+            </span>
+            <span class="lang-pt">
+              <strong>Arbitus</strong> é um proxy de segurança open-source que fica entre agentes de IA
+              e <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">servidores MCP</a>.
+              Ele aplica políticas por agente — autenticação, rate limiting, filtragem de payload e auditoria —
+              antes que qualquer chamada de ferramenta chegue ao servidor upstream.
+            </span>
+          </p>
+        </div>
+        <div class="arbitus-diagram">
+          <pre><code>Agent (Cursor, Claude, etc.)
+        │  JSON-RPC
+        ▼
+      arbitus     ← auth, rate limit, HITL, payload filter, audit
+        │
+        ▼
+  MCP Server (filesystem, database, APIs...)</code></pre>
+        </div>
+        <p>
+          <span class="lang-en">
+            Available on <a href="https://crates.io/crates/arbitus" target="_blank" rel="noopener">crates.io</a> and{' '}
+            <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">GitHub</a>.
+            Full documentation at <a href="https://arbitus-gateway.xyz" target="_blank" rel="noopener">arbitus-gateway.xyz</a>.
+          </span>
+          <span class="lang-pt">
+            Disponível no <a href="https://crates.io/crates/arbitus" target="_blank" rel="noopener">crates.io</a> e no{' '}
+            <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">GitHub</a>.
+            Documentação completa em <a href="https://arbitus-gateway.xyz" target="_blank" rel="noopener">arbitus-gateway.xyz</a>.
+          </span>
+        </p>
+      </div>
+
+      <div class="install-block">
+        <pre class="theme-install"><code>cargo install arbitus</code></pre>
+      </div>
+
+      <h2>
+        <span class="lang-en">Features</span>
+        <span class="lang-pt">Funcionalidades</span>
+      </h2>
+
+      {features.map(f => (
+        <div class="theme-entry">
+          <h3>{f.name}</h3>
+          <p>
+            <span class="lang-en">{f.descEn}</span>
+            <span class="lang-pt">{f.descPt}</span>
+          </p>
+        </div>
+      ))}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .arbitus-intro {
+    margin-bottom: 2rem;
+  }
+
+  .arbitus-header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .arbitus-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .arbitus-diagram {
+    margin: 1.25rem 0 1.5rem;
+  }
+
+  .arbitus-diagram pre {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+  }
+
+  .arbitus-diagram code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx-2);
+  }
+
+  .install-block {
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .theme-entry {
+    margin-bottom: 2rem;
+  }
+
+  .theme-entry h3 {
+    margin-bottom: 0.25rem;
+  }
+
+  .theme-entry p {
+    margin-bottom: 0.5rem;
+    color: var(--tx-2);
+  }
+
+  .theme-install {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+  }
+
+  .theme-install code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx);
+  }
+</style>
