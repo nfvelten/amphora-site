@@ -5,13 +5,6 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://nicholas-velten.xyz',
-  redirects: {
-    '/sobre': '/about',
-    '/curriculo': '/resume',
-    '/escrita': '/writing',
-    '/leituras': '/readings',
-    '/leituras/[id]': '/readings/[id]',
-  },
   integrations: [
     mdx(),
     sitemap(),
