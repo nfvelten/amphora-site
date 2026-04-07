@@ -20,6 +20,7 @@ const leituras = defineCollection({
     autor: z.string(),
     date: z.coerce.date(),
     status: z.enum(['lendo', 'lido', 'quero-ler']),
+    description: z.string().optional(),
     genero: z.string().optional(),
     tags: z.array(z.string()).optional(),
     draft: z.boolean().optional().default(false),

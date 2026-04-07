@@ -4,6 +4,7 @@ autor: Viktor Frankl
 date: 2026-03-08
 status: lido
 genero: Psicologia
+description: O Homem em Busca de Sentido, de Viktor Frankl — sobre logoterapia, sentido e sobrevivência nos campos de concentração.
 tags: [livros, psicologia]
 ---
 
