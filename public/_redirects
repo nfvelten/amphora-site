@@ -3,3 +3,4 @@
 /escrita      /writing    301
 /leituras     /readings   301
 /leituras/:id /readings/:id 301
+/sitemap.xml  /sitemap-index.xml  301

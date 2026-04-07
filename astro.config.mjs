@@ -11,7 +11,6 @@ export default defineConfig({
     '/escrita': '/writing',
     '/leituras': '/readings',
     '/leituras/[id]': '/readings/[id]',
-    '/sitemap.xml': '/sitemap-index.xml',
   },
   integrations: [
     mdx(),
