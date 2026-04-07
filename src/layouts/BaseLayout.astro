@@ -24,12 +24,27 @@ const schemaGraph = {
   '@context': 'https://schema.org',
   '@graph': [
     {
+      '@type': 'Organization',
+      '@id': 'https://nicholas-velten.xyz/#organization',
+      name: 'Nicholas Velten',
+      url: 'https://nicholas-velten.xyz',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://nicholas-velten.xyz/favicon.svg',
+      },
+      sameAs: [
+        'https://www.linkedin.com/in/nicholasveltenfullstack',
+        'https://github.com/nfvelten',
+      ],
+    },
+    {
       '@type': 'WebSite',
       '@id': 'https://nicholas-velten.xyz/#website',
       url: 'https://nicholas-velten.xyz',
       name: 'Nicholas Velten',
       description: 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
       inLanguage: 'pt-BR',
+      publisher: { '@id': 'https://nicholas-velten.xyz/#organization' },
     },
     {
       '@type': 'Person',
