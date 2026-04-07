@@ -20,57 +20,63 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://nicholas-velten.xyz');
 const fullTitle = title.includes('Nicholas Velten') ? title : `${title} — Nicholas Velten`;
 
-const schemaGraph = {
+// Separate JSON-LD blocks (no @graph) so audit tools find each @type at root level
+const orgSchema = {
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': 'https://nicholas-velten.xyz/#organization',
-      name: 'Nicholas Velten',
-      url: 'https://nicholas-velten.xyz',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://nicholas-velten.xyz/favicon.svg',
-      },
-      sameAs: [
-        'https://www.linkedin.com/in/nicholasveltenfullstack',
-        'https://github.com/nfvelten',
-      ],
-    },
-    {
-      '@type': 'WebSite',
-      '@id': 'https://nicholas-velten.xyz/#website',
-      url: 'https://nicholas-velten.xyz',
-      name: 'Nicholas Velten',
-      description: 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
-      inLanguage: 'pt-BR',
-      publisher: { '@id': 'https://nicholas-velten.xyz/#organization' },
-    },
-    {
-      '@type': 'Person',
-      '@id': 'https://nicholas-velten.xyz/#person',
-      name: 'Nicholas Velten',
-      url: 'https://nicholas-velten.xyz/about',
-      image: 'https://nicholas-velten.xyz/icon.webp',
-      jobTitle: 'Engenheiro de Software Full-Stack',
-      worksFor: { '@type': 'Organization', name: 'Alloha Fibra' },
-      email: 'nikvelten@gmail.com',
-      sameAs: [
-        'https://www.linkedin.com/in/nicholasveltenfullstack',
-        'https://github.com/nfvelten',
-      ],
-    },
-    {
-      '@type': 'WebPage',
-      '@id': `${canonical.toString()}#webpage`,
-      url: canonical.toString(),
-      name: fullTitle,
-      description: description,
-      inLanguage: 'pt-BR',
-      isPartOf: { '@id': 'https://nicholas-velten.xyz/#website' },
-      about: { '@id': 'https://nicholas-velten.xyz/#person' },
-    },
+  '@type': 'Organization',
+  '@id': 'https://nicholas-velten.xyz/#organization',
+  name: 'Nicholas Velten',
+  url: 'https://nicholas-velten.xyz',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://nicholas-velten.xyz/favicon.svg',
+    width: 512,
+    height: 512,
+  },
+  sameAs: [
+    'https://www.linkedin.com/in/nicholasveltenfullstack',
+    'https://github.com/nfvelten',
   ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://nicholas-velten.xyz/#website',
+  url: 'https://nicholas-velten.xyz',
+  name: 'Nicholas Velten',
+  description: 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
+  inLanguage: 'pt-BR',
+  publisher: { '@id': 'https://nicholas-velten.xyz/#organization' },
+};
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://nicholas-velten.xyz/#person',
+  name: 'Nicholas Velten',
+  url: 'https://nicholas-velten.xyz/about',
+  image: 'https://nicholas-velten.xyz/icon.webp',
+  jobTitle: 'Full-Stack Software Engineer',
+  worksFor: { '@type': 'Organization', name: 'Alloha Fibra' },
+  email: 'nikvelten@gmail.com',
+  sameAs: [
+    'https://www.linkedin.com/in/nicholasveltenfullstack',
+    'https://github.com/nfvelten',
+  ],
+};
+
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonical.toString()}#webpage`,
+  url: canonical.toString(),
+  name: fullTitle,
+  description: description,
+  inLanguage: 'en',
+  isPartOf: { '@id': 'https://nicholas-velten.xyz/#website' },
+  about: { '@id': 'https://nicholas-velten.xyz/#person' },
+  publisher: { '@id': 'https://nicholas-velten.xyz/#organization' },
 };
 ---
 
@@ -117,7 +123,10 @@ const schemaGraph = {
     <title>{fullTitle}</title>
 
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webPageSchema)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <style is:global>
