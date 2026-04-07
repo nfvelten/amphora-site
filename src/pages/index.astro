@@ -1,11 +1,51 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Who is Nicholas Velten?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Nicholas Velten is a full-stack software engineer with 4+ years of experience building production systems. He works at Alloha Fibra — Brazil\'s largest independent ISP — developing critical APIs, voice infrastructure monitoring and system migrations. He has worked across telecommunications, fintechs and product startups.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What technologies does Nicholas Velten work with?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Nicholas Velten primarily works with Java, TypeScript, Vue.js, Node.js, NestJS, Spring Boot, React and Next.js. For infrastructure he uses Docker, Kubernetes, AWS, GCP and Terraform. His personal setup runs Linux with Hyprland, Neovim and Obsidian.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What open source projects has Nicholas Velten built?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Nicholas Velten built Arbitus, an open-source security proxy for AI agents and MCP servers written in Rust. He also maintains Amphora, a personal knowledge management system built on Obsidian and Neovim with AI integrations, and Mate Creations, a theme ecosystem for Neovim, Obsidian, VS Code and Zen Browser.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How can I contact Nicholas Velten?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'You can reach Nicholas Velten by email at nikvelten@gmail.com, on LinkedIn at linkedin.com/in/nicholasveltenfullstack, or on GitHub at github.com/nfvelten.',
+      },
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title="Nicholas Velten — Full-Stack Software Engineer"
-  description="Personal site of Nicholas Velten — writing about technology, open source projects and readings."
+  description="Personal site of Nicholas Velten — full-stack software engineer. Writing about technology, open source projects and readings."
+  jsonLd={faqSchema}
 >
   <Sidebar slot="sidebar" />
   <article>
@@ -19,38 +59,159 @@ import Sidebar from '../components/Sidebar.astro';
     <div class="prose lang-en">
       <p>
         Full-stack software engineer with 4+ years of experience building production systems.
-        This site is where I publish what I'm thinking, learning and reading.
+        I currently work at <strong>Alloha Fibra</strong> — Brazil's largest independent ISP —
+        developing critical APIs, voice infrastructure monitoring and system migrations.
+        I've worked across telecommunications, fintechs and product startups.
       </p>
+
+      <p>
+        I like understanding systems end to end — from the database to the UI component.
+        I care about clean code, architecture that makes sense and tools that stay the way
+        you set them up. My main stack is Java, TypeScript, Vue.js and Node.js at work,
+        with Rust and Python on the side.
+      </p>
+
+      <h2>On this site</h2>
       <ul>
-        <li><a href="/about">About</a> — who I am, stack, experience and projects</li>
-        <li><a href="/blog">Blog</a> — writing about technology and learnings</li>
+        <li><a href="/about">About</a> — who I am, full stack, experience and personal projects</li>
+        <li><a href="/blog">Blog</a> — writing about technology, tools and learnings</li>
         <li><a href="/readings">Readings</a> — books read, in progress and on the queue</li>
         <li><a href="/projects">Projects</a> — open source: Arbitus, Amphora, Mate Creations</li>
         <li><a href="/resume">Resume</a> — full professional background</li>
       </ul>
+
+      <h2>Open source</h2>
       <p>
-        <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a> ·
-        <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a> ·
-        <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
+        I build open source tools around areas I care about — AI security, personal knowledge
+        management and developer tooling. My main projects:
       </p>
+      <ul>
+        <li>
+          <strong><a href="/arbitus">Arbitus</a></strong> — security proxy for AI agents and MCP servers.
+          Enforces per-agent policies: authentication, rate limiting, payload filtering,
+          Human-in-the-Loop (HITL) and audit log. Written in Rust.
+        </li>
+        <li>
+          <strong><a href="/amphora">Amphora</a></strong> — personal knowledge management system
+          built on Obsidian and Neovim with AI-powered automations for meetings, content
+          ingestion and note-taking. Bash, Python, Claude API.
+        </li>
+        <li>
+          <strong><a href="/matecreations">Mate Creations</a></strong> — theme ecosystem for Neovim,
+          Obsidian, VS Code and Zen Browser, inspired by mate and tererê. Supports automatic
+          light/dark switching via systemd.
+        </li>
+      </ul>
+
+      <h2>Frequently asked questions</h2>
+      <dl>
+        <dt><strong>Who is Nicholas Velten?</strong></dt>
+        <dd>
+          A full-stack software engineer with 4+ years of experience building production systems.
+          Currently at Alloha Fibra developing APIs, monitoring infrastructure and leading system
+          migrations. Previously at LIGUE (acquired by Alloha), Kinebot and GetHash.
+        </dd>
+
+        <dt><strong>What technologies does Nicholas Velten work with?</strong></dt>
+        <dd>
+          At work: Java, TypeScript, Vue.js, Node.js, NestJS and Spring Boot. Infrastructure:
+          Docker, Kubernetes, AWS, GCP and Terraform. Personal stack: Linux with Hyprland,
+          Neovim and Obsidian. Also writes Rust and Python for personal projects.
+        </dd>
+
+        <dt><strong>What open source projects has Nicholas Velten built?</strong></dt>
+        <dd>
+          Arbitus (Rust) — a security proxy for AI agents and MCP servers.
+          Amphora — a knowledge management system integrating Obsidian, Neovim and Claude AI.
+          Mate Creations — a theme suite for Neovim, Obsidian, VS Code and Zen Browser.
+        </dd>
+
+        <dt><strong>How can I contact Nicholas Velten?</strong></dt>
+        <dd>
+          By email at <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>,
+          on <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a>
+          or on <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+        </dd>
+      </dl>
     </div>
+
     <div class="prose lang-pt">
       <p>
         Engenheiro de software full-stack com 4+ anos de experiência construindo sistemas em produção.
-        Este site é onde publico o que estou pensando, aprendendo e lendo.
+        Trabalho atualmente na <strong>Alloha Fibra</strong> — maior ISP independente do Brasil —
+        desenvolvendo APIs críticas, monitoramento de infraestrutura de voz e migrações de sistema.
+        Passei por telecomunicações, fintechs e startups de produto.
       </p>
+
+      <p>
+        Gosto de entender sistemas por inteiro — do banco de dados ao componente de interface.
+        Tenho apreço por código limpo, arquitetura que faz sentido e ferramentas que ficam do
+        jeito que você quer. Stack principal: Java, TypeScript, Vue.js e Node.js no trabalho,
+        com Rust e Python nos projetos pessoais.
+      </p>
+
+      <h2>Neste site</h2>
       <ul>
-        <li><a href="/about">Sobre</a> — quem sou, stack, experiência e projetos</li>
-        <li><a href="/blog">Blog</a> — escrita sobre tecnologia e aprendizados</li>
+        <li><a href="/about">Sobre</a> — quem sou, stack, experiência e projetos pessoais</li>
+        <li><a href="/blog">Blog</a> — escrita sobre tecnologia, ferramentas e aprendizados</li>
         <li><a href="/readings">Leituras</a> — livros lidos, em andamento e na fila</li>
         <li><a href="/projects">Projetos</a> — open source: Arbitus, Amphora, Mate Creations</li>
         <li><a href="/resume">Currículo</a> — trajetória profissional completa</li>
       </ul>
+
+      <h2>Open source</h2>
       <p>
-        <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a> ·
-        <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a> ·
-        <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
+        Construo ferramentas open source em áreas que me interessam — segurança em IA, gestão
+        de conhecimento pessoal e ferramentas de desenvolvimento. Meus projetos principais:
       </p>
+      <ul>
+        <li>
+          <strong><a href="/arbitus">Arbitus</a></strong> — proxy de segurança para agentes de IA e servidores MCP.
+          Aplica políticas por agente: autenticação, rate limiting, filtragem de payload,
+          Human-in-the-Loop (HITL) e auditoria. Escrito em Rust.
+        </li>
+        <li>
+          <strong><a href="/amphora">Amphora</a></strong> — sistema de gestão de conhecimento pessoal
+          construído sobre Obsidian e Neovim com automações via IA para reuniões, ingestão de conteúdo
+          e captura de notas. Bash, Python, Claude API.
+        </li>
+        <li>
+          <strong><a href="/matecreations">Mate Creations</a></strong> — ecossistema de temas para Neovim,
+          Obsidian, VS Code e Zen Browser, inspirado no mate e tererê. Suporta alternância automática
+          claro/escuro via systemd.
+        </li>
+      </ul>
+
+      <h2>Perguntas frequentes</h2>
+      <dl>
+        <dt><strong>Quem é Nicholas Velten?</strong></dt>
+        <dd>
+          Engenheiro de software full-stack com 4+ anos de experiência construindo sistemas em produção.
+          Atualmente na Alloha Fibra desenvolvendo APIs, monitoramento e migrações de sistema.
+          Anteriormente na LIGUE (adquirida pela Alloha), Kinebot e GetHash.
+        </dd>
+
+        <dt><strong>Com quais tecnologias Nicholas Velten trabalha?</strong></dt>
+        <dd>
+          No trabalho: Java, TypeScript, Vue.js, Node.js, NestJS e Spring Boot. Infraestrutura:
+          Docker, Kubernetes, AWS, GCP e Terraform. Setup pessoal: Linux com Hyprland,
+          Neovim e Obsidian. Também escreve Rust e Python em projetos pessoais.
+        </dd>
+
+        <dt><strong>Quais projetos open source Nicholas Velten construiu?</strong></dt>
+        <dd>
+          Arbitus (Rust) — proxy de segurança para agentes de IA e servidores MCP.
+          Amphora — sistema de gestão de conhecimento integrando Obsidian, Neovim e Claude AI.
+          Mate Creations — suite de temas para Neovim, Obsidian, VS Code e Zen Browser.
+        </dd>
+
+        <dt><strong>Como entrar em contato com Nicholas Velten?</strong></dt>
+        <dd>
+          Por email em <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>,
+          no <a href="https://www.linkedin.com/in/nicholasveltenfullstack" target="_blank" rel="noopener">LinkedIn</a>
+          ou no <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+        </dd>
+      </dl>
     </div>
   </article>
 </BaseLayout>
