@@ -20,6 +20,8 @@
 
   --accent:  var(--blue);
   --link:    var(--blue);
+  --gradient-start: #8b0005;
+  --gradient-end:   #a05a00;
 }
 
 /* ── Yerba Mate — dark (18h–6h) ─────────────────────────────────── */
@@ -44,6 +46,8 @@
 
   --accent:  var(--blue);
   --link:    var(--blue);
+  --gradient-start: #e07050;
+  --gradient-end:   #d0a060;
 }
 
 /* ── Reset e base ────────────────────────────────────────────────── */
@@ -640,7 +644,7 @@ html[data-lang="pt"] .lang-pt { display: revert; }
 
 /* ── Gradient Accents for Headings ───────────────────────────────── */
 .gradient-heading {
-  background: linear-gradient(135deg, var(--red), var(--orange));
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
