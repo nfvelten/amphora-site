@@ -2,8 +2,8 @@
 title: Building a security proxy for MCP
 title_pt: Construindo um proxy de segurança para MCP
 date: 2026-03-29
-description: MCP became the standard protocol for connecting AI agents to tools. The protocol has no built-in auth layer. Here's why that's a problem, what I built to address it, and what I learned along the way.
-description_pt: O MCP se tornou o protocolo padrão para conectar agentes de IA a ferramentas. O protocolo não tem camada de autenticação embutida. Aqui está por que isso é um problema, o que construí para resolver, e o que aprendi no processo.
+description: MCP became the standard protocol for connecting AI agents to tools. The protocol has no built-in auth layer. Here's what I built to address it, and what the project has become.
+description_pt: O MCP se tornou o protocolo padrão para conectar agentes de IA a ferramentas. O protocolo não tem camada de autenticação embutida. O que construí para resolver isso, e o que o projeto se tornou.
 tags: [technology, security]
 ---
 
@@ -29,13 +29,13 @@ There's also a subtler problem: AI agents are prompt-injectable. A malicious too
 
 ## What I built
 
-[mcp-shield](https://github.com/nfvelten/mcp-shield) is a reverse proxy that sits between agents and MCP servers. It enforces per-agent policies before any tool call reaches the upstream.
+[Arbitus](https://arbitus-gateway.xyz) is a security proxy that sits between AI agents and MCP servers. It enforces per-agent policies before any tool call reaches the upstream.
 
 ```
 Agent (Cursor, Claude, etc.)
         │  JSON-RPC
         ▼
-  mcp-shield     ← auth, rate limit, payload filter, audit
+    arbitus     ← auth, rate limit, HITL, payload filter, audit
         │
         ▼
   MCP Server (filesystem, database, APIs...)
@@ -58,9 +58,9 @@ default_policy:               # fallback for unlisted agents
   rate_limit: 10
 ```
 
-Each agent gets an allowlist or denylist (with glob wildcards — `read_*` matches `read_file`, `read_dir`, etc.). The `tools/list` response is filtered before it reaches the agent — it only sees tools it's allowed to call. Agents not in the config fall back to `default_policy`, or are blocked entirely if none is set.
+Each agent gets an allowlist or denylist with glob wildcards. The `tools/list` response is filtered before it reaches the agent — it only sees tools it's allowed to call. Agents not in the config fall back to `default_policy`, or are blocked entirely if none is set.
 
-The pipeline applies in order: rate limit → auth → payload filter → upstream.
+The pipeline applies in order: rate limit → auth → HITL → schema validation → payload filter → upstream.
 
 ---
 
@@ -68,7 +68,7 @@ The pipeline applies in order: rate limit → auth → payload filter → upstre
 
 The proxy sits in the hot path of every tool call. It needs to be fast and correct.
 
-Rust's type system made the architecture natural. Each layer of the pipeline is a trait object. Transport, upstream, and audit backend are all traits — you can swap SQLite for a webhook, or HTTP transport for stdio, without touching the core logic. The policy map is an `Arc<HashMap>` shared across all middleware without copying.
+Rust's type system made the architecture natural. Each layer of the pipeline is a trait object — transport, upstream, and audit backend are all traits. You can swap SQLite for a webhook, or HTTP transport for stdio, without touching the core logic. The policy map is an `Arc<HashMap>` shared across all middleware without copying.
 
 The other reason was cross-compilation. MCP servers run everywhere — Linux, macOS, Windows, ARM boards. Rust compiles to all of them cleanly, especially once you drop OpenSSL for `rustls` (pure Rust TLS, no system dependency).
 
@@ -76,48 +76,97 @@ The other reason was cross-compilation. MCP servers run everywhere — Linux, ma
 
 ## The tricky parts
 
-**stdio mode.** MCP has two transports: HTTP+SSE and stdio. In stdio mode, the agent and server communicate via stdin/stdout — there's no HTTP request to intercept. The gateway spawns the upstream server as a child process, reads from its stdout, writes to its stdin, and applies policies on each message in both directions.
+**stdio mode.** MCP has two transports: HTTP+SSE and stdio. In stdio mode, the agent and server communicate via stdin/stdout — there's no HTTP request to intercept. Arbitus spawns the upstream server as a child process, reads from its stdout, writes to its stdin, and applies policies on each message in both directions, including responses.
 
-**Redact vs. block.** The first version blocked any request containing a sensitive pattern. That's too coarse — sometimes you want to scrub the value and forward the sanitized request. Adding a `filter_mode: redact` option required threading `FilterMode` through the entire pipeline and writing a recursive JSON value walker (`redact_value`) that replaces matching string leaves with `"[REDACTED]"` while preserving the surrounding structure. Responses are always scrubbed regardless of mode.
+**Encoding-aware filtering.** The first version matched block patterns against raw request strings. That's bypassable — a payload that's Base64-encoded, percent-encoded, or Unicode-normalized differently won't match a literal regex. The solution was to decode every candidate string through a chain of passes (standard Base64, URL-safe Base64, percent-encoding, double-encoding, Unicode NFC normalization with Bidi-control stripping) before applying patterns. Each decode attempt happens regardless of whether it succeeds, so the pipeline catches multi-layer encoding.
 
-**Prompt injection detection.** A `block_prompt_injection: true` flag enables seven built-in regex patterns covering instruction-override attacks, role reassignment, DAN-style jailbreaks, and prompt exfiltration attempts. The tricky part was deciding where these fit in the pipeline: they're checked *after* the `filter_mode` decision, always block, and their patterns don't get redacted — you want a hard rejection, not a scrub-and-forward.
+**Schema validation in the hot path.** Each `tools/call` gets validated against the `inputSchema` fetched from `tools/list`. The schema cache is LRU-bounded to prevent memory exhaustion when agents probe tool lists aggressively. The tricky part was deciding what happens on validation failure: return a structured JSON-RPC error with the exact constraint that failed, without leaking anything about the upstream's internal schema structure.
 
-**OpenTelemetry subscriber initialization.** Adding OTel tracing meant calling `.with(tracing_opentelemetry::layer().with_tracer(t))` conditionally on the `tracing_subscriber` registry. The problem is that each `.with()` changes the concrete type of the registry, making it impossible to branch without boxing or code duplication. The solution was a 4-branch match on `(json_logging, otel_enabled)`, each branch fully written out with concrete types. Ugly, but the compiler is happy.
+**Human-in-the-Loop.** The HITL middleware suspends any tool call matching `approval_required` patterns, stores it with a generated ID, and holds the HTTP response open until an operator calls `POST /approvals/{id}/approve` or `POST /approvals/{id}/reject`. If no decision arrives within `hitl_timeout_secs`, it auto-rejects. The hard part was the connection model: the suspended request is a live goroutine holding a response writer — approval comes in on a different HTTP path. A per-request `oneshot` channel bridges them.
 
-**Multi-provider JWT.** The `auth:` config needed to accept either a single provider or a list — `#[serde(untagged)]` on an enum handles this transparently. Each provider in the list is tried in order; the first that successfully validates the token wins. OIDC discovery (`{issuer}/.well-known/openid-configuration`) is fetched once and cached for the process lifetime.
+**Immutable audit.** The SQLite audit backend now uses database-level enforcement: INSERT triggers compute a SHA-256 hash over each row's fields chained to the previous row's hash, and a BEFORE UPDATE trigger rejects any modification. No application code can alter the audit trail after the fact — the database itself refuses. This required careful ordering of trigger creation and a genesis hash for the first row.
 
-**Audit log.** `record()` is called in the request path and must be non-blocking. An unbounded channel separates the write from the disk. On graceful shutdown, `flush()` drops the sender (signals EOF) and awaits the background worker. Every write lands before the process exits.
+**OPA/Rego integration.** Every `tools/call` can be evaluated against a Rego policy file. The implementation uses `regorus` (a pure-Rust Rego evaluator) instead of the OPA binary or WASM runtime, which avoids an external process dependency. The policy input exposes agent ID, tool name, arguments, and client IP. The tricky part was deciding what a policy *silence* means: no matching rule defaults to deny, because a policy that allows everything by omission isn't a policy.
+
+**mTLS agent identity.** When mutual TLS is enabled, the client certificate's Common Name is extracted and mapped to an agent policy entry via `mtls_identity`. Authentication priority is JWT Bearer → mTLS CN → API key → `clientInfo.name`. The CN extraction happens in the TLS handshake handler, before any JSON-RPC parsing, so a client that can't authenticate never reaches the middleware pipeline.
+
+**SSRF guard on OIDC discovery.** OIDC provider config is fetched from `{issuer}/.well-known/openid-configuration`. An issuer URL from untrusted config could point to an internal service. The guard validates that the resolved IP is not in RFC 1918 or link-local ranges before making the fetch. This runs at startup, not per-request, but the check still needs to be airtight — a bypass here is a full SSRF.
+
+**MCP Sampling security.** MCP's sampling messages flow in the opposite direction — from server to agent. The bidirectional middleware pipeline was designed for tool calls going downstream; applying policies to server-initiated messages required inverting the pipeline traversal order and adding a separate sampling policy config. Immutable audit triggers now cover both directions.
 
 ---
 
 ## What it does now
 
-- Per-agent allowlist / denylist with glob wildcards and `tools/list` filtering
-- Sliding-window rate limiting: per-agent, per-tool, per-IP
-- JWT / OIDC authentication — single provider or a list; Google, GitHub Actions, Auth0, Okta presets; JWKS caching
-- Payload filtering with user-defined regexes; `block` or `redact` mode
-- Response filtering — sensitive patterns scrubbed from upstream responses before reaching the agent
-- Built-in prompt injection detection
-- SQLite audit log with CLI; webhook backend; fan-out to multiple backends simultaneously
-- Circuit breaker on each upstream — automatic half-open probe after recovery timeout
-- `/health` endpoint reporting per-upstream status
-- Config hot-reload via `SIGUSR1` or automatically every 30 seconds
+**Access control**
+- Per-agent allowlist / denylist for tools, resources, and prompts — with glob wildcards
+- `tools/list`, `resources/list`, and `prompts/list` filtered before reaching the agent
+- Default policy fallback for unlisted agents
+- Human-in-the-Loop: suspend tool calls pending operator approval via REST API
+- Shadow mode: intercept and log without forwarding; dry-run risky operations
+
+**Auth**
+- JWT / OIDC — single provider or a list; Google, GitHub Actions, Auth0, Okta presets; JWKS caching
+- OAuth 2.1 with PKCE
+- API key per agent
+- mTLS with CN-to-agent mapping
+- Auth priority: JWT Bearer → mTLS CN → API key → `clientInfo.name`
+
+**Rate limiting**
+- Sliding window per agent, per tool, and per IP
+- GCRA algorithm via `governor` — lock-free, O(1) per check
+- Standard `X-RateLimit-*` headers on every response
+
+**Filtering**
+- Payload filtering: block or redact with user-defined regexes
+- Encoding-aware: Base64, percent-encoding, double-encoding, Unicode normalization decoded before matching
+- Response filtering: sensitive patterns scrubbed from upstream responses before reaching the agent
+- Prompt injection detection: seven built-in patterns covering instruction-override, role reassignment, DAN-style jailbreaks, and prompt exfiltration
+- Schema validation: `tools/call` arguments validated against `inputSchema` from `tools/list`
+- OPA/Rego policy engine: arbitrary policy-as-code evaluated per tool call
+
+**Audit and observability**
+- SQLite audit log with immutable hash chain (database-level triggers)
+- Webhook backend with plain JSON or CNCF CloudEvents 1.0
+- OpenLineage integration (SIEM/data lineage pipelines)
+- Fan-out to multiple backends simultaneously
 - `X-Request-Id` on every response, recorded in audit and OTel spans
-- Prometheus-compatible `/metrics`
+- Prometheus-compatible `/metrics` with cost/token estimation per agent
 - OpenTelemetry tracing via OTLP
-- HTTP and stdio transports; TLS support
+- `/dashboard` audit viewer with per-agent filtering
+- `arbitus audit` CLI with filtering by agent, outcome, time range
+
+**Resilience**
+- Circuit breaker per upstream: automatic isolation and half-open recovery
+- Config hot-reload: `SIGUSR1`, automatic 30s polling, or Kubernetes ConfigMap watcher
+- Graceful shutdown: drain connections, close child processes, flush audit backends
+
+**Supply chain**
+- Verify upstream MCP server binaries via SHA-256 hash pinning
+- Cosign/Sigstore bundle verification before spawning
+
+**Infrastructure**
+- HTTP+SSE and stdio transports; TLS and mTLS
+- Tool federation: aggregate tools from multiple upstreams into a single agent view
+- OpenAI Tools Bridge: `/openai/v1/tools` and `/openai/v1/execute` for OpenAI function-calling clients
+- Multi-arch Docker image (`ghcr.io/arbitusgateway/arbitus`)
+- Helm chart with sidecar pattern, HPA, PDB, NetworkPolicy, PVC
+- Kubernetes ConfigMap watcher for zero-touch config updates
+- Secrets-safe config: `${VAR}` interpolation and `ARBITUS_*` env var overrides
 
 ---
 
 ## The landscape
 
-There are now several projects solving adjacent problems. [agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation, 2,200+ stars) is the most mature — Rust core, WASM plugin system, multi-protocol. It's the right choice if you're building platform-level infrastructure.
+[agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation) is the most mature project in this space — Rust core, WASM plugin system, multi-protocol. It's the right choice for platform-level infrastructure that needs to handle arbitrary agent protocols.
 
-mcp-shield is a different bet: a focused security proxy you can install with `cargo install mcp-shield` and configure with a single YAML file. No container runtime, no Kubernetes, no commercial tier. The tradeoff is that it won't grow into a service mesh — that's by design.
+Arbitus bets on a different scope: deep MCP-specific security, not a generalized gateway. The features that matter for that bet — HITL, shadow mode, OPA policy evaluation, encoding-aware filtering, mTLS agent identity, supply-chain verification, immutable audit — don't make sense as generic gateway plugins. They're built around the semantics of MCP tool calls specifically.
+
+The install path is still `cargo install arbitus` with a single YAML file. The Kubernetes path is a Helm chart with a sidecar pattern. No commercial tier, no managed service requirement.
 
 ---
 
-The full source is at [github.com/nfvelten/mcp-shield](https://github.com/nfvelten/mcp-shield).
+Full source at [github.com/arbitusgateway/arbitus](https://github.com/arbitusgateway/arbitus). Documentation at [arbitus-gateway.xyz](https://arbitus-gateway.xyz).
 </En>
 
 <Pt>
@@ -139,13 +188,13 @@ Existe também um problema mais sutil: agentes de IA são suscetíveis a prompt 
 
 ## O que construí
 
-[mcp-shield](https://github.com/nfvelten/mcp-shield) é um proxy reverso que fica entre agentes e servidores MCP. Ele aplica políticas por agente antes que qualquer tool call chegue ao upstream.
+[Arbitus](https://arbitus-gateway.xyz) é um proxy de segurança que fica entre agentes de IA e servidores MCP. Ele aplica políticas por agente antes que qualquer tool call chegue ao upstream.
 
 ```
 Agente (Cursor, Claude, etc.)
         │  JSON-RPC
         ▼
-  mcp-shield     ← auth, rate limit, payload filter, audit
+    arbitus     ← auth, rate limit, HITL, payload filter, audit
         │
         ▼
   Servidor MCP (filesystem, banco de dados, APIs...)
@@ -168,9 +217,9 @@ default_policy:               # fallback para agentes não listados
   rate_limit: 10
 ```
 
-Cada agente recebe uma allowlist ou denylist (com wildcards glob — `read_*` faz match em `read_file`, `read_dir`, etc.). A resposta do `tools/list` é filtrada antes de chegar ao agente — ele só vê as tools que pode chamar. Agentes fora da config herdam `default_policy`, ou são bloqueados completamente se não houver.
+Cada agente recebe uma allowlist ou denylist com wildcards glob. A resposta do `tools/list` é filtrada antes de chegar ao agente — ele só vê as tools que pode chamar. Agentes fora da config herdam `default_policy`, ou são bloqueados completamente se não houver.
 
-O pipeline se aplica em ordem: rate limit → auth → payload filter → upstream.
+O pipeline se aplica em ordem: rate limit → auth → HITL → schema validation → payload filter → upstream.
 
 ---
 
@@ -178,7 +227,7 @@ O pipeline se aplica em ordem: rate limit → auth → payload filter → upstre
 
 O proxy fica no caminho crítico de cada tool call. Precisa ser rápido e correto.
 
-O sistema de tipos do Rust tornou a arquitetura natural. Cada camada do pipeline é um trait object. Transport, upstream e audit são todos traits — você pode trocar SQLite por webhook, ou HTTP por stdio, sem tocar na lógica central. O mapa de políticas é um `Arc<HashMap>` compartilhado entre todos os middleware sem copiar.
+O sistema de tipos do Rust tornou a arquitetura natural. Cada camada do pipeline é um trait object — transport, upstream e audit backend são todos traits. Você pode trocar SQLite por webhook, ou HTTP por stdio, sem tocar na lógica central. O mapa de políticas é um `Arc<HashMap>` compartilhado entre todos os middleware sem copiar.
 
 O outro motivo foi cross-compilation. Servidores MCP rodam em todo lugar — Linux, macOS, Windows, boards ARM. Rust compila para todos de forma limpa, especialmente depois de trocar OpenSSL por `rustls` (TLS puro em Rust, sem dependência de sistema).
 
@@ -186,46 +235,95 @@ O outro motivo foi cross-compilation. Servidores MCP rodam em todo lugar — Lin
 
 ## As partes difíceis
 
-**Modo stdio.** O MCP tem dois transports: HTTP+SSE e stdio. No modo stdio, agente e servidor se comunicam via stdin/stdout — não há requisição HTTP para interceptar. O gateway spawna o servidor upstream como processo filho, lê do stdout dele, escreve no stdin, e aplica políticas em cada mensagem nos dois sentidos.
+**Modo stdio.** O MCP tem dois transports: HTTP+SSE e stdio. No modo stdio, agente e servidor se comunicam via stdin/stdout — não há requisição HTTP para interceptar. O Arbitus spawna o servidor upstream como processo filho, lê do stdout dele, escreve no stdin, e aplica políticas em cada mensagem nos dois sentidos, incluindo respostas.
 
-**Redact vs. block.** A primeira versão bloqueava qualquer requisição com padrão sensível. Isso é grosseiro demais — às vezes você quer remover o valor e encaminhar a requisição sanitizada. Adicionar `filter_mode: redact` exigiu passar `FilterMode` por todo o pipeline e escrever um walker recursivo de JSON (`redact_value`) que substitui folhas de string que fazem match por `"[REDACTED]"` preservando a estrutura. Respostas são sempre sanitizadas independente do modo.
+**Filtragem com awareness de encoding.** A primeira versão comparava padrões de bloqueio contra strings brutas. Isso é contornável — um payload codificado em Base64, percent-encoded ou com normalização Unicode diferente não faz match em um regex literal. A solução foi decodificar cada string candidata por uma cadeia de passes (Base64 padrão, Base64 URL-safe, percent-encoding, double-encoding, normalização NFC com remoção de controles Bidi) antes de aplicar os padrões. Cada tentativa de decodificação acontece independente de sucesso, então o pipeline captura encoding em múltiplas camadas.
 
-**Detecção de prompt injection.** A flag `block_prompt_injection: true` habilita sete padrões regex cobrindo ataques de override de instrução, reassignment de papel, jailbreaks estilo DAN, e exfiltração de prompt. A parte difícil foi decidir onde isso se encaixa no pipeline: são checados *depois* da decisão de `filter_mode`, sempre bloqueiam, e seus padrões não são redactados — você quer rejeição hard, não scrub-and-forward.
+**Schema validation no caminho crítico.** Cada `tools/call` é validado contra o `inputSchema` obtido do `tools/list`. O cache de schemas é limitado por LRU para evitar exaustão de memória quando agentes exploram tool lists agressivamente. A parte difícil foi decidir o que acontece em falha de validação: retornar um erro JSON-RPC estruturado com a constraint exata que falhou, sem vazar nada sobre a estrutura interna do upstream.
 
-**Inicialização do subscriber OpenTelemetry.** Adicionar tracing OTel significava chamar `.with(tracing_opentelemetry::layer().with_tracer(t))` condicionalmente no registry do `tracing_subscriber`. O problema é que cada `.with()` muda o tipo concreto do registry, tornando impossível branchar sem boxing ou duplicação de código. A solução foi um match de 4 branches em `(json_logging, otel_enabled)`, cada branch escrito completamente com tipos concretos. Feio, mas o compilador fica feliz.
+**Human-in-the-Loop.** O middleware HITL suspende qualquer tool call que faça match nos padrões de `approval_required`, armazena com um ID gerado, e mantém a resposta HTTP aberta até que um operador chame `POST /approvals/{id}/approve` ou `POST /approvals/{id}/reject`. Se nenhuma decisão chegar dentro de `hitl_timeout_secs`, auto-rejeita. A parte difícil foi o modelo de conexão: a requisição suspensa é uma goroutine viva segurando um response writer — a aprovação chega por um caminho HTTP diferente. Um channel `oneshot` por requisição faz a ponte.
 
-**JWT multi-provider.** A config `auth:` precisava aceitar tanto um provider único quanto uma lista — `#[serde(untagged)]` num enum cuida disso de forma transparente. Cada provider na lista é tentado em ordem; o primeiro que valida o token com sucesso vence. A descoberta OIDC (`{issuer}/.well-known/openid-configuration`) é buscada uma vez e cacheada pelo tempo de vida do processo.
+**Audit imutável.** O backend SQLite agora usa enforcement no nível do banco de dados: triggers de INSERT calculam um hash SHA-256 sobre os campos de cada linha encadeado ao hash da linha anterior, e um trigger BEFORE UPDATE rejeita qualquer modificação. Nenhum código de aplicação pode alterar o audit trail depois do fato — o próprio banco recusa. Isso exigiu ordenação cuidadosa na criação dos triggers e um hash gênesis para a primeira linha.
 
-**Audit log.** `record()` é chamado no caminho da requisição e precisa ser não-bloqueante. Um channel separa a escrita do disco. No shutdown gracioso, `flush()` dropa o sender (sinaliza EOF) e aguarda o worker em background. Cada write aterra antes do processo encerrar.
+**Integração OPA/Rego.** Cada `tools/call` pode ser avaliado contra um arquivo de política Rego. A implementação usa `regorus` (um avaliador Rego puro em Rust) em vez do binário OPA ou um runtime WASM, o que evita dependência de processo externo. O input da política expõe ID do agente, nome da tool, argumentos e IP do cliente. A parte difícil foi decidir o que um *silêncio* de política significa: nenhuma regra matching resulta em deny por padrão, porque uma política que permite tudo por omissão não é uma política.
+
+**Identidade mTLS por agente.** Quando mutual TLS está habilitado, o Common Name do certificado do cliente é extraído e mapeado para uma entrada de política de agente via `mtls_identity`. A prioridade de autenticação é JWT Bearer → mTLS CN → API key → `clientInfo.name`. A extração do CN acontece no handler do handshake TLS, antes de qualquer parsing de JSON-RPC, então um cliente que não consegue autenticar nunca chega ao pipeline de middleware.
+
+**SSRF guard no OIDC discovery.** A config do provider OIDC é obtida de `{issuer}/.well-known/openid-configuration`. Uma URL de issuer de config não confiável poderia apontar para um serviço interno. O guard valida que o IP resolvido não está em ranges RFC 1918 ou link-local antes de fazer o fetch. Isso roda na inicialização, não por requisição, mas o check ainda precisa ser hermético — um bypass aqui é um SSRF completo.
+
+**Segurança em MCP Sampling.** As mensagens de sampling do MCP fluem na direção oposta — do servidor para o agente. O pipeline de middleware bidirecional foi projetado para tool calls indo downstream; aplicar políticas a mensagens iniciadas pelo servidor exigiu inverter a ordem de traversal do pipeline e adicionar uma config de política de sampling separada. Os triggers de audit imutável agora cobrem ambas as direções.
 
 ---
 
 ## O que tem agora
 
-- Allowlist / denylist por agente com wildcards glob e filtragem do `tools/list`
-- Rate limiting por janela deslizante: por agente, por tool, por IP
-- Autenticação JWT / OIDC — provider único ou lista; presets Google, GitHub Actions, Auth0, Okta; cache de JWKS
-- Payload filtering com regexes do usuário; modo `block` ou `redact`
-- Response filtering — padrões sensíveis removidos das respostas do upstream antes de chegar ao agente
-- Detecção de prompt injection built-in
-- Audit log em SQLite com CLI; backend webhook; fan-out para múltiplos backends simultaneamente
-- Circuit breaker em cada upstream — probe automático half-open após timeout de recovery
-- Endpoint `/health` reportando status por upstream
-- Config hot-reload via `SIGUSR1` ou automaticamente a cada 30 segundos
+**Controle de acesso**
+- Allowlist / denylist por agente para tools, resources e prompts — com wildcards glob
+- `tools/list`, `resources/list` e `prompts/list` filtrados antes de chegar ao agente
+- Default policy fallback para agentes não listados
+- Human-in-the-Loop: suspender tool calls aguardando aprovação do operador via REST API
+- Shadow mode: interceptar e logar sem encaminhar; dry-run de operações arriscadas
+
+**Auth**
+- JWT / OIDC — provider único ou lista; presets Google, GitHub Actions, Auth0, Okta; cache de JWKS
+- OAuth 2.1 com PKCE
+- API key por agente
+- mTLS com mapeamento de CN para agente
+- Prioridade de auth: JWT Bearer → mTLS CN → API key → `clientInfo.name`
+
+**Rate limiting**
+- Janela deslizante por agente, por tool e por IP
+- Algoritmo GCRA via `governor` — lock-free, O(1) por check
+- Headers padrão `X-RateLimit-*` em cada resposta
+
+**Filtragem**
+- Payload filtering: block ou redact com regexes do usuário
+- Encoding-aware: Base64, percent-encoding, double-encoding, Unicode normalization decodificados antes do match
+- Response filtering: padrões sensíveis removidos das respostas do upstream antes de chegar ao agente
+- Detecção de prompt injection: sete padrões built-in cobrindo override de instrução, reassignment de papel, jailbreaks estilo DAN e exfiltração de prompt
+- Schema validation: argumentos de `tools/call` validados contra `inputSchema` do `tools/list`
+- OPA/Rego policy engine: policy-as-code arbitrária avaliada por tool call
+
+**Audit e observabilidade**
+- Audit log em SQLite com hash chain imutável (triggers no nível do banco)
+- Backend webhook com JSON simples ou CNCF CloudEvents 1.0
+- Integração OpenLineage (pipelines SIEM/data lineage)
+- Fan-out para múltiplos backends simultaneamente
 - `X-Request-Id` em cada resposta, gravado no audit e nos spans OTel
-- `/metrics` compatível com Prometheus
+- `/metrics` compatível com Prometheus com estimativa de custo/tokens por agente
 - Tracing OpenTelemetry via OTLP
-- Transports HTTP e stdio; suporte a TLS
+- `/dashboard` com filtragem por agente
+- CLI `arbitus audit` com filtragem por agente, outcome e intervalo de tempo
+
+**Resiliência**
+- Circuit breaker por upstream: isolamento automático e recovery half-open
+- Config hot-reload: `SIGUSR1`, polling automático a cada 30s, ou watcher de ConfigMap do Kubernetes
+- Graceful shutdown: drenar conexões, fechar processos filhos, fazer flush dos backends de audit
+
+**Supply chain**
+- Verificar binários de servidores MCP upstream via SHA-256 hash pinning
+- Verificação de bundle Cosign/Sigstore antes de spawnar
+
+**Infraestrutura**
+- Transports HTTP+SSE e stdio; TLS e mTLS
+- Tool federation: agregar tools de múltiplos upstreams em uma visão unificada por agente
+- OpenAI Tools Bridge: `/openai/v1/tools` e `/openai/v1/execute` para clientes OpenAI function-calling
+- Imagem Docker multi-arch (`ghcr.io/arbitusgateway/arbitus`)
+- Helm chart com sidecar pattern, HPA, PDB, NetworkPolicy, PVC
+- Watcher de ConfigMap do Kubernetes para atualizações de config sem intervenção
+- Config com segurança para secrets: interpolação `${VAR}` e overrides via env vars `ARBITUS_*`
 
 ---
 
 ## O cenário
 
-Há vários projetos resolvendo problemas adjacentes. O [agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation, 2.200+ stars) é o mais maduro — core em Rust, sistema de plugins WASM, multi-protocolo. É a escolha certa se você está construindo infraestrutura de nível de plataforma.
+O [agentgateway](https://github.com/agentgateway/agentgateway) (Linux Foundation) é o projeto mais maduro neste espaço — core em Rust, sistema de plugins WASM, multi-protocolo. É a escolha certa para infraestrutura de nível de plataforma que precisa lidar com protocolos de agente arbitrários.
 
-O mcp-shield é uma aposta diferente: um proxy de segurança focado que você instala com `cargo install mcp-shield` e configura com um único arquivo YAML. Sem container runtime, sem Kubernetes, sem tier comercial. O tradeoff é que ele não vai crescer em um service mesh — isso é intencional.
+O Arbitus aposta em um escopo diferente: segurança profunda e específica para MCP, não um gateway genérico. As features que importam para essa aposta — HITL, shadow mode, OPA, filtragem com awareness de encoding, identidade mTLS, verificação de supply chain, audit imutável — não fazem sentido como plugins genéricos de gateway. São construídas em torno da semântica específica de tool calls do MCP.
+
+O caminho de instalação ainda é `cargo install arbitus` com um único arquivo YAML. O caminho Kubernetes é um Helm chart com sidecar pattern. Sem tier comercial, sem requisito de serviço gerenciado.
 
 ---
 
-O código completo está em [github.com/nfvelten/mcp-shield](https://github.com/nfvelten/mcp-shield).
+Código completo em [github.com/arbitusgateway/arbitus](https://github.com/arbitusgateway/arbitus). Documentação em [arbitus-gateway.xyz](https://arbitus-gateway.xyz).
 </Pt>
