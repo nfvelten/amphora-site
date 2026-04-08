@@ -144,32 +144,6 @@ const webPageSchema = {
         }
       });
 
-      function initScrollReveal() {
-        const reveals = document.querySelectorAll('.reveal');
-        
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px 0px -50px 0px'
-        });
-
-        reveals.forEach(el => {
-          const rect = el.getBoundingClientRect();
-          const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
-          
-          if (isVisible) {
-            el.classList.add('visible');
-          } else {
-            observer.observe(el);
-          }
-        });
-      }
-
       function initBackToTop() {
         const btn = document.getElementById('back-to-top');
         if (!btn) return;
@@ -188,9 +162,14 @@ const webPageSchema = {
       }
 
       document.addEventListener('astro:page-load', () => {
-        initScrollReveal();
         initBackToTop();
       });
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBackToTop);
+      } else {
+        initBackToTop();
+      }
     </script>
   </head>
   <body>
