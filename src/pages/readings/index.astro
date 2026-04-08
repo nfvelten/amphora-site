@@ -23,20 +23,20 @@ const statusLabelPt: Record<string, string> = {
   description="Reading list of Nicholas Velten — books read, in progress and on the queue."
 >
   <Sidebar slot="sidebar" />
-  <h1 class="page-heading">
+  <h1 class="page-heading reveal">
     <span class="lang-en">Readings</span>
     <span class="lang-pt">Leituras</span>
   </h1>
 
   {lendo.length > 0 && (
     <section class="blog-section">
-      <h2 class="section-heading">
+      <h2 class="section-heading reveal">
         <span class="lang-en">Currently reading</span>
         <span class="lang-pt">Lendo agora</span>
       </h2>
       <ul class="post-list">
         {lendo.map(l => (
-          <li class="post-item">
+          <li class="post-item reveal reveal-delay-1">
             <div class="post-meta">
               <span class={`status-badge status-${l.data.status}`}>
                 <span class="lang-en">{statusLabelEn[l.data.status]}</span>
@@ -54,13 +54,13 @@ const statusLabelPt: Record<string, string> = {
 
   {lidos.length > 0 && (
     <section class="blog-section">
-      <h2 class="section-heading">
+      <h2 class="section-heading reveal">
         <span class="lang-en">Read</span>
         <span class="lang-pt">Lidos</span>
       </h2>
       <ul class="post-list">
         {lidos.map(l => (
-          <li class="post-item">
+          <li class="post-item reveal reveal-delay-1">
             <div class="post-meta">
               <time datetime={l.data.date.toISOString()}>
                 <span class="lang-en">{l.data.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
@@ -78,13 +78,13 @@ const statusLabelPt: Record<string, string> = {
 
   {querLer.length > 0 && (
     <section class="blog-section">
-      <h2 class="section-heading">
+      <h2 class="section-heading reveal">
         <span class="lang-en">Want to read</span>
         <span class="lang-pt">Quero ler</span>
       </h2>
       <ul class="post-list">
         {querLer.map(l => (
-          <li class="post-item">
+          <li class="post-item reveal reveal-delay-1">
             <div class="post-meta">
               <span class={`status-badge status-${l.data.status}`}>
                 <span class="lang-en">{statusLabelEn[l.data.status]}</span>

@@ -9,7 +9,7 @@ import Sidebar from '../components/Sidebar.astro';
 >
   <Sidebar slot="sidebar" />
   <article>
-    <header class="post-header">
+    <header class="post-header reveal">
       <h1><span class="lang-en">Resume</span><span class="lang-pt">Currículo</span></h1>
       <div class="meta">
         <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
@@ -21,7 +21,7 @@ import Sidebar from '../components/Sidebar.astro';
 
     <div class="prose lang-en">
 
-      <p>
+      <p class="reveal reveal-delay-1">
         Full-stack developer with 4+ years building production systems in the
         telecommunications industry. Currently at Alloha Fibra — Brazil's largest independent
         ISP — working on performance-critical APIs, voice infrastructure monitoring and system
@@ -29,9 +29,9 @@ import Sidebar from '../components/Sidebar.astro';
         hands-on experience in DevOps, observability and cloud infrastructure.
       </p>
 
-      <h2>Experience</h2>
+      <h2 class="reveal">Experience</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Alloha Fibra</strong>
           <span class="cv-period">Jul. 2023 – present · 2 years 9 months</span>
@@ -46,7 +46,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>LIGUE</strong> <span class="cv-note">(acquired by Alloha Fibra)</span>
           <span class="cv-period">May 2022 – Jul. 2023 · 1 year 3 months</span>
@@ -62,7 +62,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Kinebot</strong>
           <span class="cv-period">Feb. 2022 – May 2022 · 4 months</span>
@@ -74,7 +74,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>GetHash</strong>
           <span class="cv-period">Oct. 2021 – Feb. 2022 · 5 months</span>
@@ -87,9 +87,9 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <h2>Personal projects</h2>
+      <h2 class="reveal">Personal projects</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
         <p>
           PKMS (Personal Knowledge Management System) built to reduce cognitive load and
@@ -106,7 +106,7 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
         <p>
           Cross-application theme ecosystem (Obsidian, Neovim, VS Code, Zen Browser) with
@@ -116,7 +116,7 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/arbitus">Arbitus</a></strong></div>
         <p>
           Open-source security proxy for AI agents and MCP servers. Enforces per-agent policies:
@@ -126,7 +126,7 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">Rust · <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Web3 Beer Shop</strong>
           <span class="cv-period">Jul. 2023 – present</span>
@@ -138,70 +138,70 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">React.js · Next.js · Solana · IPFS · AI</div>
       </div>
 
-      <h2>Education</h2>
+      <h2 class="reveal">Education</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Estácio</strong><span class="cv-period">ongoing</span></div>
         <div class="cv-role">Bachelor's in Software Engineering</div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
         <div class="cv-role">Associate's in Systems Analysis and Development</div>
       </div>
 
-      <h2>Skills</h2>
+      <h2 class="reveal">Skills</h2>
 
       <div class="cv-skills">
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Languages</span>
           TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Front-end</span>
           React · Next.js · Vue.js · Nuxt.js · Tailwind CSS · React Native · CSS · HTML
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Back-end</span>
           Node.js · NestJS · Express · Spring Boot · Flask · Keycloak · Kong API Gateway · Strapi
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Databases</span>
           PostgreSQL · MySQL · Redis · Prisma · Knex
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Infrastructure</span>
           Docker · Kubernetes · AWS · GCP · OCI · Terraform · Ansible · CI/CD · GitOps · Linux
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Observability</span>
           New Relic · Grafana · Loki · Sentry · OpenTelemetry
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Architecture</span>
           DDD · Hexagonal Architecture · Clean Architecture · SOLID · Event-Driven · Microservices · TDD · API REST
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Web3 & Blockchain</span>
           Ethereum · Solana · Web3 · DeFi · Blockchain
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">AI</span>
           LLMs · Prompt Engineering · Claude API
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Methodologies</span>
           Scrum · Kanban · Agile
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Languages</span>
           Portuguese (native) · English (fluent — C2 EF SET)
         </div>
       </div>
 
-      <h2>Certifications</h2>
+      <h2 class="reveal">Certifications</h2>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">AI & Engineering</span>
         <ul class="cv-cert-list">
           <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, mar. 2026</em></li>
@@ -209,7 +209,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Entrepreneurship</span>
         <ul class="cv-cert-list">
           <li>MIT 15.390 New Enterprises — <em>MIT, nov. 2025</em></li>
@@ -218,7 +218,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Software Architecture</span>
         <ul class="cv-cert-list">
           <li>Arquitetura baseada em microsserviços — <em>Full Cycle, mar. 2025</em></li>
@@ -233,7 +233,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">DevOps & Infrastructure</span>
         <ul class="cv-cert-list">
           <li>Terraform — <em>Full Cycle, out. 2023</em></li>
@@ -250,7 +250,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Observability</span>
         <ul class="cv-cert-list">
           <li>OpenTelemetry — <em>Full Cycle, nov. 2022</em></li>
@@ -258,7 +258,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Apache Kafka & Messaging</span>
         <ul class="cv-cert-list">
           <li>Apache Kafka — <em>Full Cycle, out. 2023</em></li>
@@ -266,7 +266,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Web & JavaScript Development</span>
         <ul class="cv-cert-list">
           <li>NLW Expert — Node.js — <em>Rocketseat, fev. 2024</em></li>
@@ -278,7 +278,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Go</span>
         <ul class="cv-cert-list">
           <li>Microsserviço de Encoder de Vídeo com GoLang — <em>Full Cycle, nov. 2022</em></li>
@@ -286,7 +286,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Web3 & Blockchain</span>
         <ul class="cv-cert-list">
           <li>Circuito Bankless: O Futuro do DeFi — <em>Bankless Brasil DAO, set. 2023</em></li>
@@ -296,7 +296,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Security</span>
         <ul class="cv-cert-list">
           <li>Introdução ao Pentest na Prática — <em>Desec Security, mai. 2022</em></li>
@@ -305,7 +305,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Soft Skills & Leadership</span>
         <ul class="cv-cert-list">
           <li>Produtividade Inteligente — <em>Escola Conquer, fev. 2023</em></li>
@@ -334,9 +334,9 @@ import Sidebar from '../components/Sidebar.astro';
         experiência prática em DevOps, observabilidade e infraestrutura em nuvem.
       </p>
 
-      <h2>Experiência</h2>
+<h2 class="reveal">Experiência</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Alloha Fibra</strong>
           <span class="cv-period">jul. 2023 – presente · 2 anos e 9 meses</span>
@@ -351,7 +351,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>LIGUE</strong> <span class="cv-note">(adquirida pela Alloha Fibra)</span>
           <span class="cv-period">mai. 2022 – jul. 2023 · 1 ano e 3 meses</span>
@@ -367,7 +367,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Kinebot</strong>
           <span class="cv-period">fev. 2022 – mai. 2022 · 4 meses</span>
@@ -379,7 +379,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>GetHash</strong>
           <span class="cv-period">out. 2021 – fev. 2022 · 5 meses</span>
@@ -392,27 +392,27 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <h2>Projetos pessoais</h2>
+      <h2 class="reveal">Projetos pessoais</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
         <p>PKMS (Personal Knowledge Management System) construído para reduzir carga cognitiva e externalizar o pensamento em notas estruturadas e recuperáveis. O sistema vai além da captura: integração nativa com Neovim para edição e navegação do vault, comandos customizados no Claude Code para operações de knowledge management diretamente do terminal, e estilização coesa de todo o ambiente (Obsidian, Neovim, terminal) com o mesmo tema visual do Mate Creations. Pipeline de automação: gravação de voz → transcrição via Whisper → notas estruturadas; ingestão de YouTube/artigos com sumarização por IA; git hooks gerando notas contextuais em background. Transcrição também aplicada a gravações de reuniões para geração automática de resumos e action items.</p>
         <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
         <p>Ecossistema de temas cross-application (Obsidian, Neovim, VS Code, Zen Browser) com pipeline de release automatizado via GitHub Actions. Duas variantes com alternância automática claro/escuro baseada em horário via systemd.</p>
         <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/arbitus">Arbitus</a></strong></div>
         <p>Proxy de segurança open-source para agentes de IA e servidores MCP. Aplica políticas por agente: autenticação (API key, JWT/OIDC, mTLS), rate limiting, filtragem de payload, aprovação Human-in-the-Loop e auditoria com suporte a CloudEvents.</p>
         <div class="cv-role">Rust · <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header">
           <strong>Web3 Beer Shop</strong>
           <span class="cv-period">jul. 2023 – presente</span>
@@ -421,70 +421,70 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">React.js · Next.js · Solana · IPFS · AI</div>
       </div>
 
-      <h2>Formação</h2>
+      <h2 class="reveal">Formação</h2>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Estácio</strong><span class="cv-period">em andamento</span></div>
         <div class="cv-role">Bacharelado em Engenharia de Software</div>
       </div>
 
-      <div class="cv-entry">
+      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
         <div class="cv-role">Tecnólogo em Análise e Desenvolvimento de Sistemas</div>
       </div>
 
-      <h2>Competências</h2>
+      <h2 class="reveal">Competências</h2>
 
       <div class="cv-skills">
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Linguagens</span>
           TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Front-end</span>
           React · Next.js · Vue.js · Nuxt.js · Tailwind CSS · React Native · CSS · HTML
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Back-end</span>
           Node.js · NestJS · Express · Spring Boot · Flask · Keycloak · Kong API Gateway · Strapi
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Banco de dados</span>
           PostgreSQL · MySQL · Redis · Prisma · Knex
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Infraestrutura</span>
           Docker · Kubernetes · AWS · GCP · OCI · Terraform · Ansible · CI/CD · GitOps · Linux
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Observabilidade</span>
           New Relic · Grafana · Loki · Sentry · OpenTelemetry
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Arquitetura</span>
           DDD · Hexagonal Architecture · Clean Architecture · SOLID · Event-Driven · Microservices · TDD · API REST
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Web3 & Blockchain</span>
           Ethereum · Solana · Web3 · DeFi · Blockchain
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">IA</span>
           LLMs · Prompt Engineering · Claude API
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Metodologias</span>
           Scrum · Kanban · Agile
         </div>
-        <div class="cv-skill-group">
+        <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Idiomas</span>
           Português (nativo) · Inglês (fluente — C2 EF SET)
         </div>
       </div>
 
-      <h2>Certificações</h2>
+      <h2 class="reveal">Certificações</h2>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">IA & Engenharia</span>
         <ul class="cv-cert-list">
           <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, mar. 2026</em></li>
@@ -492,7 +492,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Empreendedorismo</span>
         <ul class="cv-cert-list">
           <li>MIT 15.390 New Enterprises — <em>MIT, nov. 2025</em></li>
@@ -501,7 +501,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Arquitetura de Software</span>
         <ul class="cv-cert-list">
           <li>Arquitetura baseada em microsserviços — <em>Full Cycle, mar. 2025</em></li>
@@ -516,7 +516,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">DevOps & Infraestrutura</span>
         <ul class="cv-cert-list">
           <li>Terraform — <em>Full Cycle, out. 2023</em></li>
@@ -533,7 +533,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Observabilidade</span>
         <ul class="cv-cert-list">
           <li>OpenTelemetry — <em>Full Cycle, nov. 2022</em></li>
@@ -541,7 +541,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Apache Kafka & Mensageria</span>
         <ul class="cv-cert-list">
           <li>Apache Kafka — <em>Full Cycle, out. 2023</em></li>
@@ -549,7 +549,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Desenvolvimento Web & JavaScript</span>
         <ul class="cv-cert-list">
           <li>NLW Expert — Node.js — <em>Rocketseat, fev. 2024</em></li>
@@ -561,7 +561,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Go</span>
         <ul class="cv-cert-list">
           <li>Microsserviço de Encoder de Vídeo com GoLang — <em>Full Cycle, nov. 2022</em></li>
@@ -569,7 +569,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Web3 & Blockchain</span>
         <ul class="cv-cert-list">
           <li>Circuito Bankless: O Futuro do DeFi — <em>Bankless Brasil DAO, set. 2023</em></li>
@@ -579,7 +579,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Segurança</span>
         <ul class="cv-cert-list">
           <li>Introdução ao Pentest na Prática — <em>Desec Security, mai. 2022</em></li>
@@ -588,7 +588,7 @@ import Sidebar from '../components/Sidebar.astro';
         </ul>
       </div>
 
-      <div class="cv-cert-group">
+      <div class="cv-cert-group reveal reveal-delay-1">
         <span class="cv-cert-label">Soft Skills & Liderança</span>
         <ul class="cv-cert-list">
           <li>Produtividade Inteligente — <em>Escola Conquer, fev. 2023</em></li>

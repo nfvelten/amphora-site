@@ -53,8 +53,8 @@ const projects = [
     </header>
     <div class="prose">
       <div class="projects-list">
-        {projects.map(p => (
-          <a href={p.href} class="project-card">
+        {projects.map((p, i) => (
+          <a href={p.href} class={`project-card reveal reveal-delay-${(i % 3) + 1}`}>
             <div class="project-logo">
               {p.logo
                 ? <img src={p.logo} alt={p.name} width="40" height="40" />
@@ -96,14 +96,17 @@ const projects = [
     gap: 1.25rem;
     align-items: flex-start;
     padding: 1.25rem;
+    background: var(--bg-2);
     border: 1px solid var(--ui);
-    border-radius: 6px;
+    border-radius: 8px;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.15s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
   .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--tx) 8%, transparent);
     border-color: var(--ui-2);
   }
 
@@ -167,6 +170,12 @@ const projects = [
     border: 1px solid var(--ui);
     color: var(--tx-3);
     font-family: system-ui, sans-serif;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .project-card:hover .tag {
+    background: var(--bg-2);
+    border-color: var(--ui-2);
   }
 
   .project-tagline {
