@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const features = [
+  {
+    id: 'rss',
+    name: 'RSS 2.0 & Atom',
+    descEn: '15-minute background refresh, categories, starred articles. Keyboard navigation with vim-style bindings throughout.',
+    descPt: 'Atualização em segundo plano a cada 15 minutos, categorias e artigos favoritos. Navegação via teclado com bindings no estilo vim.',
+  },
+  {
+    id: 'podcasts',
+    name: 'Podcast Player',
+    descEn: 'Auto-detects podcast feeds. Persistent playback bar that survives tab navigation. Speed control, skip ±15s/30s, state restored on reopen.',
+    descPt: 'Detecta automaticamente feeds de podcast. Barra de reprodução persistente que sobrevive à navegação entre abas. Controle de velocidade, skip ±15s/30s, estado restaurado ao reabrir.',
+  },
+  {
+    id: 'reader',
+    name: 'Article Reader',
+    descEn: 'Readability-based extraction opens articles in a clean, distraction-free view. No tracking pixels, no external requests.',
+    descPt: 'Extração baseada no Readability abre artigos em uma visualização limpa e sem distrações. Sem pixels de rastreamento, sem requisições externas.',
+  },
+  {
+    id: 'local',
+    name: 'Local-First Storage',
+    descEn: 'All data lives in ~/paperboy/ as plain JSON and JSONL — readable, diffable, git-syncable across machines. No accounts, no cloud sync.',
+    descPt: 'Todos os dados ficam em ~/paperboy/ como JSON e JSONL simples — legíveis, diffáveis e sincronizáveis via git entre máquinas. Sem contas, sem sincronização na nuvem.',
+  },
+  {
+    id: 'keyboard',
+    name: 'Keyboard-First',
+    descEn: 'Every action reachable from the keyboard. vim-style navigation (j/k, gg/G, h/l), search (/), reader (Enter), podcast controls (p, <, >).',
+    descPt: 'Toda ação acessível pelo teclado. Navegação no estilo vim (j/k, gg/G, h/l), busca (/), leitor (Enter), controles de podcast (p, <, >).',
+  },
+  {
+    id: 'theme',
+    name: 'Auto Theme',
+    descEn: 'Switches between light (7am–7pm) and dark automatically. Manual override with t. Designed around a warm paper palette.',
+    descPt: 'Alterna entre claro (7h–19h) e escuro automaticamente. Override manual com t. Projetado em torno de uma paleta quente de papel.',
+  },
+];
+---
+
+<BaseLayout
+  title="paperboy — RSS Reader and Podcast Player as New Tab"
+  description="paperboy is a minimal, keyboard-first, local-first RSS reader and podcast player that replaces your browser's new tab page."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>paperboy</h1>
+    </header>
+    <div class="prose">
+      <div class="pb-intro">
+        <div class="pb-header">
+          <img src="/paperboy-logo.png" alt="paperboy" class="pb-logo" width="72" height="72" loading="eager" decoding="async" />
+          <p>
+            <span class="lang-en">
+              <strong>paperboy</strong> is a minimal, keyboard-first, local-first browser extension
+              that replaces your new tab with an RSS reader and podcast player.
+              No accounts. No cloud sync. No tracking. Your feeds and episodes live on your machine as plain files.
+            </span>
+            <span class="lang-pt">
+              <strong>paperboy</strong> é uma extensão de browser minimal, keyboard-first e local-first
+              que substitui a nova aba por um leitor de RSS e podcast player.
+              Sem contas. Sem sincronização na nuvem. Sem rastreamento. Seus feeds e episódios ficam na sua máquina como arquivos simples.
+            </span>
+          </p>
+        </div>
+
+        <p>
+          <span class="lang-en">
+            Available on{' '}
+            <a href="https://addons.mozilla.org/en-US/firefox/addon/paperboy/" target="_blank" rel="noopener">Firefox Add-ons</a>{' '}
+            and <a href="https://github.com/harbefas/paperboy" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+          <span class="lang-pt">
+            Disponível no{' '}
+            <a href="https://addons.mozilla.org/en-US/firefox/addon/paperboy/" target="_blank" rel="noopener">Firefox Add-ons</a>{' '}
+            e no <a href="https://github.com/harbefas/paperboy" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+        </p>
+      </div>
+
+      <div class="pb-actions">
+        <a href="https://addons.mozilla.org/en-US/firefox/addon/paperboy/" target="_blank" rel="noopener" class="pb-btn-primary">
+          <span class="lang-en">Add to Firefox</span>
+          <span class="lang-pt">Adicionar ao Firefox</span>
+        </a>
+        <a href="https://github.com/harbefas/paperboy" target="_blank" rel="noopener" class="pb-btn-secondary">GitHub</a>
+      </div>
+
+      <h2>
+        <span class="lang-en">Features</span>
+        <span class="lang-pt">Funcionalidades</span>
+      </h2>
+
+      {features.map(f => (
+        <div class="pb-feature">
+          <h3>{f.name}</h3>
+          <p>
+            <span class="lang-en">{f.descEn}</span>
+            <span class="lang-pt">{f.descPt}</span>
+          </p>
+        </div>
+      ))}
+
+      <h2>
+        <span class="lang-en">Storage</span>
+        <span class="lang-pt">Armazenamento</span>
+      </h2>
+
+      <p>
+        <span class="lang-en">
+          Data lives in <code>~/paperboy/</code> as plain files — no database, no proprietary format.
+        </span>
+        <span class="lang-pt">
+          Os dados ficam em <code>~/paperboy/</code> como arquivos simples — sem banco de dados, sem formato proprietário.
+        </span>
+      </p>
+
+      <div class="pb-diagram">
+        <pre><code>~/paperboy/
+├── feeds.json       # subscribed feed URLs
+├── categories.json  # feed-to-tag mapping
+├── history.jsonl    # append-only read history
+└── starred.jsonl    # append-only starred articles</code></pre>
+      </div>
+
+      <p>
+        <span class="lang-en">
+          JSONL is intentional — append-only means no merge conflicts when syncing across machines via git.
+        </span>
+        <span class="lang-pt">
+          JSONL é intencional — append-only significa sem conflitos de merge ao sincronizar entre máquinas via git.
+        </span>
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .pb-intro {
+    margin-bottom: 1.5rem;
+  }
+
+  .pb-header {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .pb-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .pb-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.5rem 0 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pb-btn-primary {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: var(--accent, #c88010);
+    color: var(--bg);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+
+  .pb-btn-primary:hover {
+    opacity: 0.85;
+  }
+
+  .pb-btn-secondary {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: var(--bg-2);
+    color: var(--tx);
+    border: 1px solid var(--ui);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+
+  .pb-btn-secondary:hover {
+    border-color: var(--ui-2);
+  }
+
+  .pb-feature {
+    margin-bottom: 2rem;
+  }
+
+  .pb-feature h3 {
+    margin-bottom: 0.25rem;
+  }
+
+  .pb-feature p {
+    margin-bottom: 0.5rem;
+    color: var(--tx-2);
+  }
+
+  .pb-diagram {
+    margin: 1rem 0 1.5rem;
+  }
+
+  .pb-diagram pre {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+  }
+
+  .pb-diagram code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx-2);
+  }
+</style>
