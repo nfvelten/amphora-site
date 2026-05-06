@@ -11,7 +11,7 @@ const faqSchema = {
       name: 'What does Nicholas Velten do?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nicholas Velten is a full-stack software engineer focused on building scalable, well-structured systems. He works at Alloha Fibra developing applications and services with Java, TypeScript, Vue.js and Node.js, with around four years of experience across telecommunications, fintechs and product startups.',
+        text: 'Nicholas Velten is a senior software engineer with 4+ years at Alloha Fibra — Brazil\'s largest independent ISP — owning platform-level infrastructure across a distributed Java/Spring Boot microservices stack. He operates with end-to-end feature ownership and has led cross-cutting framework migrations and security remediations across a platform serving millions of customers.',
       },
     },
     {
@@ -19,7 +19,7 @@ const faqSchema = {
       name: 'What technologies does Nicholas Velten use?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'At work, Nicholas primarily uses Java, TypeScript, Vue.js and Node.js. In his personal setup, he uses Linux with Hyprland as window manager, Neovim as code editor and Obsidian for knowledge management.',
+        text: 'At work, Nicholas primarily uses Java, Spring Boot, Vue.js, Node.js and TypeScript. In personal projects he writes Rust (Arbitus) and TypeScript (Ralph Explorer). His personal setup runs Linux with Hyprland, Neovim as editor and Obsidian for knowledge management.',
       },
     },
     {
@@ -35,27 +35,28 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="About Nicholas Velten — Full-Stack Software Engineer"
-  description="Nicholas Velten — full-stack software engineer with 4+ years of experience in Java, TypeScript, Vue.js and Node.js."
+  title="About Nicholas Velten — Senior Software Engineer"
+  description="Nicholas Velten — senior software engineer with 4+ years of experience in Java, Spring Boot, distributed systems, and platform-level infrastructure."
   jsonLd={faqSchema}
 >
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header reveal">
       <h1><span class="lang-en">About</span><span class="lang-pt">Sobre</span></h1>
-      <div class="meta"><span class="lang-en">Full-Stack Software Engineer</span><span class="lang-pt">Engenheiro de Software Full-Stack</span></div>
+      <div class="meta"><span class="lang-en">Senior Software Engineer</span><span class="lang-pt">Engenheiro de Software Sênior</span></div>
     </header>
 
     <div class="prose lang-en">
       <p class="reveal reveal-delay-1">
-        I'm Nicholas Velten, a full-stack software engineer with <strong>4+ years of experience</strong>
-        building production systems. I currently work at Alloha Fibra — Brazil's largest independent ISP —
-        developing critical APIs, voice infrastructure monitoring and system migrations. I've worked across
-        telecommunications, fintechs and product startups.
+        I'm Nicholas Velten, a senior software engineer with <strong>4+ years of experience</strong>
+        at Brazil's largest independent ISP, owning platform-level infrastructure across a distributed
+        Java/Spring Boot microservices stack serving millions of customers. I operate with end-to-end
+        feature ownership — requirements gathering, stakeholder alignment, technical refinement, and
+        implementation — without dedicated PM support.
       </p>
 
       <p class="reveal reveal-delay-2">
-        I like understanding systems end to end — from the database to the UI component.
+        I like understanding systems end to end — from the shared library to the UI component.
         I care about clean code, architecture that makes sense and tools that stay the way you set them up.
         Day to day I use Linux with Hyprland, Neovim as my editor and Obsidian to maintain a vault of
         technical and personal notes.
@@ -71,7 +72,7 @@ const faqSchema = {
       <h2 class="reveal">Main stack</h2>
 
       <ul class="reveal reveal-delay-1">
-        <li><strong>Back-end:</strong> Node.js, TypeScript, NestJS, Python, Java, Spring Boot, Rust</li>
+        <li><strong>Back-end:</strong> Java, Spring Boot, Node.js, TypeScript, NestJS, Python, Rust</li>
         <li><strong>Front-end:</strong> Vue.js, Nuxt.js, React.js, Next.js, Tailwind CSS</li>
         <li><strong>Infrastructure:</strong> Docker, Kubernetes, AWS, GCP, OCI, Terraform, CI/CD</li>
         <li><strong>Databases:</strong> PostgreSQL, Redis, MySQL</li>
@@ -84,9 +85,10 @@ const faqSchema = {
 
       <ul class="reveal reveal-delay-1">
         <li>
-          <strong>Alloha Fibra</strong> — Full-Stack Engineer (Jul. 2023 – present).
-          Critical performance APIs, voice channel monitoring system and migrations for
-          Brazil's largest independent ISP.
+          <strong>Alloha Fibra</strong> — Senior Software Engineer (Jul. 2023 – present).
+          Platform-level infrastructure across 8+ Java/Spring Boot microservices. Led JDBC
+          framework migration, remediated a critical LGPD violation across 3 services,
+          authored Java 17 + Spring Boot 3 migration assessment.
         </li>
         <li>
           <strong>LIGUE</strong> <em>(acquired by Alloha)</em> — Full-Stack Engineer
@@ -118,11 +120,16 @@ const faqSchema = {
         <li>
           <strong><a href="/arbitus">Arbitus</a></strong> — Open-source security proxy for AI agents and MCP servers. Enforces per-agent policies: auth, rate limiting, payload filtering, HITL and audit log. <em>Rust</em>
         </li>
+        <li>
+          <strong>Ralph Explorer</strong> — CLI that parses Java and Vue.js source code to generate dependency graphs and visual dev portals across a multi-repo codebase. <em>TypeScript, React</em>
+        </li>
+        <li>
+          <strong>Paperboy</strong> — Keyboard-first RSS reader and podcast player replacing the new tab page. Published on Firefox Add-ons. Companion terminal UI in Rust. <em>JavaScript, Rust</em>
+        </li>
       </ul>
 
       <p class="reveal">
-        Degree in Software Engineering (Estácio) and Systems Analysis and Development
-        (Centro Universitário Integrado, 2018–2021). Fluent English — C2 by EF SET.
+        Systems Analysis and Development — Centro Universitário Integrado (2018–2021). Fluent English — C2 by EF SET.
       </p>
 
       <p class="reveal">
@@ -135,14 +142,15 @@ const faqSchema = {
 
 <div class="prose lang-pt">
       <p class="reveal reveal-delay-1">
-        Sou Nicholas Velten, engenheiro de software full-stack com <strong>4+ anos de experiência</strong>
-        construindo sistemas em produção. Trabalho atualmente na Alloha Fibra — maior ISP independente
-        do Brasil — desenvolvendo APIs críticas, monitoramento de infraestrutura de voz e
-        migrações de sistema. Passei por telecomunicações, fintechs e startups de produto.
+        Sou Nicholas Velten, engenheiro de software sênior com <strong>4+ anos de experiência</strong>
+        no maior ISP independente do Brasil, responsável por infraestrutura de plataforma em um stack
+        distribuído de microsserviços Java/Spring Boot servindo milhões de clientes. Atuo com ownership
+        completo de features — levantamento de requisitos, alinhamento com stakeholders, refinamento
+        técnico e implementação — sem suporte dedicado de PM.
       </p>
 
       <p class="reveal reveal-delay-2">
-        Gosto de entender sistemas por inteiro — do banco de dados ao componente de interface.
+        Gosto de entender sistemas por inteiro — da biblioteca compartilhada ao componente de interface.
         Tenho apreço por código limpo, arquitetura que faz sentido e ferramentas que ficam do
         jeito que você quer. No dia a dia uso Linux com Hyprland, Neovim como editor e Obsidian
         para manter um vault de notas técnicas e pessoais.
@@ -159,7 +167,7 @@ const faqSchema = {
       <h2 class="reveal">Stack principal</h2>
 
       <ul class="reveal reveal-delay-1">
-        <li><strong>Back-end:</strong> Node.js, TypeScript, NestJS, Python, Java, Spring Boot, Rust</li>
+        <li><strong>Back-end:</strong> Java, Spring Boot, Node.js, TypeScript, NestJS, Python, Rust</li>
         <li><strong>Front-end:</strong> Vue.js, Nuxt.js, React.js, Next.js, Tailwind CSS</li>
         <li><strong>Infraestrutura:</strong> Docker, Kubernetes, AWS, GCP, OCI, Terraform, CI/CD</li>
         <li><strong>Banco de dados:</strong> PostgreSQL, Redis, MySQL</li>
@@ -172,9 +180,10 @@ const faqSchema = {
 
       <ul class="reveal reveal-delay-1">
         <li>
-          <strong>Alloha Fibra</strong> — Full-Stack Engineer (jul. 2023 – presente).
-          APIs de performance crítica, sistema de monitoramento de canais de voz e
-          migrações para o maior ISP independente do Brasil.
+          <strong>Alloha Fibra</strong> — Engenheiro de Software Sênior (jul. 2023 – presente).
+          Infraestrutura de plataforma em 8+ microsserviços Java/Spring Boot. Liderou migração
+          JDBC, remediou violação crítica de LGPD em 3 serviços, elaborou avaliação arquitetural
+          para migração Java 17 + Spring Boot 3.
         </li>
         <li>
           <strong>LIGUE</strong> <em>(adquirida pela Alloha)</em> — Full-Stack Engineer
@@ -206,11 +215,16 @@ const faqSchema = {
         <li>
           <strong><a href="/arbitus">Arbitus</a></strong> — Proxy de segurança open-source para agentes de IA e servidores MCP. Aplica políticas por agente: autenticação, rate limiting, filtragem de payload, HITL e auditoria. <em>Rust</em>
         </li>
+        <li>
+          <strong>Ralph Explorer</strong> — CLI que parseia código Java e Vue.js para gerar grafos de dependência e portais de dev visuais em um codebase multi-repo. <em>TypeScript, React</em>
+        </li>
+        <li>
+          <strong>Paperboy</strong> — Leitor RSS e podcast keyboard-first que substitui a nova aba do browser. Publicado no Firefox Add-ons. Interface terminal em Rust. <em>JavaScript, Rust</em>
+        </li>
       </ul>
 
       <p class="reveal">
-        Formação em Engenharia de Software (Estácio) e Análise e Desenvolvimento de Sistemas
-        (Centro Universitário Integrado, 2018–2021). Inglês fluente — C2 pelo EF SET.
+        Análise e Desenvolvimento de Sistemas — Centro Universitário Integrado (2018–2021). Inglês fluente — C2 pelo EF SET.
       </p>
 
       <p class="reveal">
