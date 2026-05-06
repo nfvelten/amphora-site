@@ -1,0 +1,215 @@
+---
+title: Migrating a shared library across 8 microservices
+title_pt: Migrando uma biblioteca compartilhada em 8 microsserviços
+date: 2026-05-06
+description: How a single change in a shared library replaces thousands of lines of legacy code across an entire platform — and the bugs you find along the way.
+description_pt: Como uma mudança em uma biblioteca compartilhada substitui milhares de linhas de código legado em toda a plataforma — e os bugs que você encontra no caminho.
+tags: [technology, java]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+The platform I work on has eight Java microservices. Each one depends on a shared internal library — a Spring Boot starter that handles cross-cutting concerns: database access, authentication, observability hooks. The database layer was built around a custom abstraction called `MySqlRepository`, a wrapper that accepted raw SQL strings and `MapBuilder` parameter maps, handled parameter binding internally, and returned `List<Map<String, Object>>`.
+
+It worked. It had been working for years. It was also unmaintainable, hiding type errors at runtime, and standing in the way of every modern Spring feature that expected `JdbcTemplate` or `NamedParameterJdbcTemplate` under the hood.
+
+The migration goal was simple: replace `MySqlRepository` with Spring's `JdbcTemplate` without changing the public API that 45 files across 8 repos depended on.
+
+---
+
+## The leverage point
+
+The most important decision happened before writing any code: where to make the change.
+
+The naive approach is to go service by service — open `comercial-api`, find all 23 files that call `MySqlRepository`, rewrite them, open the next service, repeat. That's 45 files across 8 repos, each with its own PR, its own test run, its own deployment window.
+
+The shared library owns the abstraction. Changing it there means the migration happens once, and every service inherits it on the next dependency bump. The public interface — `execute(sql, params)`, `query(sql, params)`, `queryForObject(sql, params)` — stays identical. Services don't know anything changed.
+
+This is the leverage that shared libraries give you. Used well, a one-file change propagates everywhere. Used poorly, the shared library becomes a place where bad abstractions live forever because changing them is too expensive.
+
+---
+
+## The implementation
+
+`MySqlRepository` used a custom `NativeDB` wrapper that built `PreparedStatement` objects manually. The replacement is `NamedParameterJdbcTemplate`, which Spring manages and injects — lifecycle, connection pooling, and transaction participation handled automatically.
+
+The parameter type was the first friction point. The old API accepted `MapBuilder<K, V>` — a raw type. Code using it looked like:
+
+```java
+repo.query("SELECT * FROM tbl_cliente WHERE id = :id",
+    new MapBuilder().put("id", customerId).build());
+```
+
+`MapBuilder` was generic on paper but used as raw in practice — the compiler had been silently accepting `MapBuilder` without type parameters for years, masking potential `ClassCastException` at runtime. The migration made the type explicit: `MapBuilder<String, Object>`. This broke the build in every service that used raw `MapBuilder`.
+
+That's a good kind of break. The compiler surfaced errors that had been hiding.
+
+---
+
+## The bug in the middle
+
+About halfway through validation, a test against `chamado-api` failed. The endpoint `POST /integracao/chamado` creates a support ticket and internally uses an `IN (:ids)` clause — a list of IDs passed as a `Collection`.
+
+With the old `MySqlRepository`, this worked. With `NamedParameterJdbcTemplate`, it also works — but only if the `Collection` is passed directly to the template. The migration had routed everything through an `expandInParams` helper that converted parameters to a flat `Map<String, Object>`. For scalar values, fine. For `Collection` values, it was calling `toString()` on the list, turning `[1, 2, 3]` into the string `"[1, 2, 3]"` — which MySQL doesn't know how to bind to `IN (?)`.
+
+The fix was to detect `Collection` values in `expandInParams` and pass them through as-is, letting Spring's `NamedParameterJdbcTemplate` handle the expansion to `IN (?,?,?)`:
+
+```java
+private Map<String, Object> expandInParams(Map<String, Object> params) {
+    Map<String, Object> expanded = new LinkedHashMap<>();
+    for (Map.Entry<String, Object> entry : params.entrySet()) {
+        if (entry.getValue() instanceof Collection) {
+            expanded.put(entry.getKey(), entry.getValue()); // let Spring expand
+        } else {
+            expanded.put(entry.getKey(), entry.getValue());
+        }
+    }
+    return expanded;
+}
+```
+
+One line difference, but it only surfaces when you have a test that actually calls an endpoint with a collection parameter. This is the kind of bug that reaches production if the migration is validated only with unit tests that mock the database layer.
+
+---
+
+## The rollout
+
+Eight services. Two per day. Controlled via change management records (GMUDs) that document the change scope, validation steps, and rollback procedure.
+
+The rollback for each service is a one-line dependency revert. The shared library keeps the old implementation available until all services are off it — no coordinated cutover required.
+
+Validation for each service follows the same checklist:
+1. `mvn clean install` passes
+2. Application starts on the development profile
+3. One read endpoint returns `200 OK`
+4. One write endpoint executes and produces the expected side effect
+
+Day 1: `chamado-api`, `base-api` — clean, no issues after the `IN` list fix.  
+Day 2: `internet-api`, `tv-api` — clean.  
+Day 3: `relatorio-api`, `sydle-api`, `telefonica-api` — clean.  
+Day 4: `comercial-api` — the largest service, 23 files. Two `MapBuilder` raw-type errors surfaced that the incremental build had been hiding. Fixed, build green.
+
+Zero production incidents across all eight.
+
+---
+
+## What the shared library model costs
+
+The leverage is real, but so is the risk. When a bug lives in the shared library, it lives in every service simultaneously. The `IN` list expansion bug would have affected every service that used collection parameters — not just `chamado-api`.
+
+This creates an asymmetry: the shared library gives you amplified positive impact (one fix, everywhere) and amplified negative impact (one bug, everywhere). The mitigation isn't to avoid shared libraries — it's to validate them more carefully than individual services, because their blast radius is proportionally larger.
+
+In practice this means: before bumping the starter version in any service, run a clean build, not an incremental one. Incremental builds hide compilation errors that a clean build surfaces. This is how the `MapBuilder` errors stayed hidden for weeks of development.
+
+---
+
+## The type errors were a gift
+
+The migration forced every caller to be explicit about types that had been implicit for years. Some of the `MapBuilder` raw-type errors were in code paths that hadn't been exercised in production for months. Making them compile errors — things that had to be fixed before the next release — was the migration's most useful side effect.
+
+Legacy codebases accumulate type debt slowly. Each raw type, each unchecked cast, each suppressed warning is a small bet that the code path won't be exercised with unexpected input. Migrations that force the types to be explicit are one of the few mechanisms that collect on that debt systematically.
+</En>
+
+<Pt>
+A plataforma em que trabalho tem oito microsserviços Java. Cada um depende de uma biblioteca interna compartilhada — um Spring Boot starter que centraliza preocupações transversais: acesso ao banco de dados, autenticação, hooks de observabilidade. A camada de banco de dados era construída em torno de uma abstração customizada chamada `MySqlRepository`, um wrapper que aceitava strings SQL brutas e mapas de parâmetros `MapBuilder`, fazia o binding internamente e retornava `List<Map<String, Object>>`.
+
+Funcionava. Vinha funcionando por anos. Também era impossível de manter, escondia erros de tipo em runtime, e bloqueava qualquer feature moderna do Spring que esperava `JdbcTemplate` ou `NamedParameterJdbcTemplate` por baixo.
+
+O objetivo da migração era simples: substituir `MySqlRepository` pelo `JdbcTemplate` do Spring sem alterar a API pública da qual 45 arquivos em 8 repos dependiam.
+
+---
+
+## O ponto de alavanca
+
+A decisão mais importante aconteceu antes de escrever qualquer código: onde fazer a mudança.
+
+A abordagem ingênua é ir serviço por serviço — abrir o `comercial-api`, encontrar os 23 arquivos que chamam `MySqlRepository`, reescrever, abrir o próximo serviço, repetir. São 45 arquivos em 8 repos, cada um com seu próprio PR, sua própria execução de testes, sua própria janela de deploy.
+
+A biblioteca compartilhada possui a abstração. Mudar lá significa que a migração acontece uma vez, e cada serviço herda na próxima atualização de dependência. A interface pública — `execute(sql, params)`, `query(sql, params)`, `queryForObject(sql, params)` — permanece idêntica. Os serviços não sabem que algo mudou.
+
+Essa é a alavanca que bibliotecas compartilhadas oferecem. Usada bem, uma mudança em um arquivo propaga para todos os lugares. Usada mal, a biblioteca compartilhada se torna o lugar onde abstrações ruins vivem para sempre porque mudá-las é caro demais.
+
+---
+
+## A implementação
+
+O `MySqlRepository` usava um wrapper customizado `NativeDB` que construía objetos `PreparedStatement` manualmente. O substituto é o `NamedParameterJdbcTemplate`, que o Spring gerencia e injeta — ciclo de vida, pool de conexões e participação em transações tratados automaticamente.
+
+O tipo de parâmetro foi o primeiro ponto de atrito. A API antiga aceitava `MapBuilder<K, V>` como tipo raw. Código que a usava ficava assim:
+
+```java
+repo.query("SELECT * FROM tbl_cliente WHERE id = :id",
+    new MapBuilder().put("id", customerId).build());
+```
+
+`MapBuilder` era genérico no papel, mas usado como raw na prática — o compilador vinha aceitando `MapBuilder` sem parâmetros de tipo há anos, mascarando potenciais `ClassCastException` em runtime. A migração tornou o tipo explícito: `MapBuilder<String, Object>`. Isso quebrou o build em todo serviço que usava `MapBuilder` raw.
+
+Esse é um bom tipo de quebra. O compilador surfaceou erros que estavam escondidos.
+
+---
+
+## O bug no meio do caminho
+
+A certa altura da validação, um teste contra o `chamado-api` falhou. O endpoint `POST /integracao/chamado` cria um chamado de suporte e internamente usa uma cláusula `IN (:ids)` — uma lista de IDs passada como `Collection`.
+
+Com o antigo `MySqlRepository`, isso funcionava. Com `NamedParameterJdbcTemplate`, também funciona — mas só se a `Collection` for passada diretamente ao template. A migração havia roteado tudo por um helper `expandInParams` que convertia parâmetros para um `Map<String, Object>` plano. Para valores escalares, tudo bem. Para valores `Collection`, ele chamava `toString()` na lista, transformando `[1, 2, 3]` na string `"[1, 2, 3]"` — que o MySQL não sabe como fazer binding em `IN (?)`.
+
+O fix foi detectar valores `Collection` no `expandInParams` e passá-los como estão, deixando o `NamedParameterJdbcTemplate` do Spring expandir para `IN (?,?,?)`:
+
+```java
+private Map<String, Object> expandInParams(Map<String, Object> params) {
+    Map<String, Object> expanded = new LinkedHashMap<>();
+    for (Map.Entry<String, Object> entry : params.entrySet()) {
+        if (entry.getValue() instanceof Collection) {
+            expanded.put(entry.getKey(), entry.getValue()); // Spring expande
+        } else {
+            expanded.put(entry.getKey(), entry.getValue());
+        }
+    }
+    return expanded;
+}
+```
+
+Uma linha de diferença, mas que só aparece quando há um teste que de fato chama um endpoint com parâmetro de coleção. É o tipo de bug que chega em produção se a migração for validada apenas com testes unitários que mockam a camada de banco de dados.
+
+---
+
+## O rollout
+
+Oito serviços. Dois por dia. Controlado via GMUDs que documentam o escopo da mudança, os passos de validação e o procedimento de rollback.
+
+O rollback de cada serviço é um revert de uma linha de dependência. A biblioteca compartilhada mantém a implementação antiga disponível até todos os serviços saírem dela — sem cutover coordenado necessário.
+
+A validação de cada serviço segue o mesmo checklist:
+1. `mvn clean install` passa
+2. Aplicação sobe no perfil de desenvolvimento
+3. Um endpoint de leitura retorna `200 OK`
+4. Um endpoint de escrita executa e produz o efeito colateral esperado
+
+Dia 1: `chamado-api`, `base-api` — limpo, sem problemas após o fix da IN list.  
+Dia 2: `internet-api`, `tv-api` — limpo.  
+Dia 3: `relatorio-api`, `sydle-api`, `telefonica-api` — limpo.  
+Dia 4: `comercial-api` — o maior serviço, 23 arquivos. Dois erros de tipo raw `MapBuilder` que o build incremental havia escondido surgiram. Corrigidos, build verde.
+
+Zero incidentes em produção nos oito serviços.
+
+---
+
+## O que o modelo de biblioteca compartilhada custa
+
+A alavanca é real, mas o risco também. Quando um bug vive na biblioteca compartilhada, vive em todos os serviços simultaneamente. O bug de expansão de IN list teria afetado todo serviço que usava parâmetros de coleção — não só o `chamado-api`.
+
+Isso cria uma assimetria: a biblioteca compartilhada dá impacto positivo amplificado (um fix, em todo lugar) e impacto negativo amplificado (um bug, em todo lugar). A mitigação não é evitar bibliotecas compartilhadas — é validá-las com mais cuidado do que serviços individuais, porque o raio de impacto é proporcionalmente maior.
+
+Na prática isso significa: antes de bumpar a versão do starter em qualquer serviço, rodar um build limpo, não incremental. Builds incrementais escondem erros de compilação que um build limpo revela. Foi assim que os erros de `MapBuilder` ficaram escondidos por semanas de desenvolvimento.
+
+---
+
+## Os erros de tipo foram um presente
+
+A migração forçou cada chamador a ser explícito sobre tipos que eram implícitos há anos. Alguns dos erros de tipo raw do `MapBuilder` estavam em caminhos de código que não eram exercitados em produção há meses. Torná-los erros de compilação — coisas que precisavam ser corrigidas antes do próximo release — foi o efeito colateral mais útil da migração.
+
+Codebases legados acumulam dívida de tipos devagar. Cada tipo raw, cada cast não verificado, cada warning suprimido é uma pequena aposta de que o caminho de código não será exercitado com input inesperado. Migrações que forçam os tipos a serem explícitos são um dos poucos mecanismos que cobram essa dívida de forma sistemática.
+</Pt>

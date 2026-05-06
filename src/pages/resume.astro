@@ -4,8 +4,8 @@ import Sidebar from '../components/Sidebar.astro';
 ---
 
 <BaseLayout
-  title="Resume — Nicholas Velten, Full-Stack Software Engineer"
-  description="Professional background of Nicholas Velten — full-stack software engineer with experience in TypeScript, Node.js, Python, Vue.js and distributed systems."
+  title="Resume — Nicholas Velten, Senior Backend Engineer"
+  description="Professional background of Nicholas Velten — senior backend engineer with experience in Java, Spring Boot, TypeScript, distributed systems, and platform-level infrastructure."
 >
   <Sidebar slot="sidebar" />
   <article>
@@ -22,11 +22,14 @@ import Sidebar from '../components/Sidebar.astro';
     <div class="prose lang-en">
 
       <p class="reveal reveal-delay-1">
-        Full-stack developer with 4+ years building production systems in the
-        telecommunications industry. Currently at Alloha Fibra — Brazil's largest independent
-        ISP — working on performance-critical APIs, voice infrastructure monitoring and system
-        migrations. Solid foundation in TypeScript, Node.js and distributed systems, with
-        hands-on experience in DevOps, observability and cloud infrastructure.
+        Senior backend engineer with 4+ years at Brazil's largest independent ISP, owning
+        platform-level infrastructure across a distributed Java/Spring Boot microservices stack
+        serving millions of customers. Operates with end-to-end feature ownership —
+        requirements gathering, stakeholder alignment, technical refinement, and implementation
+        — without dedicated PM support. Led cross-cutting framework migrations, proactively
+        identified and remediated a critical LGPD violation exposing customer PII, and
+        integrated payment, CRM, and field-ops systems at scale. Builds at the frontier of AI
+        infrastructure security with Arbitus (Rust-based MCP security proxy). C2 English.
       </p>
 
       <h2 class="reveal">Experience</h2>
@@ -36,13 +39,19 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>Alloha Fibra</strong>
           <span class="cv-period">Jul. 2023 – present · 2 years 9 months</span>
         </div>
-        <div class="cv-role">Mid-level Full-stack Developer · São Paulo (remote)</div>
+        <div class="cv-role">Senior Backend Engineer · São Paulo (remote)</div>
         <ul>
-          <li>Built a voice channel monitoring system in Python/Flask, tracking inbound/outbound calls and IVR interactions across all brand channels, providing real-time visibility into the customer telephony journey.</li>
-          <li>Refactored critical service endpoints, improving response time by up to <strong>60%</strong> through query optimization and Redis cache strategies.</li>
-          <li>Integrated the CRM platform (Air-Comercial) with Salesforce to automatically trigger the Welcome &amp; Activation Journey on contract creation and service activation, replacing manual operations and improving customer onboarding reliability.</li>
+          <li>Maintained and evolved <code>air-spring-boot-starter</code>, the internal Java library used across all 8+ microservices — led zero-downtime JDBC migration (MySqlRepository → JdbcTemplate), fixed IN-list expansion bug in shared layer, coordinated phased rollout across 8 repos via GMUDs.</li>
+          <li>Proactively identified and remediated a critical LGPD violation: 9 distinct attack surfaces exposing customer PII (password, CPF, RG, name) via unauthenticated endpoint — implemented AES-256-GCM encryption with zero-downtime key rotation, migration job for 554k records, across 3 microservices.</li>
+          <li>Authored architectural assessment for Java 8→17 + Spring Boot 1.5→3.x migration of the core commercial service — mapped 301 files, identified critical blockers, defined 4-phase rollout plan.</li>
+          <li>Developed and maintained Java/Spring Boot microservices covering commercial operations, billing, CRM, telephony, customer support, and device management.</li>
+          <li>Integrated payment gateway CycloPay into the financial microservice, handling invoice generation and refund flows.</li>
+          <li>Integrated RADIUS session extraction via <code>radius-reg</code> API, replacing legacy polling with accurate session data and disconnect causes.</li>
+          <li>Integrated the CRM platform with Salesforce to automatically trigger the Welcome &amp; Activation Journey on contract creation and service activation, replacing manual operations.</li>
           <li>Migrated invoice delivery (individual and batch) from Infobip to Salesforce, adding email and SMS channels and decommissioning the legacy integration.</li>
-          <li><strong>Stack:</strong> Node.js, Vue.js, React, TypeScript, Python, Flask, PostgreSQL, Redis, Docker, Kubernetes, AWS, GCP, New Relic, Grafana, Sentry</li>
+          <li>Developed features across commercial, internet, and logistics Vue.js frontends — contract management, OTT provisioning flows, async RADIUS status, WFM scheduling, and field operations interfaces.</li>
+          <li>Built voice channel monitoring system in Python/Flask tracking inbound/outbound calls and IVR interactions across all brand channels.</li>
+          <li><strong>Stack:</strong> Java, Spring Boot, Maven, Vue.js, Node.js, TypeScript, Python, Flask, PostgreSQL, MySQL, Redis, Docker, Kubernetes, GitLab CI, New Relic, Grafana, Sentry, AWS, GCP</li>
         </ul>
       </div>
 
@@ -70,7 +79,6 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remote)</div>
         <ul>
           <li>Developed features with Node.js, React, Redux and AWS (Lambda, S3, RDS).</li>
-          <li>Adopted agile methodologies (Scrum/Kanban) with focus on quality and meeting deadlines.</li>
         </ul>
       </div>
 
@@ -123,7 +131,17 @@ import Sidebar from '../components/Sidebar.astro';
           auth (API key, JWT/OIDC, mTLS), rate limiting, payload filtering, Human-in-the-Loop
           approval and audit log with CloudEvents support.
         </p>
-        <div class="cv-role">Rust · <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
+        <div class="cv-role">Rust · <a href="https://github.com/arbitusgateway/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
+      </div>
+
+      <div class="cv-entry reveal reveal-delay-1">
+        <div class="cv-header"><strong>Ralph Explorer</strong></div>
+        <p>
+          CLI that parses Java and Vue.js source code to generate dependency graphs and visual
+          dev portals — maps service relationships, controller routes, and component trees
+          across a multi-repo codebase.
+        </p>
+        <div class="cv-role">TypeScript · React · <a href="https://github.com/nfvelten/ralph-explorer" target="_blank" rel="noopener">github.com/nfvelten/ralph-explorer</a></div>
       </div>
 
       <div class="cv-entry reveal reveal-delay-1">
@@ -141,11 +159,6 @@ import Sidebar from '../components/Sidebar.astro';
       <h2 class="reveal">Education</h2>
 
       <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Estácio</strong><span class="cv-period">ongoing</span></div>
-        <div class="cv-role">Bachelor's in Software Engineering</div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
         <div class="cv-role">Associate's in Systems Analysis and Development</div>
       </div>
@@ -155,7 +168,7 @@ import Sidebar from '../components/Sidebar.astro';
       <div class="cv-skills">
         <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Languages</span>
-          TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
+          TypeScript · JavaScript · Python · Java · Rust · PHP
         </div>
         <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Front-end</span>
@@ -327,11 +340,14 @@ import Sidebar from '../components/Sidebar.astro';
     <div class="prose lang-pt">
 
       <p>
-        Full-stack developer com 4+ anos construindo sistemas em produção na indústria de
-        telecomunicações. Atualmente na Alloha Fibra — maior ISP independente do Brasil —
-        trabalhando em APIs de performance crítica, monitoramento de infraestrutura de voz e
-        migrações de sistema. Base sólida em TypeScript, Node.js e sistemas distribuídos, com
-        experiência prática em DevOps, observabilidade e infraestrutura em nuvem.
+        Engenheiro backend sênior com 4+ anos no maior ISP independente do Brasil, responsável
+        por infraestrutura de plataforma em um stack distribuído de microsserviços Java/Spring
+        Boot servindo milhões de clientes. Atua com ownership completo de features — levantamento
+        de requisitos, alinhamento com stakeholders, refinamento técnico e implementação — sem
+        suporte dedicado de PM. Liderou migrações cross-cutting, identificou e remediou
+        proativamente uma violação crítica de LGPD expondo PII de clientes, e integrou sistemas
+        de pagamento, CRM e operações de campo em escala. Constrói na fronteira de segurança
+        para infraestrutura de IA com Arbitus (proxy MCP em Rust). Inglês C2.
       </p>
 
 <h2 class="reveal">Experiência</h2>
@@ -341,13 +357,19 @@ import Sidebar from '../components/Sidebar.astro';
           <strong>Alloha Fibra</strong>
           <span class="cv-period">jul. 2023 – presente · 2 anos e 9 meses</span>
         </div>
-        <div class="cv-role">Mid-level Full-stack Developer · São Paulo (remoto)</div>
+        <div class="cv-role">Engenheiro Backend Sênior · São Paulo (remoto)</div>
         <ul>
-          <li>Construí sistema de monitoramento de canais de voz em Python/Flask, rastreando chamadas inbound/outbound e interações IVR em todos os canais da marca, provendo visibilidade em tempo real da jornada telefônica do cliente.</li>
-          <li>Refatorei endpoints críticos de serviço, melhorando o tempo de resposta em até <strong>60%</strong> via otimização de queries e estratégias de cache com Redis.</li>
-          <li>Integrei a plataforma CRM (Air-Comercial) ao Salesforce para disparar automaticamente a Jornada de Boas-Vindas e Ativação na criação de contrato e ativação de serviços, substituindo processos manuais e melhorando a confiabilidade do onboarding.</li>
-          <li>Migrei o envio de faturas (individual e em lote) da Infobip para os endpoints do Salesforce, adicionando canais de e-mail e SMS e desativando a integração legada.</li>
-          <li><strong>Stack:</strong> Node.js, Vue.js, React, TypeScript, Python, Flask, PostgreSQL, Redis, Docker, Kubernetes, AWS, GCP, New Relic, Grafana, Sentry</li>
+          <li>Mantive e evoluí o <code>air-spring-boot-starter</code>, biblioteca Java interna usada por todos os 8+ microsserviços — liderei migração JDBC zero-downtime (MySqlRepository → JdbcTemplate), corrigi bug de expansão de IN-list na camada compartilhada, coordenei rollout faseado via GMUDs.</li>
+          <li>Identifiquei e remedirei proativamente uma violação crítica de LGPD: 9 vetores de ataque expondo PII de clientes (senha, CPF, RG, nome) via endpoint não autenticado — implementei criptografia AES-256-GCM com rotação de chave zero-downtime, job de migração para 554k registros, em 3 microsserviços.</li>
+          <li>Elaborei avaliação arquitetural para migração Java 8→17 + Spring Boot 1.5→3.x do serviço comercial principal — mapeei 301 arquivos, identifiquei blockers críticos, defini plano de 4 fases.</li>
+          <li>Desenvolvi e mantive microsserviços Java/Spring Boot cobrindo operações comerciais, faturamento, CRM, telefonia, suporte ao cliente e gestão de dispositivos.</li>
+          <li>Integrei gateway de pagamento CycloPay ao microsserviço financeiro, cobrindo geração de faturas e fluxos de reembolso.</li>
+          <li>Integrei extração de sessões RADIUS via API <code>radius-reg</code>, substituindo polling legado por dados precisos de sessão e causas de desconexão.</li>
+          <li>Integrei a plataforma CRM ao Salesforce para disparar automaticamente a Jornada de Boas-Vindas e Ativação, substituindo operações manuais.</li>
+          <li>Migrei envio de faturas da Infobip para Salesforce, adicionando canais de e-mail e SMS e desativando a integração legada.</li>
+          <li>Desenvolvi features nos frontends Vue.js comercial, internet e logística — gestão de contratos, fluxos de provisionamento OTT, status RADIUS assíncrono, agendamento WFM e interfaces de operações de campo.</li>
+          <li>Construí sistema de monitoramento de canais de voz em Python/Flask rastreando chamadas inbound/outbound e interações IVR.</li>
+          <li><strong>Stack:</strong> Java, Spring Boot, Maven, Vue.js, Node.js, TypeScript, Python, Flask, PostgreSQL, MySQL, Redis, Docker, Kubernetes, GitLab CI, New Relic, Grafana, Sentry, AWS, GCP</li>
         </ul>
       </div>
 
@@ -375,7 +397,6 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remoto)</div>
         <ul>
           <li>Desenvolvi features com Node.js, React, Redux e AWS (Lambda, S3, RDS).</li>
-          <li>Adotei metodologias ágeis (Scrum/Kanban) com foco em qualidade e cumprimento de prazos.</li>
         </ul>
       </div>
 
@@ -409,7 +430,13 @@ import Sidebar from '../components/Sidebar.astro';
       <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong><a href="/arbitus">Arbitus</a></strong></div>
         <p>Proxy de segurança open-source para agentes de IA e servidores MCP. Aplica políticas por agente: autenticação (API key, JWT/OIDC, mTLS), rate limiting, filtragem de payload, aprovação Human-in-the-Loop e auditoria com suporte a CloudEvents.</p>
-        <div class="cv-role">Rust · <a href="https://github.com/nfvelten/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
+        <div class="cv-role">Rust · <a href="https://github.com/arbitusgateway/arbitus" target="_blank" rel="noopener">github.com/nfvelten/arbitus</a></div>
+      </div>
+
+      <div class="cv-entry reveal reveal-delay-1">
+        <div class="cv-header"><strong>Ralph Explorer</strong></div>
+        <p>CLI que parseia código Java e Vue.js para gerar grafos de dependência e portais de dev visuais — mapeia relacionamentos entre serviços, rotas de controllers e árvores de componentes em um codebase multi-repo.</p>
+        <div class="cv-role">TypeScript · React · <a href="https://github.com/nfvelten/ralph-explorer" target="_blank" rel="noopener">github.com/nfvelten/ralph-explorer</a></div>
       </div>
 
       <div class="cv-entry reveal reveal-delay-1">
@@ -424,11 +451,6 @@ import Sidebar from '../components/Sidebar.astro';
       <h2 class="reveal">Formação</h2>
 
       <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Estácio</strong><span class="cv-period">em andamento</span></div>
-        <div class="cv-role">Bacharelado em Engenharia de Software</div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
         <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
         <div class="cv-role">Tecnólogo em Análise e Desenvolvimento de Sistemas</div>
       </div>
@@ -438,7 +460,7 @@ import Sidebar from '../components/Sidebar.astro';
       <div class="cv-skills">
         <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Linguagens</span>
-          TypeScript · JavaScript · Python · Java · Go · Rust · PHP · Kotlin
+          TypeScript · JavaScript · Python · Java · Rust · PHP
         </div>
         <div class="cv-skill-group reveal reveal-delay-1">
           <span class="cv-skill-label">Front-end</span>

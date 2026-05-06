@@ -1,0 +1,307 @@
+---
+title: Auditing a PII exposure across a Java microservice stack
+title_pt: Auditando uma exposição de PII em um stack Java de microsserviços
+date: 2026-05-06
+description: What starts as a single observation — a password stored in plaintext — unfolds into nine distinct attack surfaces across seven services. This is what that audit looked like and how the fix was designed around a Java 8 constraint.
+description_pt: O que começa como uma única observação — uma senha armazenada em plaintext — se desdobra em nove vetores de ataque distintos em sete serviços. Como foi essa auditoria e como o fix foi desenhado em torno de uma restrição do Java 8.
+tags: [technology, security]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+It started with one observation: a password field stored as `VARCHAR(20)` plaintext in the database. That's a known bad practice. What made it interesting was tracing every place that password was read, written, transmitted, logged, and compared — and finding that the problem wasn't one thing, it was nine things layered on top of each other.
+
+---
+
+## The audit
+
+The field in question is a customer portal password. Plaintext in the database is the most visible symptom, but the audit followed the data through the codebase to understand the full exposure surface.
+
+**1. Plaintext storage.** The field is `VARCHAR(20)` — no hash, no encryption. Any database dump exposes every customer's password directly.
+
+**2. Predictable default value.** On account creation, the password defaults to the last six digits of the customer's tax ID. The derivation logic is a one-liner in `ClienteService`. The tax ID is semi-public. An attacker who knows a customer's tax ID can guess their portal password without accessing the database.
+
+**3. Plaintext transmission.** When the auth service needs to verify the password, it sends it in the HTTP request body to an OAuth integration service. The password travels over the internal network in plaintext in every authentication attempt.
+
+**4. Logged as an event.** There's an event system that logs user actions. Password changes were logged as `inserirEvento(customerId, "ATUALIZAR_SENHA", password)` — the actual password value passed as the event description and written to the events table.
+
+**5. Non-constant-time comparison.** Authentication used `cliente.getSenhaSac().equals(dto.getOldPassword())` — a standard string equality check. String comparison in Java short-circuits on the first mismatched character, making it vulnerable to timing attacks that can probe character by character.
+
+**6. SQL authentication.** One authentication path ran `WHERE senha_sac = ?` directly in a SQL query — comparing the plaintext password in the database layer rather than in application code.
+
+**7. Exposed via REST.** The `Cliente` and `Lead` models had no `@JsonIgnore` on the password field. Any endpoint that returned a full client object — contract details, lead listings — was returning the password in the JSON response.
+
+**8. Exposed via external integration.** An integration service used by an external partner had the password field in its `ClienteDTO`. The integration's auth mechanism was HTTP Basic with a Base64-encoded static token — `QUlSMDAwMQ==`, decoding to `AIR001`. Not a secret. Any request to any endpoint on that service returned client records including the password field.
+
+**9. Cross-service leakage.** Seven microservices consumed the commercial API and received client objects. Most of them didn't use the password field, but they were deserializing it from API responses and holding it in memory. Mirror services — ones that never read the field — were still receiving it on every API call.
+
+---
+
+## Why BCrypt isn't the answer here
+
+The standard recommendation for password storage is a one-way hash: BCrypt, Argon2, or similar. One-way means you can verify a password by hashing the input and comparing hashes, but you can never recover the original.
+
+That's the right design when your system is the only verifier. It doesn't work here.
+
+Several downstream services — an OAuth integration, a third-party platform connector, a legacy provisioning system — need the actual password to authenticate with their upstream systems. They receive the customer's password and pass it to an external API. A one-way hash would break every one of those integrations: you can't un-hash a value to send to a downstream system.
+
+This is a common constraint in legacy ISP platforms. The password started as a provisioning credential — needed in plaintext to configure hardware or authenticate with carrier systems — and was later reused as a portal credential without redesigning the storage model.
+
+The technically correct long-term solution is to migrate authentication entirely to OAuth/Keycloak (which already exists in the stack) and let the external systems migrate to token-based auth over time. That's a multi-quarter project. It doesn't fix the immediate exposure.
+
+The practical short-term solution is AES-256-GCM: reversible encryption that protects the database and logs, while still allowing the application to decrypt and pass the credential to downstream systems that need it.
+
+---
+
+## The implementation
+
+**PasswordEncryptionService** — a Spring service that wraps `javax.crypto`, the standard Java cryptography API available since Java 8. No external dependencies. Key loaded from an environment variable.
+
+```java
+@Service
+public class PasswordEncryptionService {
+
+    private final SecretKey key;
+
+    public PasswordEncryptionService(@Value("${air.senha-sac.encryption-key}") String base64Key) {
+        byte[] decoded = Base64.getDecoder().decode(base64Key);
+        this.key = new SecretKeySpec(decoded, "AES");
+    }
+
+    public String encrypt(String plaintext) {
+        byte[] iv = new byte[12];
+        new SecureRandom().nextBytes(iv);
+        // AES-256-GCM encryption
+        // returns "v1:" + Base64(iv + ciphertext + tag)
+    }
+
+    public String decrypt(String ciphertext) {
+        if (!ciphertext.startsWith("v1:")) {
+            return ciphertext; // fallback for plaintext during migration window
+        }
+        // decode, extract iv, decrypt
+    }
+}
+```
+
+The `v1:` prefix serves two purposes: it identifies encrypted values during the migration window (not all records are encrypted immediately — the migration runs as a background job), and it provides a version handle for future key rotation. When the key needs to change, records encrypted with the old key start with `v1:`, records with the new key start with `v2:`. The application can decrypt either by reading the prefix.
+
+**Write points** — anywhere the password is set gets `encrypt()`:
+- Account creation: `setSenhaSac(encrypt(derived))`
+- Password update: `updateCustomerPassword(encrypt(newPassword))`
+- Migration service: `setSenhaSac(encrypt(legacyValue))`
+
+**Read points** — anywhere the password is consumed gets `decrypt()`:
+- OAuth integration: `decrypt(cliente.getSenhaSac())` before sending
+- External platform connector: `decrypt(...)` before sending
+- Authentication comparison: `decrypt(...).equals(input)`
+
+**Mirror services** — services that receive client objects but never read the password field get `@JsonIgnore` on the field in the model. They stop receiving and deserializing the field entirely.
+
+**Log redaction** — the event logger call becomes `inserirEvento(customerId, "ATUALIZAR_SENHA", "****")`.
+
+**Schema migration** — `VARCHAR(20)` to `VARCHAR(100)` to accommodate the Base64-encoded ciphertext. `ALGORITHM=INPLACE` to avoid locking the table during migration on a live database.
+
+---
+
+## The migration job
+
+554,000 existing records need to be encrypted. Running a single `UPDATE` across the full table isn't safe on a live system — it locks rows, spikes I/O, and blocks reads for minutes.
+
+The migration job runs in batches of 500. It reads unencrypted records (those without the `v1:` prefix), encrypts them in memory, and writes them back. The batch size is small enough to keep lock contention low. The job is resumable — if it's interrupted, it picks up from where it left off because it selects records by the absence of the prefix.
+
+Three endpoints manage the job:
+
+```
+POST /admin/migration/senha-sac/run    — encrypt next batch
+GET  /admin/migration/senha-sac/status — progress report
+POST /admin/migration/senha-sac/commit — swap columns when done
+```
+
+The `commit` endpoint swaps the encrypted column into the main column and drops the staging column. This makes the cutover atomic from the application's perspective.
+
+---
+
+## The Java 8 constraint
+
+The service runs Java 8 and Spring Boot 1.5 — both end-of-life. AES-256-GCM is available in `javax.crypto` since Java 6, so this works. What doesn't work is post-quantum cryptography.
+
+ML-KEM (CRYSTALS-Kyber, FIPS 203) and ML-DSA (CRYSTALS-Dilithium, FIPS 204) require Bouncy Castle 1.78+, which requires Java 11+. The migration to Java 17 and Spring Boot 3.x is planned — documented in an architectural assessment that maps 301 files, identifies the critical blockers (namespace migration from `javax.*` to `jakarta.*`, Spring Security API changes, Springfox removal), and outlines a four-phase rollout over two to four months.
+
+The current fix is the correct fix for the current constraint. Post-quantum protection — wrapping the AES key with ML-KEM — becomes available after the Java migration. The `v1:` versioning prefix in the ciphertext means the transition to `v2:` (ML-KEM-wrapped key) can happen without decrypting and re-encrypting the data: only the key management changes.
+
+---
+
+## The order matters
+
+One instinct when you find an exposure like this is to deploy `@JsonIgnore` immediately — stop the bleeding, close the endpoint. That's wrong here.
+
+`@JsonIgnore` on the password field breaks the OAuth integration, the provisioning connector, and any other service that was reading the field from the API response. Those services break silently: they start receiving `null` instead of a password, and the integrations fail.
+
+The correct order is:
+1. Add encryption at write points (new records are encrypted immediately)
+2. Add decryption at read points (existing plaintext records still work via fallback)
+3. Run migration job (existing records get encrypted)
+4. Validate all integrations with encrypted data in staging
+5. Apply `@JsonIgnore` last — only after all consumers have been updated to use `decrypt()`
+
+Closing the exposure before fixing the consumers breaks the system. Fixing the consumers before closing the exposure leaves a window, but a known and bounded one.
+
+---
+
+## What this audit pattern produces
+
+Starting from one observation and following the data — where it's written, read, transmitted, logged, compared — consistently surfaces more than you expect. The nine vectors here weren't nine separate design decisions. They were one decision (store a provisioning credential as a user password) made once, and then six years of features built on top of it without revisiting the assumption.
+
+The value of systematic tracing isn't finding exotic vulnerabilities. It's finding the mundane ones that accumulate invisibly — the log statement someone added three years ago, the `@JsonIgnore` that was never added, the `equals()` that was never made timing-safe. Each one is a small oversight. Together they're a significant exposure.
+</En>
+
+<Pt>
+Começou com uma única observação: um campo de senha armazenado como `VARCHAR(20)` em plaintext no banco de dados. É uma prática conhecidamente ruim. O que tornou interessante foi rastrear cada lugar onde essa senha era lida, escrita, transmitida, logada e comparada — e descobrir que o problema não era uma coisa, eram nove coisas empilhadas.
+
+---
+
+## A auditoria
+
+O campo em questão é a senha de um portal do cliente. O plaintext no banco é o sintoma mais visível, mas a auditoria seguiu o dado pelo codebase para entender a superfície de exposição completa.
+
+**1. Armazenamento plaintext.** O campo é `VARCHAR(20)` — sem hash, sem criptografia. Qualquer dump do banco expõe diretamente a senha de cada cliente.
+
+**2. Valor padrão previsível.** Na criação da conta, a senha padrão é os últimos seis dígitos do CPF/CNPJ do cliente. A lógica de derivação é uma linha no `ClienteService`. O CPF é semi-público. Um atacante que conhece o CPF de um cliente pode adivinhar a senha do portal sem acessar o banco.
+
+**3. Transmissão em plaintext.** Quando o serviço de autenticação precisa verificar a senha, ele a envia no corpo da requisição HTTP para um serviço de integração OAuth. A senha trafega pela rede interna em plaintext em cada tentativa de autenticação.
+
+**4. Logada como evento.** Existe um sistema de eventos que registra ações do usuário. Mudanças de senha eram logadas como `inserirEvento(customerId, "ATUALIZAR_SENHA", password)` — o valor real da senha passado como descrição do evento e gravado na tabela de eventos.
+
+**5. Comparação não constant-time.** A autenticação usava `cliente.getSenhaSac().equals(dto.getOldPassword())` — comparação de string padrão. Comparação de string em Java faz short-circuit no primeiro caractere diferente, tornando-a vulnerável a timing attacks que podem sondar caractere por caractere.
+
+**6. Autenticação SQL.** Um caminho de autenticação rodava `WHERE senha_sac = ?` diretamente em uma query SQL — comparando a senha plaintext na camada de banco em vez de no código da aplicação.
+
+**7. Exposta via REST.** Os modelos `Cliente` e `Lead` não tinham `@JsonIgnore` no campo de senha. Qualquer endpoint que retornava um objeto cliente completo — detalhes de contrato, listagem de leads — estava retornando a senha na resposta JSON.
+
+**8. Exposta via integração externa.** Um serviço de integração usado por um parceiro externo tinha o campo de senha em seu `ClienteDTO`. O mecanismo de auth da integração era HTTP Basic com um token estático codificado em Base64 — um não-segredo. Qualquer requisição a qualquer endpoint desse serviço retornava registros de cliente incluindo o campo de senha.
+
+**9. Vazamento cross-service.** Sete microsserviços consumiam a API comercial e recebiam objetos cliente. A maioria não usava o campo de senha, mas o desserializava das respostas da API e o mantinha em memória. Serviços espelho — que nunca liam o campo — ainda o recebiam em cada chamada.
+
+---
+
+## Por que BCrypt não é a resposta aqui
+
+A recomendação padrão para armazenamento de senha é um hash unidirecional: BCrypt, Argon2 ou similar. Unidirecional significa que você verifica uma senha fazendo hash do input e comparando hashes, mas nunca recupera o original.
+
+Esse é o design certo quando seu sistema é o único verificador. Não funciona aqui.
+
+Vários serviços downstream — uma integração OAuth, um conector de plataforma terceiro, um sistema legado de provisionamento — precisam da senha real para autenticar com seus sistemas upstream. Eles recebem a senha do cliente e a passam para uma API externa. Um hash unidirecional quebraria todas essas integrações: você não pode desfazer o hash de um valor para enviá-lo a um sistema downstream.
+
+Essa é uma restrição comum em plataformas legadas de ISP. A senha começou como credencial de provisionamento — necessária em plaintext para configurar hardware ou autenticar com sistemas de operadoras — e foi reutilizada como credencial do portal sem redesenhar o modelo de armazenamento.
+
+A solução correta de longo prazo é migrar a autenticação inteiramente para OAuth/Keycloak (que já existe no stack) e deixar os sistemas externos migrarem para auth baseada em token ao longo do tempo. É um projeto de múltiplos trimestres. Não corrige a exposição imediata.
+
+A solução prática de curto prazo é AES-256-GCM: criptografia reversível que protege o banco e os logs, enquanto ainda permite que a aplicação descriptografe e passe a credencial para sistemas downstream que precisam dela.
+
+---
+
+## A implementação
+
+**PasswordEncryptionService** — um Spring service que envolve `javax.crypto`, a API de criptografia padrão do Java disponível desde o Java 8. Sem dependências externas. Chave carregada de variável de ambiente.
+
+```java
+@Service
+public class PasswordEncryptionService {
+
+    private final SecretKey key;
+
+    public PasswordEncryptionService(@Value("${air.senha-sac.encryption-key}") String base64Key) {
+        byte[] decoded = Base64.getDecoder().decode(base64Key);
+        this.key = new SecretKeySpec(decoded, "AES");
+    }
+
+    public String encrypt(String plaintext) {
+        byte[] iv = new byte[12];
+        new SecureRandom().nextBytes(iv);
+        // AES-256-GCM
+        // retorna "v1:" + Base64(iv + ciphertext + tag)
+    }
+
+    public String decrypt(String ciphertext) {
+        if (!ciphertext.startsWith("v1:")) {
+            return ciphertext; // fallback para plaintext na janela de migração
+        }
+        // decodifica, extrai iv, descriptografa
+    }
+}
+```
+
+O prefixo `v1:` serve a dois propósitos: identifica valores criptografados durante a janela de migração (nem todos os registros são criptografados imediatamente — a migração roda como job em background), e fornece um handle de versão para rotação futura de chave. Quando a chave precisar mudar, registros criptografados com a chave antiga começam com `v1:`, registros com a nova chave começam com `v2:`. A aplicação consegue descriptografar qualquer um lendo o prefixo.
+
+**Pontos de escrita** — qualquer lugar onde a senha é definida recebe `encrypt()`:
+- Criação de conta: `setSenhaSac(encrypt(derived))`
+- Atualização de senha: `updateCustomerPassword(encrypt(newPassword))`
+- Serviço de migração: `setSenhaSac(encrypt(legacyValue))`
+
+**Pontos de leitura** — qualquer lugar onde a senha é consumida recebe `decrypt()`:
+- Integração OAuth: `decrypt(cliente.getSenhaSac())` antes de enviar
+- Conector de plataforma externa: `decrypt(...)` antes de enviar
+- Comparação de autenticação: `decrypt(...).equals(input)`
+
+**Serviços espelho** — serviços que recebem objetos cliente mas nunca leem o campo de senha recebem `@JsonIgnore` no campo no modelo. Param de receber e desserializar o campo completamente.
+
+**Redação no log** — a chamada ao logger de eventos vira `inserirEvento(customerId, "ATUALIZAR_SENHA", "****")`.
+
+**Migration de schema** — `VARCHAR(20)` para `VARCHAR(100)` para acomodar o ciphertext codificado em Base64. `ALGORITHM=INPLACE` para evitar lock da tabela durante a migração em banco de dados live.
+
+---
+
+## O job de migração
+
+554.000 registros existentes precisam ser criptografados. Rodar um único `UPDATE` em toda a tabela não é seguro em um sistema live — bloqueia linhas, pica I/O e trava leituras por minutos.
+
+O job de migração roda em lotes de 500. Lê registros não criptografados (aqueles sem o prefixo `v1:`), criptografa em memória e escreve de volta. O tamanho do lote é pequeno o suficiente para manter a contenção de lock baixa. O job é retomável — se for interrompido, continua de onde parou porque seleciona registros pela ausência do prefixo.
+
+Três endpoints gerenciam o job:
+
+```
+POST /admin/migration/senha-sac/run    — criptografa próximo lote
+GET  /admin/migration/senha-sac/status — relatório de progresso
+POST /admin/migration/senha-sac/commit — troca colunas quando concluído
+```
+
+O endpoint `commit` troca a coluna criptografada para a coluna principal e descarta a coluna de staging. Isso torna o cutover atômico do ponto de vista da aplicação.
+
+---
+
+## A restrição do Java 8
+
+O serviço roda Java 8 e Spring Boot 1.5 — ambos end-of-life. AES-256-GCM está disponível em `javax.crypto` desde o Java 6, então funciona. O que não funciona é criptografia pós-quântica.
+
+ML-KEM (CRYSTALS-Kyber, FIPS 203) e ML-DSA (CRYSTALS-Dilithium, FIPS 204) requerem Bouncy Castle 1.78+, que requer Java 11+. A migração para Java 17 e Spring Boot 3.x está planejada — documentada em uma avaliação arquitetural que mapeia 301 arquivos, identifica os blockers críticos (migração de namespace de `javax.*` para `jakarta.*`, mudanças na API do Spring Security, remoção do Springfox), e delineia um rollout de quatro fases ao longo de dois a quatro meses.
+
+O fix atual é o fix correto para a restrição atual. Proteção pós-quântica — envolver a chave AES com ML-KEM — fica disponível após a migração de Java. O prefixo de versão `v1:` no ciphertext significa que a transição para `v2:` (chave com ML-KEM) pode acontecer sem descriptografar e recriptografar os dados: apenas o gerenciamento de chave muda.
+
+---
+
+## A ordem importa
+
+Um instinto quando você encontra uma exposição como essa é fazer deploy de `@JsonIgnore` imediatamente — estancar o sangramento, fechar o endpoint. Isso é errado aqui.
+
+`@JsonIgnore` no campo de senha quebra a integração OAuth, o conector de provisionamento e qualquer outro serviço que lia o campo da resposta da API. Esses serviços quebram silenciosamente: passam a receber `null` em vez de uma senha, e as integrações falham.
+
+A ordem correta é:
+1. Adicionar criptografia nos pontos de escrita (novos registros são criptografados imediatamente)
+2. Adicionar descriptografia nos pontos de leitura (registros plaintext existentes ainda funcionam via fallback)
+3. Rodar job de migração (registros existentes são criptografados)
+4. Validar todas as integrações com dados criptografados em staging
+5. Aplicar `@JsonIgnore` por último — só depois que todos os consumidores foram atualizados para usar `decrypt()`
+
+Fechar a exposição antes de corrigir os consumidores quebra o sistema. Corrigir os consumidores antes de fechar a exposição deixa uma janela, mas uma janela conhecida e delimitada.
+
+---
+
+## O que esse padrão de auditoria produz
+
+Começar de uma observação e seguir o dado — onde é escrito, lido, transmitido, logado, comparado — consistentemente revela mais do que você espera. Os nove vetores aqui não foram nove decisões de design separadas. Foram uma decisão (armazenar uma credencial de provisionamento como senha de usuário) tomada uma vez, e então seis anos de features construídas em cima dela sem revisitar o pressuposto.
+
+O valor do rastreamento sistemático não é encontrar vulnerabilidades exóticas. É encontrar as mundanas que se acumulam invisivelmente — o log statement que alguém adicionou há três anos, o `@JsonIgnore` que nunca foi adicionado, o `equals()` que nunca foi tornado timing-safe. Cada um é um pequeno descuido. Juntos são uma exposição significativa.
+</Pt>
