@@ -1,0 +1,238 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const components = [
+  {
+    id: 'deck-cli',
+    name: 'deck CLI',
+    tagEn: 'Go · orchestration',
+    tagPt: 'Go · orquestração',
+    descEn: 'The central nerve of the platform. Written in Go with zero external dependencies. Queries the phone over SSH (battery, Wi-Fi, root status), proxies kubectl to k3s, and appends captures directly to the Obsidian vault daily notes in Amphora format.',
+    descPt: 'O nervo central da plataforma. Escrito em Go com zero dependências externas. Consulta o phone via SSH (bateria, Wi-Fi, status root), proxy kubectl para k3s, e adiciona capturas diretamente nas daily notes do vault Obsidian no formato Amphora.',
+    commands: [
+      { cmd: 'deck status', descEn: 'Aggregate view: phone + k3s node + pods', descPt: 'Visão agregada: phone + nó k3s + pods' },
+      { cmd: 'deck capture "text"', descEn: 'Append capture to today\'s daily note', descPt: 'Adiciona captura na daily note de hoje' },
+      { cmd: 'deck phone notify "msg"', descEn: 'Push notification to Field Console', descPt: 'Notificação para o Field Console' },
+      { cmd: 'deck phone push-contabo', descEn: 'Send k3s status to phone', descPt: 'Envia status do k3s para o phone' },
+      { cmd: 'deck contabo pods', descEn: 'List all pods via remote kubectl', descPt: 'Lista pods via kubectl remoto' },
+      { cmd: 'deck contabo backup', descEn: 'Trigger k3s state backup', descPt: 'Dispara backup do estado k3s' },
+    ],
+  },
+  {
+    id: 'field-console',
+    name: 'Phone Field Console',
+    tagEn: 'Python · Java (Android)',
+    tagPt: 'Python · Java (Android)',
+    descEn: 'Operational dashboard running on the phone. Python server runs in Termux, exposing a REST API and serving a PWA. Native Android Java launcher receives events via BroadcastReceiver from the deck CLI and displays them in a real-time feed.',
+    descPt: 'Dashboard de operações rodando no phone. Servidor Python no Termux expõe REST API e serve uma PWA. Launcher Android nativo em Java recebe eventos via BroadcastReceiver do deck CLI e exibe em feed em tempo real.',
+  },
+  {
+    id: 'amphora-zero',
+    name: 'Amphora Zero',
+    tagEn: 'Java (Android) · security lab',
+    tagPt: 'Java (Android) · lab de segurança',
+    descEn: 'Firmware-style security lab console for the phone. Separate from Field Console by design — focused on controlled lab and security modules on owned or authorized devices. Modules communicate with Termux via RUN_COMMAND and return results through Android broadcasts. Current modules: Wi-Fi recon (iproute2, termux-api). Architecture supports BLE and Evil Twin.',
+    descPt: 'Console de laboratório de segurança estilo firmware para o phone. Separado do Field Console por design — focado em módulos de lab e segurança em dispositivos próprios ou autorizados. Módulos comunicam com Termux via RUN_COMMAND e retornam resultados via broadcasts Android. Módulos ativos: recon Wi-Fi (iproute2, termux-api). Arquitetura suporta BLE e Evil Twin.',
+  },
+  {
+    id: 'agent-code-buddy',
+    name: 'Agent Code Buddy',
+    tagEn: 'Python · Java (Android) · HITL',
+    tagPt: 'Python · Java (Android) · HITL',
+    descEn: 'Mobile Human-in-the-Loop surface for AI agents. Python HTTP server runs on the PC and receives tool-use approval requests from Claude agents via long-poll. Native Android app shows pending requests in real time, lets you approve, trust, or deny from the notification shade. Accelerometer-driven states: shake → dizzy, face-down → sleep, approve → heart. Complements Arbitus at the mobile layer.',
+    descPt: 'Superfície mobile de Human-in-the-Loop para agentes de IA. Servidor Python HTTP roda no PC e recebe aprovações de tool use de agentes Claude via long-poll. App Android nativo exibe requests pendentes em tempo real, permite aprovar, confiar ou negar diretamente da aba de notificações. Estados pelo acelerômetro: shake → dizzy, face-down → sleep, aprovação → heart. Complementa o Arbitus na camada mobile.',
+  },
+  {
+    id: 'contabo-k8s',
+    name: 'Contabo K3s Cluster',
+    tagEn: 'k3s · Kubernetes · observability',
+    tagPt: 'k3s · Kubernetes · observabilidade',
+    descEn: 'Production-grade single-node Kubernetes cluster on a Contabo VPS. Bootstrapped via cloud-init with automated install scripts. Full observability: Uptime Kuma with push monitors for disk, memory, and k3s backups. Automated daily backups via systemd timer (7-day retention). Security: UFW restricting SSH and kubectl API to your IP, no password auth. TLS via cert-manager + Let\'s Encrypt. Cloudflare DNS.',
+    descPt: 'Cluster Kubernetes single-node de nível produção em VPS Contabo. Bootstrap via cloud-init com scripts automatizados. Observabilidade completa: Uptime Kuma com monitores push para disco, memória e backups k3s. Backups diários automatizados via systemd timer (retenção 7 dias). Segurança: UFW restringindo SSH e API kubectl ao seu IP, sem autenticação por senha. TLS via cert-manager + Let\'s Encrypt. DNS no Cloudflare.',
+  },
+];
+---
+
+<BaseLayout
+  title="Phone Development Deck — Distributed Dev Platform"
+  description="Phone Development Deck — distributed platform across Arch Linux, Android/Termux (LineageOS), and Kubernetes. Go CLI, native Android apps, k3s cluster."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>Phone Development Deck</h1>
+    </header>
+    <div class="prose">
+      <div class="deck-intro">
+        <p>
+          <span class="lang-en">
+            <strong>Phone Development Deck</strong> is a distributed personal platform built across
+            three heterogeneous nodes: an Arch Linux PC (orchestration), an Android phone running
+            LineageOS with rooted Termux (edge), and a Kubernetes cluster on a Contabo VPS (compute).
+            Each node has a dedicated role — but a single Go CLI ties them together.
+          </span>
+          <span class="lang-pt">
+            <strong>Phone Development Deck</strong> é uma plataforma distribuída pessoal construída
+            em três nós heterogêneos: um PC Arch Linux (orquestração), um phone Android rodando
+            LineageOS com Termux rootado (edge) e um cluster Kubernetes em VPS Contabo (compute).
+            Cada nó tem um papel dedicado — mas um único CLI Go os conecta.
+          </span>
+        </p>
+
+        <div class="arch-diagram">
+          <pre><code>┌─────────────────────────────────────────────────────┐
+│                  Arch Linux PC                      │
+│  deck CLI (Go) · Claude agents · Obsidian vault     │
+└──────────────┬──────────────────────┬───────────────┘
+               │ SSH                  │ SSH + kubectl
+               ▼                      ▼
+┌──────────────────────┐  ┌───────────────────────────┐
+│  Android / Termux    │  │  Contabo VPS              │
+│  LineageOS + root    │  │  k3s · cert-manager       │
+│                      │  │  Cloudflare · Uptime Kuma │
+│  Field Console       │  │  systemd backups · UFW    │
+│  Amphora Zero        │  └───────────────────────────┘
+│  Agent Code Buddy    │
+└──────────────────────┘</code></pre>
+        </div>
+
+        <p>
+          <span class="lang-en">
+            The phone is a sensor and approval surface. The PC orchestrates. The cluster runs workloads.
+            Three native Android Java apps (no Gradle, custom build pipeline) cover operations,
+            security lab, and AI agent oversight. All source on{' '}
+            <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+          <span class="lang-pt">
+            O phone é sensor e superfície de aprovação. O PC orquestra. O cluster roda workloads.
+            Três apps Android nativos em Java (sem Gradle, build pipeline próprio) cobrem operações,
+            lab de segurança e supervisão de agentes de IA. Todo código no{' '}
+            <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+        </p>
+      </div>
+
+      {components.map(c => (
+        <div class="deck-component">
+          <div class="component-header">
+            <h2>{c.name}</h2>
+            <span class="component-tag">
+              <span class="lang-en">{c.tagEn}</span>
+              <span class="lang-pt">{c.tagPt}</span>
+            </span>
+          </div>
+          <p>
+            <span class="lang-en">{c.descEn}</span>
+            <span class="lang-pt">{c.descPt}</span>
+          </p>
+          {c.commands && (
+            <div class="cmd-table">
+              {c.commands.map(cmd => (
+                <div class="cmd-row">
+                  <code class="cmd-name">{cmd.cmd}</code>
+                  <span class="cmd-desc">
+                    <span class="lang-en">{cmd.descEn}</span>
+                    <span class="lang-pt">{cmd.descPt}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .deck-intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .arch-diagram {
+    margin: 1.5rem 0;
+  }
+
+  .arch-diagram pre {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    font-size: 0.78rem;
+    overflow-x: auto;
+  }
+
+  .arch-diagram code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx-2);
+  }
+
+  .deck-component {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--ui);
+  }
+
+  .deck-component:last-child {
+    border-bottom: none;
+  }
+
+  .component-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .component-header h2 {
+    margin: 0;
+  }
+
+  .component-tag {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    color: var(--tx-3);
+    font-family: system-ui, sans-serif;
+  }
+
+  .deck-component > p {
+    color: var(--tx-2);
+    margin-bottom: 1rem;
+  }
+
+  .cmd-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+
+  .cmd-row {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .cmd-name {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    color: var(--tx);
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cmd-desc {
+    font-size: 0.88rem;
+    color: var(--tx-3);
+  }
+</style>
