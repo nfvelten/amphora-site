@@ -34,13 +34,8 @@ jobs:
             ghcr.io/nfvelten/site:latest
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, contabo]
     needs: publish
     steps:
       - name: Deploy to k3s
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: root
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: k3s kubectl rollout restart deployment/nicholas-site -n site
+        run: sudo k3s kubectl rollout restart deployment/nicholas-site -n site
