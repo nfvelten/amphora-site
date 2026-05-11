@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const decisions = [
+  { label: 'allow_once', color: 'green', descEn: 'Approve this specific request', descPt: 'Aprova este request específico' },
+  { label: 'always_allow', color: 'blue', descEn: 'Trust this tool for the session', descPt: 'Confia nesta ferramenta na sessão' },
+  { label: 'reject', color: 'red', descEn: 'Block — agent receives a deny', descPt: 'Bloqueia — agente recebe deny' },
+];
+
+const states = [
+  { name: 'idle', descEn: 'Waiting. Animated robot pet, random easter eggs (hiccup, sneeze, yawn, peekaboo, dance).', descPt: 'Aguardando. Pet robô animado com easter eggs aleatórios (hiccup, sneeze, yawn, peekaboo, dance).' },
+  { name: 'attention', descEn: 'Pending approval request. Robot raises alert, flashing [!] frames.', descPt: 'Request de aprovação pendente. Robô aciona alerta com frames [!].' },
+  { name: 'busy', descEn: 'Decision being sent to server.', descPt: 'Decisão sendo enviada ao servidor.' },
+  { name: 'celebrate', descEn: 'After clearing the queue — confetti frames for 3 seconds.', descPt: 'Após zerar a fila — frames de confete por 3 segundos.' },
+  { name: 'sleep', descEn: 'Phone face-down (accelerometer). Robot sleeps, z Z frames.', descPt: 'Phone virado para baixo (acelerômetro). Robô dorme, frames z Z.' },
+  { name: 'dizzy', descEn: 'Phone shaken (accelerometer). Robot spins @ @ frames.', descPt: 'Phone sacudido (acelerômetro). Robô gira com frames @ @.' },
+  { name: 'heart', descEn: 'Fast approval (< 5s). Robot shows <3 for 8 seconds.', descPt: 'Aprovação rápida (< 5s). Robô mostra <3 por 8 segundos.' },
+];
+---
+
+<BaseLayout
+  title="Agent Code Buddy — Mobile HITL for AI Coding Agents"
+  description="Agent Code Buddy — mobile Human-in-the-Loop companion for AI coding agents. Approve or deny tool calls from your phone's notification shade."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>Agent Code Buddy</h1>
+    </header>
+    <div class="prose">
+      <div class="buddy-intro">
+        <p>
+          <span class="lang-en">
+            <strong>Agent Code Buddy</strong> is a mobile Human-in-the-Loop companion for AI coding agents.
+            A Python HTTP server runs on your PC and intercepts tool-use requests from Claude agents via a
+            pre-tool-use hook. The native Android app receives those requests in real time and lets you
+            approve or deny directly from the notification shade — without unlocking the phone.
+          </span>
+          <span class="lang-pt">
+            <strong>Agent Code Buddy</strong> é um companion mobile de Human-in-the-Loop para agentes de IA.
+            Um servidor Python HTTP roda no seu PC e intercepta requests de tool use de agentes Claude via
+            hook de pre-tool-use. O app Android nativo recebe esses requests em tempo real e permite
+            aprovar ou negar direto da aba de notificações — sem desbloquear o phone.
+          </span>
+        </p>
+
+        <div class="buddy-diagram">
+          <pre><code>Claude agent (Claude Code, etc.)
+        │ pre-tool-use hook
+        ▼
+  buddy server (PC)   ← Python HTTP, long-poll, ThreadingHTTPServer
+        │ BroadcastReceiver
+        ▼
+  Android app (phone) ← native Java, notification shade, accelerometer
+        │ POST /api/decide/:id
+        ▼
+  agent unblocked     ← allow_once | always_allow | reject</code></pre>
+        </div>
+
+        <p>
+          <span class="lang-en">
+            The agent blocks on long-poll until you decide. No push notifications required —
+            the app polls the server and posts a local Android notification. Works over local
+            network or any reachable IP. Source on{' '}
+            <a href="https://github.com/nfvelten/agent-code-buddy-unified" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+          <span class="lang-pt">
+            O agente bloqueia em long-poll até você decidir. Sem push notifications externas —
+            o app consulta o servidor e posta uma notificação Android local. Funciona em rede
+            local ou qualquer IP acessível. Código no{' '}
+            <a href="https://github.com/nfvelten/agent-code-buddy-unified" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-en">Setup</span>
+        <span class="lang-pt">Instalação</span>
+      </h2>
+
+      <p>
+        <span class="lang-en">Start the server on your PC:</span>
+        <span class="lang-pt">Inicie o servidor no seu PC:</span>
+      </p>
+      <pre class="code-block"><code>cd server
+python3 server.py --port 8765</code></pre>
+
+      <p>
+        <span class="lang-en">Build and install the APK on your phone (requires Termux with SSH):</span>
+        <span class="lang-pt">Build e instale o APK no seu phone (requer Termux com SSH):</span>
+      </p>
+      <pre class="code-block"><code>cd android && ./build.sh
+scp -P 8022 build/agent-code-buddy-signed.apk u0_a186@&lt;phone-ip&gt;:~/
+ssh -p 8022 u0_a186@&lt;phone-ip&gt; 'su -c "pm install -r ~/agent-code-buddy-signed.apk"'</code></pre>
+
+      <p>
+        <span class="lang-en">Wire it to Claude Code as a pre-tool-use hook in <code>.claude/settings.json</code>:</span>
+        <span class="lang-pt">Conecte ao Claude Code como hook de pre-tool-use em <code>.claude/settings.json</code>:</span>
+      </p>
+      <pre class="code-block"><code>{`{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "", "hooks": [{ "type": "command", "command": "python3 /path/to/server/bin/claude-pretooluse-hook" }] }
+    ]
+  }
+}`}</code></pre>
+
+      <h2>
+        <span class="lang-en">Decisions</span>
+        <span class="lang-pt">Decisões</span>
+      </h2>
+
+      <div class="decision-list">
+        {decisions.map(d => (
+          <div class="decision-row">
+            <code class={`decision-label decision-${d.color}`}>{d.label}</code>
+            <span class="decision-desc">
+              <span class="lang-en">{d.descEn}</span>
+              <span class="lang-pt">{d.descPt}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <h2>
+        <span class="lang-en">Robot pet states</span>
+        <span class="lang-pt">Estados do pet robô</span>
+      </h2>
+      <p>
+        <span class="lang-en">The companion app has a living ASCII robot pet that reacts to what's happening.</span>
+        <span class="lang-pt">O app companion tem um pet robô ASCII vivo que reage ao que está acontecendo.</span>
+      </p>
+
+      <div class="states-list">
+        {states.map(s => (
+          <div class="state-row">
+            <code class="state-name">{s.name}</code>
+            <span class="state-desc">
+              <span class="lang-en">{s.descEn}</span>
+              <span class="lang-pt">{s.descPt}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <h2>
+        <span class="lang-en">Server API</span>
+        <span class="lang-pt">API do servidor</span>
+      </h2>
+
+      <div class="api-list">
+        <div class="api-row"><code>GET  /api/state</code><span><span class="lang-en">Current requests and stats</span><span class="lang-pt">Requests e stats atuais</span></span></div>
+        <div class="api-row"><code>POST /api/request</code><span><span class="lang-en">Submit an approval request</span><span class="lang-pt">Submete um request de aprovação</span></span></div>
+        <div class="api-row"><code>POST /api/decide/:id</code><span><span class="lang-en">Approve or reject a request</span><span class="lang-pt">Aprova ou rejeita um request</span></span></div>
+        <div class="api-row"><code>POST /api/wait/:id</code><span><span class="lang-en">Long-poll until decided (default 300s)</span><span class="lang-pt">Long-poll até decidido (padrão 300s)</span></span></div>
+        <div class="api-row"><code>GET  /health</code><span><span class="lang-en">Health check</span><span class="lang-pt">Health check</span></span></div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .buddy-intro {
+    margin-bottom: 2rem;
+  }
+
+  .buddy-diagram {
+    margin: 1.5rem 0;
+  }
+
+  .buddy-diagram pre,
+  .code-block {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  .buddy-diagram code,
+  .code-block code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx-2);
+  }
+
+  .decision-list,
+  .states-list,
+  .api-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .decision-row,
+  .state-row,
+  .api-row {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .decision-label,
+  .state-name,
+  .api-row code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .decision-green { color: #7a9e38; border-color: #7a9e38; }
+  .decision-blue  { color: #7eb2d1; border-color: #7eb2d1; }
+  .decision-red   { color: #c25d44; border-color: #c25d44; }
+
+  :global([data-lang="en"]) .decision-green { color: #5a8a20; }
+  :global([data-lang="en"]) .decision-blue  { color: #3a8fc0; }
+
+  .decision-desc,
+  .state-desc,
+  .api-row span {
+    font-size: 0.88rem;
+    color: var(--tx-3);
+  }
+</style>

@@ -1,0 +1,350 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const modules = [
+  {
+    id: 'wifi',
+    name: 'WIFI',
+    mode: 'SCAN',
+    status: 'active',
+    descEn: 'Wi-Fi status, interfaces, and local network snapshot. Powered by iproute2, termux-api, and bettercap.',
+    descPt: 'Status Wi-Fi, interfaces e snapshot da rede local. Alimentado por iproute2, termux-api e bettercap.',
+    actions: [
+      { id: 'check',    label: 'RUN CHECK',  type: 'PASSIVE', descEn: 'Wi-Fi info, interfaces, route, neighbors, bettercap version', descPt: 'Info Wi-Fi, interfaces, rota, vizinhos, versão bettercap' },
+      { id: 'net-show', label: 'NET SHOW',   type: 'RECON',   descEn: 'Short bettercap net.show probe on current interface', descPt: 'Probe bettercap net.show na interface atual' },
+      { id: 'targets',  label: 'TARGETS',    type: 'PASSIVE', descEn: 'Show saved targets from current module loot', descPt: 'Exibe targets salvos do loot do módulo' },
+      { id: 'ping',     label: 'PING',       type: 'ACTIVE',  descEn: 'Ping saved IPv4 targets', descPt: 'Ping nos targets IPv4 salvos' },
+      { id: 'ports',    label: 'PORTS',      type: 'ACTIVE',  descEn: 'Scan common ports on saved targets', descPt: 'Scan de portas comuns nos targets salvos' },
+      { id: 'services', label: 'SERVICES',   type: 'ACTIVE',  descEn: 'Probe common TCP services on saved targets', descPt: 'Probe de serviços TCP comuns nos targets salvos' },
+      { id: 'loot',     label: 'LOOT',       type: 'PASSIVE', descEn: 'Show saved Wi-Fi artifacts and session files', descPt: 'Exibe artefatos Wi-Fi salvos e arquivos de sessão' },
+    ],
+  },
+  {
+    id: 'ble',
+    name: 'BLE',
+    mode: 'SNIFF',
+    status: 'planned',
+    descEn: 'BLE recon and owned-device labs.',
+    descPt: 'Recon BLE e labs em dispositivos próprios.',
+    actions: [],
+  },
+  {
+    id: 'evil-twin',
+    name: 'EVIL TWIN',
+    mode: 'BURN',
+    status: 'planned',
+    descEn: 'Controlled lab workflow for owned test APs.',
+    descPt: 'Workflow de lab controlado para APs de teste próprios.',
+    actions: [],
+  },
+  {
+    id: 'evidence',
+    name: 'EVIDENCE',
+    mode: 'VAULT',
+    status: 'planned',
+    descEn: 'Session logs and Obsidian export.',
+    descPt: 'Logs de sessão e exportação para Obsidian.',
+    actions: [],
+  },
+];
+
+const actionTypes = [
+  { type: 'PASSIVE', descEn: 'Read-only. No network traffic generated.', descPt: 'Somente leitura. Nenhum tráfego gerado.' },
+  { type: 'RECON',   descEn: 'Passive probe. Sends standard discovery traffic.', descPt: 'Probe passiva. Envia tráfego de descoberta padrão.' },
+  { type: 'ACTIVE',  descEn: 'Active scan. Only use on networks you own or have authorization.', descPt: 'Scan ativo. Só use em redes próprias ou com autorização.' },
+  { type: 'LOCAL',   descEn: 'Local operation only. No network traffic.', descPt: 'Operação local apenas. Sem tráfego de rede.' },
+];
+---
+
+<BaseLayout
+  title="Amphora Zero — Firmware-Style Security Lab Console for Android"
+  description="Amphora Zero — security lab console for Android/Termux. Firmware-style module catalog: Wi-Fi recon, BLE, network analysis. Owned and authorized devices only."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>Amphora Zero</h1>
+    </header>
+    <div class="prose">
+      <div class="az-intro">
+        <p>
+          <span class="lang-en">
+            <strong>Amphora Zero</strong> is a firmware-style security lab console for Android/Termux.
+            Inspired by hardware consoles like Cardputer, it runs a module catalog where each module
+            maps to a Termux script — no shell, no terminal app needed. Modules execute through{' '}
+            <code>RUN_COMMAND</code> and return results via Android broadcasts to the app.
+            Built for security research on owned and authorized devices.
+          </span>
+          <span class="lang-pt">
+            <strong>Amphora Zero</strong> é um console de lab de segurança estilo firmware para Android/Termux.
+            Inspirado em consoles de hardware como o Cardputer, roda um catálogo de módulos onde cada módulo
+            mapeia para um script Termux — sem shell, sem app de terminal. Módulos executam via{' '}
+            <code>RUN_COMMAND</code> e retornam resultados por broadcasts Android para o app.
+            Construído para pesquisa de segurança em dispositivos próprios e autorizados.
+          </span>
+        </p>
+
+        <div class="az-diagram">
+          <pre><code>[ Module Catalog ]
+       │ tap action
+       ▼
+  Android app  →  Termux RUN_COMMAND  →  ~/.termux/tasker/&lt;module&gt; &lt;action&gt;
+                                                  │
+                                                  ▼
+                                    am broadcast -a com.nfvelten.amphorazero.EVENT
+                                                  │
+                                                  ▼
+                                         [ App receives result ]</code></pre>
+        </div>
+
+        <p>
+          <span class="lang-en">
+            Native Android Java app — no Gradle, no framework. Fullscreen immersive mode.
+            Dark terminal aesthetic. Source on{' '}
+            <a href="https://github.com/nfvelten/amphora-zero" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+          <span class="lang-pt">
+            App Android nativo em Java — sem Gradle, sem framework. Modo fullscreen imersivo.
+            Estética dark de terminal. Código no{' '}
+            <a href="https://github.com/nfvelten/amphora-zero" target="_blank" rel="noopener">GitHub</a>.
+          </span>
+        </p>
+      </div>
+
+      <h2>
+        <span class="lang-en">Module contract</span>
+        <span class="lang-pt">Contrato de módulo</span>
+      </h2>
+      <p>
+        <span class="lang-en">
+          Any Termux script can become a module. Install to <code>~/.termux/tasker/</code> and
+          send results back via broadcast:
+        </span>
+        <span class="lang-pt">
+          Qualquer script Termux pode virar um módulo. Instale em <code>~/.termux/tasker/</code> e
+          retorne resultados via broadcast:
+        </span>
+      </p>
+      <pre class="code-block"><code>am broadcast \
+  -a com.nfvelten.amphorazero.EVENT \
+  --es module wifi \
+  --es title "Wi-Fi check complete" \
+  --es status ok \
+  --es content "$CONTENT"</code></pre>
+
+      <h2>
+        <span class="lang-en">Action types</span>
+        <span class="lang-pt">Tipos de ação</span>
+      </h2>
+      <div class="type-list">
+        {actionTypes.map(t => (
+          <div class="type-row">
+            <code class={`type-badge type-${t.type.toLowerCase()}`}>{t.type}</code>
+            <span class="type-desc">
+              <span class="lang-en">{t.descEn}</span>
+              <span class="lang-pt">{t.descPt}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <h2>
+        <span class="lang-en">Modules</span>
+        <span class="lang-pt">Módulos</span>
+      </h2>
+
+      {modules.map(m => (
+        <div class="az-module">
+          <div class="module-header">
+            <code class="module-name">{m.name}</code>
+            <span class="module-mode">{m.mode}</span>
+            <span class={`module-status status-${m.status}`}>
+              <span class="lang-en">{m.status === 'active' ? 'active' : 'planned'}</span>
+              <span class="lang-pt">{m.status === 'active' ? 'ativo' : 'planejado'}</span>
+            </span>
+          </div>
+          <p class="module-desc">
+            <span class="lang-en">{m.descEn}</span>
+            <span class="lang-pt">{m.descPt}</span>
+          </p>
+          {m.actions.length > 0 && (
+            <div class="action-list">
+              {m.actions.map(a => (
+                <div class="action-row">
+                  <code class="action-label">{a.label}</code>
+                  <code class={`action-type type-${a.type.toLowerCase()}`}>{a.type}</code>
+                  <span class="action-desc">
+                    <span class="lang-en">{a.descEn}</span>
+                    <span class="lang-pt">{a.descPt}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+
+      <h2>
+        <span class="lang-en">Setup</span>
+        <span class="lang-pt">Instalação</span>
+      </h2>
+      <pre class="code-block"><code># Build APK (from Arch / dev machine)
+cd android-app && sh build.sh
+
+# Install Wi-Fi module script on phone (Termux)
+mkdir -p ~/.termux/tasker
+cp termux/az-wifi-check ~/.termux/tasker/az-wifi-check
+chmod +x ~/.termux/tasker/az-wifi-check
+
+# Allow external app execution in Termux
+echo "allow-external-apps = true" >> ~/.termux/termux.properties
+
+# Install dependencies
+pkg install termux-api iproute2 bettercap</code></pre>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .az-intro {
+    margin-bottom: 2rem;
+  }
+
+  .az-diagram {
+    margin: 1.5rem 0;
+  }
+
+  .az-diagram pre,
+  .code-block {
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 1.25rem;
+  }
+
+  .az-diagram code,
+  .code-block code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: var(--tx-2);
+  }
+
+  .type-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  .type-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .type-desc {
+    font-size: 0.88rem;
+    color: var(--tx-3);
+  }
+
+  .az-module {
+    margin-bottom: 2rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--ui);
+  }
+
+  .az-module:last-child {
+    border-bottom: none;
+  }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .module-name {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--tx);
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .module-mode {
+    font-size: 0.72rem;
+    color: var(--tx-3);
+    font-family: system-ui, sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  .module-status {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    font-family: system-ui, sans-serif;
+  }
+
+  .status-active  { background: color-mix(in srgb, #7a9e38 15%, transparent); color: #7a9e38; border: 1px solid #7a9e38; }
+  .status-planned { background: var(--bg-2); color: var(--tx-3); border: 1px solid var(--ui); }
+
+  .module-desc {
+    font-size: 0.9rem;
+    color: var(--tx-2);
+    margin-bottom: 0.75rem;
+  }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .action-label {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--tx);
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .action-desc {
+    font-size: 0.85rem;
+    color: var(--tx-3);
+  }
+
+  .type-badge,
+  .action-type {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    padding: 0.1rem 0.4rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .type-passive { color: #7eb2d1; border: 1px solid #7eb2d1; background: color-mix(in srgb, #7eb2d1 10%, transparent); }
+  .type-recon   { color: #c09060; border: 1px solid #c09060; background: color-mix(in srgb, #c09060 10%, transparent); }
+  .type-active  { color: #c25d44; border: 1px solid #c25d44; background: color-mix(in srgb, #c25d44 10%, transparent); }
+  .type-local   { color: #7a8573; border: 1px solid #7a8573; background: color-mix(in srgb, #7a8573 10%, transparent); }
+</style>

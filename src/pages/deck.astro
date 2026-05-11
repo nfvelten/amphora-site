@@ -30,18 +30,22 @@ const components = [
   {
     id: 'amphora-zero',
     name: 'Amphora Zero',
-    tagEn: 'Java (Android) · security lab',
-    tagPt: 'Java (Android) · lab de segurança',
-    descEn: 'Firmware-style security lab console for the phone. Separate from Field Console by design — focused on controlled lab and security modules on owned or authorized devices. Modules communicate with Termux via RUN_COMMAND and return results through Android broadcasts. Current modules: Wi-Fi recon (iproute2, termux-api). Architecture supports BLE and Evil Twin.',
-    descPt: 'Console de laboratório de segurança estilo firmware para o phone. Separado do Field Console por design — focado em módulos de lab e segurança em dispositivos próprios ou autorizados. Módulos comunicam com Termux via RUN_COMMAND e retornam resultados via broadcasts Android. Módulos ativos: recon Wi-Fi (iproute2, termux-api). Arquitetura suporta BLE e Evil Twin.',
+    tagEn: 'Java (Android) · standalone project',
+    tagPt: 'Java (Android) · projeto standalone',
+    descEn: 'Firmware-style security lab console for Android/Termux. Runs as an independent project — used here as the lab surface on the phone node. Module contract: Android → Termux script → broadcast result back. Active: Wi-Fi recon. Planned: BLE, Evil Twin.',
+    descPt: 'Console de lab de segurança estilo firmware para Android/Termux. Roda como projeto independente — usado aqui como superfície de lab no nó phone. Contrato de módulo: Android → script Termux → resultado por broadcast. Ativo: recon Wi-Fi. Planejado: BLE, Evil Twin.',
+    link: '/amphora-zero',
+    linkLabel: '→ Amphora Zero',
   },
   {
     id: 'agent-code-buddy',
     name: 'Agent Code Buddy',
-    tagEn: 'Python · Java (Android) · HITL',
-    tagPt: 'Python · Java (Android) · HITL',
-    descEn: 'Mobile Human-in-the-Loop surface for AI agents. Python HTTP server runs on the PC and receives tool-use approval requests from Claude agents via long-poll. Native Android app shows pending requests in real time, lets you approve, trust, or deny from the notification shade. Accelerometer-driven states: shake → dizzy, face-down → sleep, approve → heart. Complements Arbitus at the mobile layer.',
-    descPt: 'Superfície mobile de Human-in-the-Loop para agentes de IA. Servidor Python HTTP roda no PC e recebe aprovações de tool use de agentes Claude via long-poll. App Android nativo exibe requests pendentes em tempo real, permite aprovar, confiar ou negar diretamente da aba de notificações. Estados pelo acelerômetro: shake → dizzy, face-down → sleep, aprovação → heart. Complementa o Arbitus na camada mobile.',
+    tagEn: 'Python · Android · standalone project',
+    tagPt: 'Python · Android · projeto standalone',
+    descEn: 'Mobile HITL companion for AI coding agents. Runs as an independent project — used here as the approval surface on the phone node. Any developer running Claude agents can deploy it standalone, without the rest of this platform.',
+    descPt: 'Companion mobile de HITL para agentes de IA. Roda como projeto independente — usado aqui como superfície de aprovação no nó phone. Qualquer dev rodando agentes Claude pode usar standalone, sem o restante desta plataforma.',
+    link: '/agent-code-buddy',
+    linkLabel: '→ Agent Code Buddy',
   },
   {
     id: 'contabo-k8s',
@@ -139,6 +143,11 @@ const components = [
               ))}
             </div>
           )}
+          {c.link && (
+            <p class="component-link">
+              <a href={c.link}>{c.linkLabel}</a>
+            </p>
+          )}
         </div>
       ))}
     </div>
@@ -234,5 +243,10 @@ const components = [
   .cmd-desc {
     font-size: 0.88rem;
     color: var(--tx-3);
+  }
+
+  .component-link {
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
   }
 </style>
