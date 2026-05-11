@@ -1,0 +1,7 @@
+apiVersion: v2
+name: nicholas-site
+description: Personal Astro site served by nginx
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

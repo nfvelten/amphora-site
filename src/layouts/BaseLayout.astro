@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import '@fontsource-variable/eb-garamond/wght.css';
 import '@fontsource-variable/eb-garamond/wght-italic.css';
 import ebVarUrl from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
@@ -118,7 +118,7 @@ const webPageSchema = {
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icon.webp" type="image/webp" sizes="500x500" />
-    <ViewTransitions />
+    <ClientRouter />
     <link rel="alternate" type="application/rss+xml" title="Nicholas Velten" href="/rss.xml" />
     <title>{fullTitle}</title>
 
