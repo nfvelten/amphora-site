@@ -1563,6 +1563,129 @@ button:focus-visible {
   }
 }
 
+/* ── CV Skill Tags ────────────────────────────────────────────────── */
+.cv-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+
+/* ── CV Details/Summary (accordion) ──────────────────────────────── */
+details.cv-entry > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+details.cv-entry > summary::-webkit-details-marker { display: none; }
+details.cv-entry > summary::marker { display: none; }
+
+details.cv-entry > summary .cv-header {
+  margin-bottom: 0.1rem;
+}
+
+details.cv-entry > summary .cv-role {
+  margin-bottom: 0.25rem;
+}
+
+details.cv-entry > summary .cv-preview {
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: var(--tx-3);
+  margin: 0;
+  padding-right: 1.5rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+details.cv-entry > summary .cv-preview::after {
+  content: '↓';
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--tx-3);
+  transition: transform 0.2s ease;
+}
+
+details.cv-entry[open] > summary .cv-preview::after {
+  transform: rotate(180deg);
+}
+
+details.cv-entry > summary:hover .cv-preview {
+  color: var(--tx-2);
+}
+
+.cv-body {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ui);
+}
+
+/* ── CV Cert Groups as <details> ──────────────────────────────────── */
+details.cv-cert-group {
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--ui);
+  border-radius: 6px;
+  background: var(--bg-2);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+details.cv-cert-group:hover {
+  border-color: var(--ui-2);
+}
+
+details.cv-cert-group > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.55rem 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tx-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: color 0.15s;
+}
+
+details.cv-cert-group > summary::-webkit-details-marker { display: none; }
+details.cv-cert-group > summary::marker { display: none; }
+
+details.cv-cert-group > summary::after {
+  content: '↓';
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+details.cv-cert-group[open] > summary::after {
+  transform: rotate(180deg);
+}
+
+details.cv-cert-group > summary:hover {
+  color: var(--tx-2);
+}
+
+details.cv-cert-group .cv-cert-list {
+  padding: 0 1rem 0.75rem 2rem;
+  margin: 0;
+  border-top: 1px solid var(--ui);
+}
+
+details.cv-cert-group .cv-cert-list li {
+  padding-top: 0.4rem;
+}
+
+details.cv-cert-group .cv-cert-list li:first-child {
+  padding-top: 0.5rem;
+}
+
 /* ── Blog Post Cards ─────────────────────────────────────────────── */
 .post-item {
   background: var(--bg-2);
