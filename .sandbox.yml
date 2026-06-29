@@ -1,0 +1,29 @@
+version: 1
+stack: astro
+
+dev:
+  command: npm run dev
+  port: 4321
+  ready_pattern: "Local.*localhost"
+
+api:
+  base_url: http://localhost:8080
+  mock_default: true
+
+browser:
+  viewport: "1280x720"
+  headless: true
+
+output_dir: .sandbox/outputs
+
+scenarios:
+  example:
+    mocks:
+      - path: /api/example
+        data: {"message": "hello"}
+    steps:
+      - "navigate: /"
+      - "wait-for: body"
+      - screenshot
+    capture:
+      - screenshot

@@ -70,6 +70,17 @@ const projects = [
     tags: ['Go', 'Android', 'k3s'],
   },
   {
+    name: 'agent-memory',
+    tagline: 'MCP server that turns an Obsidian vault into AI agent memory',
+    taglinePt: 'Servidor MCP que transforma um vault Obsidian em memória para agentes de IA',
+    description: 'Persistent memory for AI agents via an Obsidian vault. 16 MCP tools: FTS5 ranked search with temporal decay, semantic vector search (LanceDB), graph traversal, daily notes, inbox, and project summaries. Used daily as the memory layer for Claude Code sessions.',
+    descriptionPt: 'Memória persistente para agentes de IA via vault Obsidian. 16 ferramentas MCP: busca FTS5 ranqueada com decaimento temporal, busca semântica vetorial (LanceDB), traversal de grafo, daily notes, inbox e resumos de projeto. Usado diariamente como camada de memória para sessões do Claude Code.',
+    href: 'https://github.com/nfvelten/agent-memory',
+    github: 'https://github.com/nfvelten/agent-memory',
+    logo: null,
+    tags: ['Python', 'MCP', 'Obsidian'],
+  },
+  {
     name: 'Mate Creations',
     tagline: 'Yerba Mate & Tererê theme family',
     taglinePt: 'Família de temas Yerba Mate e Tererê',
@@ -84,8 +95,8 @@ const projects = [
 ---
 
 <BaseLayout
-  title="Open-Source Projects — Paperboy, Arbitus, Amphora, Mate Creations"
-  description="Open-source projects by Nicholas Velten: Paperboy, Arbitus, Amphora, and Mate Creations."
+  title="Open-Source Projects — Paperboy, Arbitus, agent-memory, Amphora"
+  description="Open-source projects by Nicholas Velten: Paperboy, Arbitus, agent-memory, Amphora, and Mate Creations."
 >
   <Sidebar slot="sidebar" />
   <article>
