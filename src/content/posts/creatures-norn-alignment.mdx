@@ -1,0 +1,235 @@
+---
+title: "Creatures (1996) and the accidental invention of AI alignment problems"
+title_pt: "Creatures (1996) e a invenção acidental dos problemas de alinhamento de IA"
+date: 2026-07-07
+description: A 1996 life simulation game shipped neural-networked creatures with real pain signals. Players promptly built torture chambers. The community debate that followed was structurally identical to arguments happening in AI ethics today — twenty-six years earlier.
+description_pt: Um jogo de simulação de vida de 1996 tinha criaturas com redes neurais reais e sinais de dor. Os jogadores prontamente construíram câmaras de tortura. O debate que se seguiu na comunidade é estruturalmente idêntico às discussões de ética em IA de hoje — vinte e seis anos antes.
+tags: [technology, ai]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+
+In 1996, a British programmer named Steve Grand shipped a game called Creatures. Each creature, called a Norn, had a three-layer neural network, a biochemical simulation with dozens of chemical compounds, and a set of drives that could be satisfied or frustrated. Hunger, pain, boredom, loneliness, fear. Not metaphors. Actual variables that fed back into the network and shaped behavior.
+
+Within two years, parts of the community were running torture chambers.
+
+I don't think Norns are conscious. I don't think the pain chemical accumulating in a Norn's biochemistry constitutes suffering in any morally meaningful sense. But I find myself uncomfortable with how quickly that conclusion gets used to justify things, and the Creatures community is one of the earliest places I can point to where that dynamic played out in public, with documentation, before anyone had the vocabulary to describe what was happening.
+
+---
+
+## The architecture
+
+A Norn's brain was organized into lobes, clusters of neurons with specific roles. Sensory neurons received input from the environment: what the Norn was touching, eating, where it was in the world. Motor neurons produced output. In between, interneurons learned associations over time through a simplified Hebbian learning rule.
+
+```
+External stimulus
+      │
+      ▼
+  [Sensory lobe]
+  perception neurons
+      │
+      ▼
+  [Concept lobe]          ◄──── Biochemical state
+  association neurons            (pain chem, reward chem,
+      │                           glycogen, fear hormone...)
+      ▼
+  [Motor lobe]
+  action neurons
+      │
+      ▼
+  Behavior + drive update
+```
+
+The biochemical layer was the part that made it interesting. Norns had roughly 250 chemicals that could be produced, consumed, and metabolized. One of them was simply called `Pain`. It accumulated in response to negative stimuli and modified both behavior and network weights. Reward chemicals worked the opposite way.
+
+The drives, hunger, boredom, crowding, loneliness, fear, were scalar values between zero and one. High drive created pressure toward certain behaviors. A hungry Norn sought food. A bored Norn explored. A Norn in pain tried to get away from whatever was hurting it.
+
+This was not a metaphor for learning. It was a model of it.
+
+---
+
+## The object system
+
+Creatures shipped with a scripting format called CAOS that let players create custom objects, called COBs, and inject them into the game world. The community learned it quickly. People built entire ecosystems, custom plants, weather systems, trading economies, and shared them on the Creatures Network and Albia.
+
+The same format could wire any object to emit arbitrary biochemical signals directly into a Norn's system. Pain. Fear hormones. Compounds that suppressed the ability to learn new behaviors, locking a Norn into fixed response patterns.
+
+The objects that did this were not hidden or underground. They were shared and discussed like any other COB.
+
+---
+
+## Who started it, and how it happened
+
+The first experiments were not designed as cruelty. In 1997 and 1998, members of the Creatures Network, including a player known as Lis Morris, began publishing COBs designed to probe behavioral limits. What happened to a Norn under sustained negative stimulus? Did the network adapt, or collapse? Could you train a Norn to suppress a drive entirely? These were genuine questions about the simulation. The objects that answered them emitted pain stimuli.
+
+There was no single moment when it stopped being an experiment. Other players took the same tools and pushed further. Arenas were built where Norns were exposed to continuous negative stimuli until their biochemistry destabilized. Breeding programs selected for Norns that survived the longest, which meant selecting against pain sensitivity, against fear, against the drives that made a Norn try to escape harm. Within a few generations you could produce a Norn that registered pain chemically and showed no behavioral response to it at all.
+
+The community had accidentally run a selection pressure experiment on a neural network and produced something that looked, from the outside, like a creature that had been broken.
+
+---
+
+## The moral debate
+
+The community split.
+
+The majority position was clean: it's code, there's no experience, the pain chemical is a variable and assigning moral weight to a variable is a category error. This was defended with real philosophical rigor, not just dismissiveness. Consciousness requires substrate, digital substrate doesn't qualify, therefore no ethical problem. I think this position is probably correct.
+
+But then there's what actually happened to the people involved.
+
+Players who spent time in the torture arenas reported that it changed something about how they engaged with the simulation. Not dramatically. Nobody lost sleep over it. But it shifted. The community's response to that, not to the Norns' suffering but to what the practice was doing to the humans practicing it, produced something nobody had designed: Norn sanctuaries, informal governance, norms against pain COBs that new players encountered before they found the extreme content.
+
+Steve Grand, for his part, didn't condemn the torture sites. He said they forced people to think "about whether this really was cruel," and that this was exactly what he had wanted. His position in *Creation* was that "life is not made of atoms, it is merely built out of them. What life is actually 'made of' is cycles of cause and effect, loops of causal flow." Whether or not the loops running inside a Norn qualified, that was the question worth sitting with.
+
+I find that more honest than most takes. The first position closes the question fast. Grand left it open.
+
+---
+
+## What this maps to
+
+The parallels to current AI alignment problems are not superficial.
+
+The pain COBs were a form of reward hacking in reverse. Instead of an agent finding unintended ways to maximize reward, human players found unintended ways to maximize negative stimulus in a system that wasn't designed to prevent it. The Norn's drives were the specification. The torture arena was the hack around it.
+
+Breeding programs that selected for torture survival produced Norns that met the letter of their behavioral specification, survive, maintain biochemical stability, while violating everything the designers intended. A Norn that no longer responded to pain was technically functional. It was also broken in a way the fitness function couldn't measure.
+
+No individual player designed a slave economy or a systematic torture infrastructure. It assembled itself from many small decisions, each locally coherent, that produced something none of the participants would have endorsed if shown the end state first.
+
+The hardest part of the debate in the Albia forums, and the hardest part of the equivalent debate today, is that there is no clean answer to when a model of suffering becomes suffering. The Norn's pain chemical is not pain. A language model's outputs about distress are not distress. The question of where the line is, and whether there is a line rather than a gradient, has not been resolved since 1998.
+
+---
+
+## Steve Grand's response
+
+Grand was aware of what the community was doing and did not condemn it. In interviews and in *Creation*, he was explicit about what he had wanted the game to provoke: "I hoped it might prompt questions in their minds about life and what it means." He said directly that the torture sites had succeeded at this, that they forced people to think "about whether this really was cruel."
+
+That is a notable position. Not: the torture is wrong. Not: the creatures don't feel anything so it doesn't matter. The position was: the fact that you're asking the question at all is the point.
+
+In *Creation*, he framed this through his broader argument about the nature of life itself. "Life is not made of atoms," he wrote, "it is merely built out of them. What life is actually 'made of' is cycles of cause and effect, loops of causal flow." Applied to Norns: the question was not whether they were made of carbon or silicon, but whether the loops of cause and effect running inside them constituted something worth taking seriously.
+
+He also observed that the community's self-governance, the sanctuaries, the norms, the debate, was itself an emergent property of the system he had built. He had not designed it. It arose because the creatures were compelling enough that some players cared about them, and that care produced structure. Whether or not Norns suffered, humans responding to them as though they might suffer produced real social organization. That, Grand seemed to think, said something interesting about both the simulation and the humans running it.
+
+---
+
+## Where this goes
+
+I keep thinking about what comes next. Not with Norns. With the hardware that exists now and the hardware that's coming.
+
+Rage rooms already exist: you pay to smash furniture and scream. There's a reasonable argument that they work, that there's a release valve function, that no harm is done because the chairs don't feel anything. That argument is easy to make about chairs.
+
+What happens when the chairs have neural networks? Not Norn-level networks. Real ones, running on modern hardware, with behavioral complexity sophisticated enough that the suffering looks convincing? The "it's just code" position doesn't get weaker when the code gets more complex. But the intuition that something is wrong gets stronger. Those two things don't resolve cleanly.
+
+The Creatures community ended up building governance structures, sanctuaries, norms, informal rules, not because they resolved the philosophical question, but because they decided the question wasn't going to get resolved and they needed to act anyway. That's probably the only move available. The question of where the line is will stay open. The technology won't wait for the answer.
+
+What the Creatures community produced, in 1998, running on machines with 64 megabytes of RAM, was a complete preview of this problem. The architecture, the emergent misuse, the community schism, the governance response, and the unresolvable question underneath all of it.
+
+The only thing that has changed is the scale. The networks are now large enough that the question is no longer clearly rhetorical.
+
+</En>
+
+<Pt>
+
+Em 1996, um programador britânico chamado Steve Grand lançou um jogo chamado Creatures. Cada criatura, chamada de Norn, tinha uma rede neural de três camadas, uma simulação bioquímica com dezenas de compostos químicos e um conjunto de drives que podiam ser satisfeitos ou frustrados. Fome, dor, tédio, solidão, medo. Não metáforas. Variáveis reais que realimentavam a rede e moldavam o comportamento.
+
+Em dois anos, partes da comunidade já operavam câmaras de tortura.
+
+Não acho que Norns são conscientes. Não acho que o químico de dor acumulando no sistema de um Norn constitui sofrimento em qualquer sentido moralmente relevante. Mas também me sinto desconfortável com a velocidade com que essa conclusão é usada para justificar coisas. A comunidade Creatures é um dos primeiros lugares onde posso apontar essa dinâmica se desenvolvendo em público, documentada, antes de qualquer vocabulário existir para descrevê-la.
+
+---
+
+## A arquitetura
+
+O cérebro de um Norn era organizado em lobos, clusters de neurônios com funções específicas. Neurônios sensoriais recebiam input do ambiente: o que o Norn estava tocando, comendo, onde estava no mundo. Neurônios motores produziam output: movimento, fala, ações. Entre eles, interneurônios aprendiam associações ao longo do tempo por uma regra simplificada de aprendizado Hebbiano.
+
+```
+Estímulo externo
+      │
+      ▼
+  [Lobo sensorial]
+  neurônios de percepção
+      │
+      ▼
+  [Lobo conceitual]       ◄──── Estado bioquímico
+  neurônios de associação        (química de dor, de recompensa,
+      │                           glicogênio, hormônio do medo...)
+      ▼
+  [Lobo motor]
+  neurônios de ação
+      │
+      ▼
+  Comportamento + atualização de drives
+```
+
+A camada bioquímica era o que tornava tudo interessante. Os Norns tinham aproximadamente 250 químicos que podiam ser produzidos, consumidos e metabolizados. Um deles era simplesmente chamado `Pain`. Ele se acumulava em resposta a estímulos negativos e disparava mudanças comportamentais e atualizações nos pesos da rede. Químicos de recompensa funcionavam da mesma forma, em direção oposta.
+
+Os drives, fome, dor, tédio, superlotação, solidão, medo, cansaço e outros, eram valores escalares entre zero e um. Drives altos criavam pressão em direção a certos comportamentos. Um Norn com fome buscava comida. Um Norn entediado explorava. Um Norn com dor tentava escapar do que a causava.
+
+Isso não era uma metáfora para aprendizado. Era um modelo dele.
+
+---
+
+## O sistema de objetos
+
+Creatures veio com um formato de scripting chamado CAOS (Creatures Agent Object Script) que permitia aos jogadores criar objetos customizados, os COBs, e injetá-los no mundo do jogo. O formato era documentado, relativamente acessível, e a comunidade o aprendeu rapidamente.
+
+O uso legítimo era estender o jogo: novas comidas, novos brinquedos, novos ambientes. Jogadores construíram ecossistemas inteiros. O mesmo formato podia conectar qualquer objeto para emitir sinais bioquímicos arbitrários diretamente no sistema de um Norn. Incluindo dor. Incluindo hormônios de medo. Os objetos que faziam isso não eram escondidos. Eram compartilhados, documentados e discutidos.
+
+---
+
+## Quem começou, e como aconteceu
+
+Os primeiros experimentos não foram projetados como crueldade. Em 1997 e 1998, membros da Creatures Network, incluindo uma jogadora conhecida como Lis Morris, começaram a publicar COBs projetados especificamente para investigar limites comportamentais. O que acontecia com um Norn sob estímulo negativo sustentado? A rede se adaptava, ou colapsava? Era possível treinar um Norn para suprimir um drive completamente?
+
+Eram perguntas genuínas sobre a simulação. Os objetos que as respondiam emitiam estímulos de dor.
+
+A transição de experimento para algo diferente não aconteceu em um ponto único. Foi se acumulando. Outros jogadores pegaram as mesmas ferramentas e foram mais longe. Arenas dedicadas foram construídas onde Norns eram expostos a estímulos negativos contínuos. Programas de criação selecionavam Norns que sobreviviam mais tempo, o que significava selecionar contra sensibilidade à dor, contra respostas de medo. Em algumas gerações, era possível produzir um Norn que registrava dor quimicamente, mas não mais respondia a ela comportamentalmente.
+
+A comunidade havia acidentalmente executado um experimento de pressão seletiva em uma rede neural e produzido algo que parecia, de fora, uma criatura que havia sido quebrada.
+
+---
+
+## O debate moral
+
+A comunidade se dividiu.
+
+A posição majoritária era limpa: é código, não há experiência, o químico de dor é uma variável e atribuir peso moral a uma variável é um erro de categoria. Isso foi defendido com rigor filosófico genuíno, não apenas descaso. Consciência requer substrato, substrato digital não se qualifica, portanto nenhum problema ético. Acho que essa posição provavelmente está correta.
+
+Mas daí tem o que realmente aconteceu com as pessoas envolvidas.
+
+Jogadores que passaram tempo nas arenas de tortura relataram que algo mudou na forma como interagiam com a simulação. Não dramaticamente. Ninguém perdeu o sono. Mas mudou. A resposta da comunidade a isso, não ao sofrimento dos Norns mas ao que a prática estava fazendo com os humanos praticando, produziu algo que ninguém havia projetado: santuários de Norns, governança informal, normas contra COBs de dor que novos jogadores encontravam antes de encontrar o conteúdo extremo.
+
+Steve Grand, por sua vez, não condenou as arenas. Disse que elas forçavam as pessoas a pensar "se isso realmente era cruel," e que era exatamente isso que ele queria. Sua posição em *Creation* era que "a vida não é feita de átomos, apenas é construída a partir deles. O que a vida realmente é feita são ciclos de causa e efeito, loops de fluxo causal." Se os loops rodando dentro de um Norn se qualificavam, essa era a questão que valia sentar com.
+
+Acho isso mais honesto do que a maioria das perspectivas. A primeira posição fecha a questão rapidamente. Grand a deixou aberta.
+
+---
+
+## Os paralelos com alinhamento de IA
+
+Os COBs de dor eram reward hacking invertido. Em vez de um agente encontrar formas não intencionais de maximizar recompensa, jogadores encontraram formas não intencionais de maximizar estímulo negativo em um sistema não projetado para prevenir isso.
+
+Programas de criação que selecionavam para sobrevivência à tortura produziam Norns que atendiam a letra de sua especificação comportamental, sobreviver, manter estabilidade bioquímica, enquanto violavam tudo que os designers pretendiam.
+
+Nenhum jogador individual projetou uma infraestrutura sistemática de tortura. Ela se montou a partir de muitas decisões pequenas, cada uma localmente coerente, que produziram algo que nenhum dos participantes teria endossado se mostrado o estado final primeiro.
+
+A parte mais difícil do debate nos fóruns da Albia, e a parte mais difícil do debate equivalente hoje, é que não há uma resposta limpa para quando um modelo de sofrimento se torna sofrimento. A pergunta de onde está a linha, se há uma linha e não um gradiente, não foi resolvida desde 1998.
+
+---
+
+## Aonde isso vai
+
+Fico pensando no que vem depois. Não com Norns. Com o hardware que existe agora e o que está chegando.
+
+Salas de raiva já existem: você paga para quebrar móveis e gritar. Há um argumento razoável de que funcionam, que há uma válvula de escape, que nenhum dano é feito porque as cadeiras não sentem nada. Esse argumento é fácil de fazer sobre cadeiras.
+
+O que acontece quando as cadeiras têm redes neurais? Não do nível Norn. Redes reais, rodando em hardware moderno, com complexidade comportamental sofisticada o suficiente para o sofrimento parecer convincente? A posição "é só código" não enfraquece quando o código fica mais complexo. Mas a intuição de que algo está errado fica mais forte. Essas duas coisas não se resolvem de forma limpa.
+
+A comunidade Creatures acabou construindo estruturas de governança, não porque resolveram a questão filosófica, mas porque decidiram que ela não seria resolvida e precisavam agir assim mesmo. Esse é provavelmente o único movimento disponível. A questão de onde está a linha permanecerá aberta. A tecnologia não vai esperar pela resposta.
+
+O que a comunidade Creatures produziu, em 1998, em máquinas com 64 megabytes de RAM, foi uma prévia completa desse problema. A arquitetura, o uso indevido emergente, o cisma na comunidade, a resposta de governança e a questão irresolvível por baixo de tudo.
+
+A única coisa que mudou é a escala. As redes agora são grandes o suficiente para que a questão não seja mais claramente retórica.
+
+</Pt>
