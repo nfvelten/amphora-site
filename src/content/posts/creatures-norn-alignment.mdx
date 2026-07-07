@@ -24,24 +24,10 @@ I don't think Norns are conscious. I don't think the pain chemical accumulating 
 
 A Norn's brain was organized into lobes, clusters of neurons with specific roles. Sensory neurons received input from the environment: what the Norn was touching, eating, where it was in the world. Motor neurons produced output. In between, interneurons learned associations over time through a simplified Hebbian learning rule.
 
-```
-External stimulus
-      │
-      ▼
-  [Sensory lobe]
-  perception neurons
-      │
-      ▼
-  [Concept lobe]          ◄──── Biochemical state
-  association neurons            (pain chem, reward chem,
-      │                           glycogen, fear hormone...)
-      ▼
-  [Motor lobe]
-  action neurons
-      │
-      ▼
-  Behavior + drive update
-```
+<figure>
+  <img src="/norn-brain.svg" alt="Diagram showing nine Norn brain lobes. Three signals from the Perception lobe — hunger level, proximity detection, and object identity — converge on a single concept neuron inside the Concept lobe. That neuron fires the Decision lobe, which produces approach behavior." style="width:100%;max-width:760px;" />
+  <figcaption>How a concept neuron forms: three signals converge on one node, which fires a decision. The diagram shows only the lobes relevant to this example; other lobes (Noun, Verb, Drive, General Sense, Attention, Stimulus Source) feed into the same architecture via parallel pathways.</figcaption>
+</figure>
 
 The biochemical layer was the part that made it interesting. Norns had roughly 250 chemicals that could be produced, consumed, and metabolized. One of them was simply called `Pain`. It accumulated in response to negative stimuli and modified both behavior and network weights. Reward chemicals worked the opposite way.
 
@@ -155,24 +141,10 @@ Não acho que Norns são conscientes. Não acho que o químico de dor acumulando
 
 O cérebro de um Norn era organizado em lobos, clusters de neurônios com funções específicas. Neurônios sensoriais recebiam input do ambiente: o que o Norn estava tocando, comendo, onde estava no mundo. Neurônios motores produziam output: movimento, fala, ações. Entre eles, interneurônios aprendiam associações ao longo do tempo por uma regra simplificada de aprendizado Hebbiano.
 
-```
-Estímulo externo
-      │
-      ▼
-  [Lobo sensorial]
-  neurônios de percepção
-      │
-      ▼
-  [Lobo conceitual]       ◄──── Estado bioquímico
-  neurônios de associação        (química de dor, de recompensa,
-      │                           glicogênio, hormônio do medo...)
-      ▼
-  [Lobo motor]
-  neurônios de ação
-      │
-      ▼
-  Comportamento + atualização de drives
-```
+<figure>
+  <img src="/norn-brain.svg" alt="Diagrama mostrando nove lobos cerebrais de um Norn. Três sinais do lobo de Percepção — nível de fome, detecção de proximidade e identidade do objeto — convergem em um único neurônio conceitual dentro do Lobo Conceitual. Esse neurônio dispara o Lobo de Decisão, que produz o comportamento de aproximação." style="width:100%;max-width:760px;" />
+  <figcaption>Como um neurônio conceitual se forma: três sinais convergem em um nó, que dispara uma decisão. O diagrama mostra apenas os lobos relevantes para este exemplo; os demais (Noun, Verb, Drive, General Sense, Attention, Stimulus Source) alimentam a mesma arquitetura por caminhos paralelos.</figcaption>
+</figure>
 
 A camada bioquímica era o que tornava tudo interessante. Os Norns tinham aproximadamente 250 químicos que podiam ser produzidos, consumidos e metabolizados. Um deles era simplesmente chamado `Pain`. Ele se acumulava em resposta a estímulos negativos e disparava mudanças comportamentais e atualizações nos pesos da rede. Químicos de recompensa funcionavam da mesma forma, em direção oposta.
 

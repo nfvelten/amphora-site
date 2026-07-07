@@ -1,0 +1,187 @@
+<svg viewBox="0 0 760 448" width="760" height="448" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      :root {
+        --bg: #f0f0f3;
+        --surface: #e4e4ea;
+        --surface2: #d8d8e2;
+        --stroke: #aaabb8;
+        --stroke2: #c8c8d4;
+        --tx: #16161e;
+        --tx2: #52526a;
+        --tx3: #8888a0;
+        --blue: #3468a0;
+        --blue-fill: rgba(52,104,160,0.14);
+        --green: #2e7050;
+        --green-fill: rgba(46,112,80,0.14);
+        --gold: #8a6c18;
+        --gold-fill: rgba(138,108,24,0.14);
+        --pink: #943850;
+        --pink-fill: rgba(148,56,80,0.14);
+        --yellow: #8a7418;
+        --yellow-fill: rgba(138,116,24,0.14);
+        --node: #16161e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f0f14;
+          --surface: #1a1a22;
+          --surface2: #22222e;
+          --stroke: #383848;
+          --stroke2: #2c2c3c;
+          --tx: #dedad2;
+          --tx2: #8888a2;
+          --tx3: #58586e;
+          --blue: #5a90c8;
+          --blue-fill: rgba(90,144,200,0.12);
+          --green: #4e9a6a;
+          --green-fill: rgba(78,154,106,0.12);
+          --gold: #c0982a;
+          --gold-fill: rgba(192,152,42,0.12);
+          --pink: #c46878;
+          --pink-fill: rgba(196,104,120,0.12);
+          --yellow: #b8a030;
+          --yellow-fill: rgba(184,160,48,0.12);
+          --node: #dedad2;
+        }
+      }
+    </style>
+    <marker id="a-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#3468a0"/>
+    </marker>
+    <marker id="a-blue-d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#5a90c8"/>
+    </marker>
+    <marker id="a-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#2e7050"/>
+    </marker>
+    <marker id="a-green-d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#4e9a6a"/>
+    </marker>
+    <marker id="a-gold" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#8a6c18"/>
+    </marker>
+    <marker id="a-gold-d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#c0982a"/>
+    </marker>
+    <marker id="a-tx" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L0,7 L7,4z" fill="#52526a"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="760" height="448" fill="var(--bg)"/>
+
+  <!-- ── NOUN LOBE (top center) ── -->
+  <rect x="268" y="14" width="248" height="36" rx="2"
+        fill="var(--surface)" stroke="var(--stroke)" stroke-width="1"/>
+  <text x="264" y="36" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10.5"
+        fill="var(--tx3)" text-anchor="end">Noun</text>
+
+  <!-- ── CONCEPT LOBE (main center) ── -->
+  <rect x="200" y="56" width="370" height="196" rx="3"
+        fill="var(--surface)" stroke="var(--stroke)" stroke-width="1.2"/>
+
+  <!-- Concept node marker -->
+  <rect x="225" y="148" width="10" height="10" fill="var(--node)"/>
+
+  <!-- Annotation callout box -->
+  <rect x="248" y="88" width="168" height="54" rx="2"
+        fill="var(--bg)" stroke="var(--stroke2)" stroke-width="1"/>
+  <!-- Callout connector -->
+  <line x1="248" y1="130" x2="233" y2="153"
+        stroke="var(--stroke2)" stroke-width="0.8"/>
+  <text x="258" y="108" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10">
+    <tspan fill="#52526a">I am </tspan><tspan fill="#3468a0" font-weight="600">hungry</tspan><tspan fill="#52526a"> and</tspan>
+  </text>
+  <text x="258" y="128" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10">
+    <tspan fill="#2e7050" font-weight="600">food</tspan><tspan fill="#52526a"> is </tspan><tspan fill="#2e7050" font-weight="600">near me</tspan>
+  </text>
+
+  <!-- CONCEPT label -->
+  <text x="385" y="264" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--tx3)" text-anchor="middle" letter-spacing="0.1em">CONCEPT</text>
+
+  <!-- ── PERCEPTION LOBE (left, 3 colored sections) ── -->
+  <rect x="98" y="84" width="70" height="87" rx="0"
+        fill="var(--blue-fill)" stroke="var(--blue)" stroke-width="1.5"/>
+  <rect x="98" y="171" width="70" height="87" rx="0"
+        fill="var(--green-fill)" stroke="var(--green)" stroke-width="1.5"/>
+  <rect x="98" y="258" width="70" height="86" rx="0"
+        fill="var(--gold-fill)" stroke="var(--gold)" stroke-width="1.5"/>
+
+  <text x="133" y="132" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9.5"
+        fill="var(--blue)" text-anchor="middle">Hunger</text>
+  <text x="133" y="219" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9.5"
+        fill="var(--green)" text-anchor="middle">Near me</text>
+  <text x="133" y="306" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9.5"
+        fill="var(--gold)" text-anchor="middle">Food</text>
+
+  <!-- Neuron terminals -->
+  <rect x="166" y="124" width="7" height="7" fill="var(--blue)"/>
+  <rect x="166" y="211" width="7" height="7" fill="var(--green)"/>
+  <rect x="166" y="298" width="7" height="7" fill="var(--gold)"/>
+
+  <text x="133" y="361" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--tx3)" text-anchor="middle" letter-spacing="0.08em">PERCEPTION</text>
+
+  <!-- ── ARROWS: Perception → Concept node ── -->
+  <line x1="173" y1="127" x2="221" y2="151"
+        stroke="var(--blue)" stroke-width="1.8" marker-end="url(#a-blue)"/>
+  <line x1="173" y1="214" x2="221" y2="154"
+        stroke="var(--green)" stroke-width="1.8" marker-end="url(#a-green)"/>
+  <line x1="173" y1="301" x2="221" y2="158"
+        stroke="var(--gold)" stroke-width="1.8" marker-end="url(#a-gold)"/>
+
+  <!-- ── DECISION LOBE (right narrow) ── -->
+  <rect x="592" y="148" width="28" height="175" rx="2"
+        fill="var(--surface)" stroke="var(--stroke)" stroke-width="1.2"/>
+  <rect x="590" y="224" width="8" height="8" fill="var(--node)"/>
+  <text x="628" y="240" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--tx3)" letter-spacing="0.08em">DECISION</text>
+
+  <!-- ── ARROW: Concept node → Decision node ── -->
+  <line x1="235" y1="153" x2="587" y2="228"
+        stroke="var(--tx2)" stroke-width="1.8" marker-end="url(#a-tx)"/>
+
+  <!-- Divider -->
+  <line x1="200" y1="272" x2="570" y2="272" stroke="var(--stroke2)" stroke-width="0.6"/>
+
+  <!-- ── SECONDARY LOBES ── -->
+  <rect x="200" y="282" width="96" height="70" rx="2"
+        fill="var(--surface2)" stroke="var(--stroke)" stroke-width="1"/>
+  <text x="248" y="317" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9.5"
+        fill="var(--tx3)" text-anchor="middle">Stimulus</text>
+  <text x="248" y="331" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9.5"
+        fill="var(--tx3)" text-anchor="middle">Source</text>
+
+  <!-- Verb (pink) -->
+  <rect x="308" y="282" width="120" height="46" rx="2"
+        fill="var(--pink-fill)" stroke="var(--pink)" stroke-width="1.2"/>
+  <text x="368" y="310" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--pink)" text-anchor="middle">Verb</text>
+
+  <!-- Drive (blue) -->
+  <rect x="440" y="282" width="120" height="46" rx="2"
+        fill="var(--blue-fill)" stroke="var(--blue)" stroke-width="1.2"/>
+  <text x="500" y="310" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--blue)" text-anchor="middle">Drive</text>
+
+  <!-- General Sense (green) -->
+  <rect x="308" y="336" width="120" height="46" rx="2"
+        fill="var(--green-fill)" stroke="var(--green)" stroke-width="1.2"/>
+  <text x="368" y="364" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--green)" text-anchor="middle">General Sense</text>
+
+  <!-- Attention (yellow) -->
+  <rect x="440" y="336" width="120" height="46" rx="2"
+        fill="var(--yellow-fill)" stroke="var(--yellow)" stroke-width="1.2"/>
+  <text x="500" y="364" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="10"
+        fill="var(--yellow)" text-anchor="middle">Attention</text>
+
+  <!-- Caption -->
+  <text x="380" y="428" font-family="ui-monospace,'Cascadia Mono','JetBrains Mono',monospace" font-size="9"
+        fill="var(--tx3)" text-anchor="middle" letter-spacing="0.02em">
+    Creatures (1996) — concept neuron: hunger × proximity → approach food
+  </text>
+</svg>
