@@ -1,0 +1,71 @@
+---
+title: "keybinds-tui: a keybinding cheatsheet that can't lie to you"
+title_pt: "keybinds-tui: um cheatsheet de atalhos que não pode mentir pra você"
+date: 2026-08-21
+description: DRY, "don't repeat yourself," is usually taught as a rule about code duplication. I ran into its harder version while fixing my own keybinding cheatsheet, a static file that went wrong the moment I forgot to update it after rebinding a key.
+description_pt: DRY, "não se repita," normalmente é ensinado como regra sobre duplicação de código. Encontrei a versão mais dura dele consertando meu próprio cheatsheet de atalhos, um arquivo estático que ficou errado no instante em que esqueci de atualizar após reatribuir uma tecla.
+tags: [technology, notes]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+
+Andy Hunt and Dave Thomas coined DRY, "don't repeat yourself," to mean something narrower than most people use it for now: every piece of knowledge should have a single, unambiguous, authoritative representation in a system. People mostly apply it to code, two functions doing the same thing, a constant copy-pasted in three files. I ran into a version of it that had nothing to do with code at all.
+
+I had a keybinding note. One markdown file, opened with a keyboard shortcut, listing what every app on my machine responds to: Hyprland, Neovim, the terminal file manager, the browser's keyboard-driven mode. It worked until the first time I rebound a key and forgot to update the file. At that point it wasn't a stale cheatsheet, it was a second, false representation of a fact that already had a true representation sitting right there in a config file I hadn't bothered to read. The note wasn't a convenience anymore. It was exactly the kind of duplicated knowledge DRY warns about, just expressed in prose instead of code, and it failed the same way duplicated code always fails: silently, and only when the two copies disagree.
+
+---
+
+## Reading the source instead of copying it
+
+The fix Hunt and Thomas would recognize isn't "remember to update the note." Nobody does that reliably, me included. It's to stop maintaining a second representation and read the first one directly. [keybinds-tui](https://github.com/harbefas/keybinds-tui) is a terminal UI, one binary, and for the two sources that matter most, Hyprland and Neovim, it doesn't store a table of bindings at all. It parses the actual config file. For Neovim it launches the editor headless and asks it directly what's mapped. If I rebind something, the tool is already right, because it never had an opinion of its own to fall out of sync.
+
+That principle is more expensive to honor than to state. A hardcoded table is instant and never breaks in an obviously visible way, it just quietly drifts, the same failure mode as the markdown note, just wearing code instead of prose. Parsing Hyprland's config format means handling `bind`, `bindm`, submaps, variables, and comments, because that's what's actually in the file. Asking Neovim for its own keymap means paying for a headless editor launch, a few seconds, every time, which is unacceptable for something meant to answer "what does this key do" in under a second. So the live sources get a cache: Neovim's dump is written to `/tmp` and reused for five minutes, long enough to cover a session, short enough that a same-day config change still surfaces before I've forgotten about it.
+
+Not every source gets this treatment. Tridactyl, Spotify, Lazygit, Yazi, and four other apps don't expose a live config worth parsing, so those stay as hand-copied tables from documented defaults, the exact thing I was trying to get away from, just isolated to the apps where there was no honest alternative. Being explicit about which sources are authoritative and which are copies turned out to matter more than making all nine look identical.
+
+---
+
+## The bug that only exists once you build the thing
+
+There's a failure mode a cheatsheet can never have, and only a tool that watches you can: it has to know what app was focused before it opened, because the moment its own window takes focus, that information is gone. The naive version always opens on itself, correctly reporting what app is focused, which is now the keybinding tool. Fixing it meant reading the previously-active window through Hyprland's IPC and a process-tree walk, but doing that before drawing anything, since a wrapper script has to hand the previous window's identity through an environment variable before the TUI's own window exists to steal focus from it. This is the kind of bug a spec never anticipates ("open on the current app's tab") because the spec is written from the outside, and the bug only exists from the inside, at the exact moment the tool becomes the thing it's supposed to be observing.
+
+---
+
+## Where this goes
+
+The keybinding note wasn't wrong because I'm forgetful. It was wrong because it was structurally guaranteed to drift the moment a second copy of a fact existed anywhere in the system, and no amount of discipline fixes a structural guarantee, only removing the second copy does. That's the same lesson DRY was always making about code, just visible somewhere I hadn't thought to apply it: a markdown file, a spreadsheet, a wiki page, anywhere someone writes down what a system does instead of pointing at the system and asking. The interesting split isn't between code and prose. It's between things that get asked and things that get copied, and copies are the ones that eventually lie.
+
+</En>
+
+<Pt>
+
+Andy Hunt e Dave Thomas cunharam DRY, "não se repita," pra significar algo mais estreito do que a maioria usa hoje: todo pedaço de conhecimento deveria ter uma representação única, inequívoca e autoritativa no sistema. A maioria aplica isso a código, duas funções fazendo a mesma coisa, uma constante copiada e colada em três arquivos. Encontrei uma versão disso que não tinha nada a ver com código.
+
+Eu tinha uma nota de atalhos. Um arquivo markdown, aberto com um atalho de teclado, listando o que cada app da minha máquina respondia: Hyprland, Neovim, o gerenciador de arquivos do terminal, o modo de navegação por teclado do browser. Funcionava até a primeira vez que reatribuí uma tecla e esqueci de atualizar o arquivo. Nesse ponto não era um cheatsheet desatualizado, era uma segunda representação falsa de um fato que já tinha uma representação verdadeira sentada bem ali, num arquivo de config que eu não tinha me dado ao trabalho de ler. A nota parou de ser conveniência. Virou exatamente o tipo de conhecimento duplicado contra o qual o DRY avisa, só que em prosa em vez de código, e falhou do mesmo jeito que código duplicado sempre falha: em silêncio, e só quando as duas cópias discordam.
+
+---
+
+## Ler a fonte em vez de copiar
+
+O conserto que Hunt e Thomas reconheceriam não é "lembrar de atualizar a nota." Ninguém faz isso de forma confiável, eu incluído. É parar de manter uma segunda representação e ler a primeira direto. O [keybinds-tui](https://github.com/harbefas/keybinds-tui) é uma interface de terminal, um binário só, e pras duas fontes que mais importam, Hyprland e Neovim, não guarda tabela de atalho nenhuma. Faz parse do arquivo de config de verdade. Pro Neovim, sobe o editor em modo headless e pergunta direto o que tá mapeado. Se reatribuo algo, a ferramenta já está certa, porque nunca teve opinião própria pra desatualizar.
+
+Esse princípio custa mais caro pra honrar do que pra enunciar. Uma tabela hardcoded é instantânea e nunca quebra de forma visível, só desvia em silêncio, o mesmo modo de falha da nota markdown, só que vestindo código em vez de prosa. Fazer parse do formato de config do Hyprland significa lidar com `bind`, `bindm`, submaps, variáveis e comentários, porque é isso que de fato está no arquivo. Perguntar ao Neovim pelo próprio keymap significa pagar por um launch de editor headless, uns segundos, toda vez, o que é inaceitável pra algo que deveria responder "o que essa tecla faz" em menos de um segundo. Então as fontes ao vivo ganham cache: o dump do Neovim é escrito em `/tmp` e reusado por cinco minutos, tempo suficiente pra cobrir uma sessão, curto o bastante pra uma mudança de config no mesmo dia ainda aparecer antes de eu esquecer dela.
+
+Nem toda fonte recebe esse tratamento. Tridactyl, Spotify, Lazygit, Yazi e mais quatro apps não expõem uma config ao vivo que valha a pena parsear, então ficam como tabelas copiadas na mão dos defaults documentados, exatamente a coisa da qual eu tava tentando escapar, só isolada nos apps onde não existia alternativa honesta. Ser explícito sobre quais fontes são autoritativas e quais são cópia acabou importando mais do que fazer as nove parecerem idênticas.
+
+---
+
+## O bug que só existe depois de construir a coisa
+
+Existe um modo de falha que um cheatsheet nunca pode ter, e só uma ferramenta que observa você pode: ela precisa saber qual app estava em foco antes de abrir, porque no instante em que a própria janela dela ganha foco, essa informação já era. A versão ingênua sempre abre em si mesma, reportando corretamente qual app está em foco, que agora é a própria ferramenta de atalho. Consertar isso significou ler a janela anteriormente ativa pelo IPC do Hyprland e uma travessia de árvore de processos, mas fazendo isso antes de desenhar qualquer coisa, já que um script wrapper precisa passar a identidade da janela anterior por variável de ambiente antes da janela do próprio TUI existir pra roubar o foco dela. É o tipo de bug que uma spec nunca antecipa ("abrir na aba do app atual") porque a spec é escrita de fora, e o bug só existe de dentro, no exato momento em que a ferramenta vira a coisa que deveria estar observando.
+
+---
+
+## Pra onde isso vai
+
+A nota de atalhos não estava errada porque sou esquecido. Estava errada porque era estruturalmente garantido que desviasse no instante em que uma segunda cópia de um fato passasse a existir em qualquer lugar do sistema, e nenhuma quantidade de disciplina conserta uma garantia estrutural, só remover a segunda cópia conserta. É a mesma lição que o DRY sempre esteve fazendo sobre código, só visível em algum lugar que eu não tinha pensado em aplicar: um arquivo markdown, uma planilha, uma página de wiki, qualquer lugar onde alguém escreve o que um sistema faz em vez de apontar pro sistema e perguntar. A divisão interessante não é entre código e prosa. É entre coisas que se pergunta e coisas que se copia, e as cópias são as que no fim mentem.
+
+</Pt>

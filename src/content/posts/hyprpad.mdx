@@ -1,0 +1,79 @@
+---
+title: "hyprpad: a phone as a trackpad, keyboard, and remote for Wayland"
+title_pt: "hyprpad: um celular como trackpad, teclado e controle remoto pro Wayland"
+date: 2026-07-30
+description: Most phone-remote tools for the desktop want an app on both ends and lean Windows-first. This is a single Python file, no install on the phone, that turns it into a trackpad, keyboard, and media remote for a Wayland desktop over the browser.
+description_pt: A maioria das ferramentas de controle remoto por celular quer um app dos dois lados e prioriza Windows. Isto é um único arquivo Python, sem instalar nada no celular, que o transforma em trackpad, teclado e controle de mídia para um desktop Wayland pelo navegador.
+tags: [technology, notes]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+
+I wanted my phone to work as a trackpad and keyboard for my desktop, and to control whatever's playing without walking over to the machine. The tools that already exist for this mostly assume Windows, or want an app installed on the phone, or both. None of that matched what I actually needed: open a page, control the computer, close the tab.
+
+The first version of this lived as one tab inside [oikos](/posts/oikos), the homelab dashboard — the same page that launches movies and games also happened to turn the phone into a controller for the machine running it. It outgrew that tab: a media panel, gesture buttons, a theme that matches whatever the desktop is running. So it's [hyprpad](https://github.com/harbefas/hyprpad) now, its own thing: one Python file, no dependencies beyond the Linux input subsystem, no app on the phone. Open the URL, and the page is a trackpad, a keyboard, and a media remote.
+
+---
+
+## How it actually controls the desktop
+
+The trick is `uinput`, the Linux kernel interface for creating a virtual input device. The script registers a fake mouse and a fake keyboard, and every tap or drag on the phone becomes a real key press or pointer event as far as the rest of the system is concerned. There's no accessibility API, no compositor-specific protocol, nothing that only works under one desktop environment. If the kernel has `uinput` and the user has permission to write to it, this works.
+
+That also means it's honest about what it can and can't promise. It's a small HTTP server that injects input on request, which has no business sitting on the open internet no matter how convenient a public URL would be. The security story is one plain boundary: LAN-only by default, an optional password for anyone sharing the network, stated clearly rather than dressed up as more than it is.
+
+---
+
+## A couple of things worth calling out
+
+The media panel controls whatever's playing through MPRIS, the standard interface most Linux media players expose. Almost always there's one obvious player to control. Occasionally two things are playing at once — a browser tab and a music player, say — and there is genuinely no signal for which one you meant. Rather than guess and be wrong in front of you, the panel shows both and lets a tap pick. Handling ambiguity honestly beat handling it cleverly.
+
+It also reads the desktop's own theme when one is available — [Omarchy](https://omarchy.org) exposes its active color palette as a plain file — instead of carrying a fixed look and hoping it matches. When that file isn't there, it falls back to a built-in palette that shifts with time of day. Either way, the interface never has to be told what it should look like; it can just check.
+
+---
+
+## Getting it running
+
+```
+curl -fsSL https://raw.githubusercontent.com/harbefas/hyprpad/main/install.sh | bash
+```
+
+Clones the repo, installs the couple of optional dependencies (media control, screen preview), sets up device permissions, and starts it as a background service. MIT licensed, and the whole thing is short enough to read in one sitting if you want to know exactly what it's doing before you point it at your keyboard.
+
+</En>
+
+<Pt>
+
+Eu queria que meu celular funcionasse como trackpad e teclado do meu desktop, e controlasse o que estivesse tocando sem precisar ir até a máquina. As ferramentas que já existem pra isso, na maioria, assumem Windows, ou querem um app instalado no celular, ou as duas coisas. Nada disso batia com o que eu de fato precisava: abrir uma página, controlar o computador, fechar a aba.
+
+A primeira versão disso morava como uma aba dentro do [oikos](/posts/oikos), o painel do homelab — a mesma página que lança filme e jogo por acaso também transformava o celular num controle da máquina que a rodava. Cresceu demais pra aquela aba: painel de mídia, botões de gesto, um tema que casa com o que o desktop está rodando. Então agora é o [hyprpad](https://github.com/harbefas/hyprpad), coisa própria: um arquivo Python só, sem dependência além do subsistema de input do Linux, sem app no celular. Abre a URL, e a página é um trackpad, um teclado e um controle de mídia.
+
+---
+
+## Como ele de fato controla o desktop
+
+O truque é o `uinput`, a interface do kernel Linux pra criar um dispositivo de input virtual. O script registra um mouse falso e um teclado falso, e cada toque ou arraste no celular vira um evento real de tecla ou ponteiro no ponto de vista do resto do sistema. Não tem API de acessibilidade, não tem protocolo específico de compositor, nada que só funcione num ambiente de desktop. Se o kernel tem `uinput` e o usuário tem permissão pra escrever nele, funciona.
+
+Isso também significa que é honesto sobre o que pode e não pode prometer. É um servidor HTTP pequeno que injeta input sob pedido, o que não tem nenhum motivo pra estar exposto na internet aberta por mais conveniente que uma URL pública fosse. A história de segurança é uma fronteira simples: só LAN por padrão, senha opcional pra quem compartilha a rede, dita com clareza em vez de maquiada pra parecer mais do que é.
+
+---
+
+## Dois detalhes que valem menção
+
+O painel de mídia controla o que estiver tocando via MPRIS, a interface padrão que a maioria dos players Linux expõe. Quase sempre existe um player óbvio pra controlar. De vez em quando duas coisas tocam ao mesmo tempo — uma aba de navegador e um player de música, digamos — e genuinamente não existe sinal de qual você quis dizer. Em vez de advinhar e errar na sua frente, o painel mostra os dois e deixa um toque escolher. Tratar ambiguidade com honestidade ganhou de tratar com esperteza.
+
+Ele também lê o tema do próprio desktop quando existe um disponível — o [Omarchy](https://omarchy.org) expõe a paleta de cores ativa como um arquivo simples — em vez de carregar uma aparência fixa e torcer pra bater. Quando esse arquivo não existe, cai pra uma paleta embutida que muda com o horário do dia. De um jeito ou de outro, a interface nunca precisa que digam a ela como deve parecer; ela só confere.
+
+---
+
+## Colocando pra rodar
+
+```
+curl -fsSL https://raw.githubusercontent.com/harbefas/hyprpad/main/install.sh | bash
+```
+
+Clona o repo, instala as poucas dependências opcionais (controle de mídia, preview de tela), configura permissão de dispositivo, e sobe como serviço em segundo plano. Licença MIT, e o projeto inteiro é curto o bastante pra ler numa sentada só, se você quiser saber exatamente o que ele faz antes de apontar pro seu teclado.
+
+</Pt>

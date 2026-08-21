@@ -1,0 +1,95 @@
+---
+title: "oikos: what lazy evaluation looks like when the values are a TV and a Kindle"
+title_pt: "oikos: como fica a avaliação preguiçosa quando os valores são uma TV e um Kindle"
+date: 2026-08-14
+description: Lazy evaluation is usually a language-design footnote, don't compute a value until something asks for it. I found myself reaching for the same idea over and over while building a homelab, just with the values being movies, book chapters, and a controller state instead of expressions in a compiler.
+description_pt: Avaliação preguiçosa normalmente é nota de rodapé de design de linguagem, não compute um valor até que algo peça por ele. Me peguei recorrendo à mesma ideia várias vezes construindo um homelab, só que com os valores sendo filme, capítulo de livro e estado de controle em vez de expressão dentro de um compilador.
+tags: [technology, notes]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+
+Lazy evaluation, the strategy languages like Haskell use where an expression isn't computed until its value is actually demanded, is usually taught as a compiler-design curiosity. Nobody teaches it as a life philosophy for a home media server, but that's the closest description of what *oikos*, the name for my whole homelab, Greek for the house as a unit, actually turned into. Every surface it grows follows the same rule: don't fetch, don't sync, don't precompute anything until the exact moment something asks for it. The rule showed up first by accident and now I reach for it on purpose.
+
+---
+
+## The controller that doesn't exist until you tap something
+
+The clearest case is the phone. Open a page, tap a movie cover, and the phone becomes a remote for `mpv` running on the TV over a socket. Tap a game cover instead, and the same page becomes a gamepad, `uinput`, the Linux kernel's interface for virtual input devices, lets the backend register a fake controller that PCSX2 or RetroArch treats exactly like a real one plugged in over USB. The phone never has two apps, a remote app and a controller app, waiting in some idle state for you to pick one. There's a single page that computes its own identity from whatever you just touched, the same way a lazy expression doesn't have a value sitting around, it has a promise that gets forced into a value the instant something needs it.
+
+The alternative, a mode switch you flip by hand, is the eager version of the same feature: compute the state up front, keep it around, hope it still matches reality when you need it. That version existed briefly, and it was worse in a specific way, it made me hold in my head something the machine already had the information to know.
+
+---
+
+## A library that answers questions instead of shipping its whole contents
+
+The same instinct shows up on a device that isn't a screen at all. A jailbroken Kindle running KOReader reads books, papers, and manga off the homelab through its own small stack, a library with a live feed, a service that fetches a book on request, a manga source that serves chapters one at a time. The Kindle has 1.8GB of storage, not enough to hold even one manga series, so nothing gets pushed to it ahead of time. The reader opens the feed and pulls a single chapter right before you read it.
+
+This isn't a storage optimization I bolted on after hitting a limit, it's the same lazy-evaluation posture the phone interface already had, just forced into the open by a constraint that made the alternative impossible. Eager evaluation would try to sync the whole library and immediately run out of room. Laziness doesn't run out of room, because it never held more than one chapter's worth of commitment at a time.
+
+The same Kindle carries a read-only copy of my notes and sends highlights back the other direction, deliberately one-way each way rather than a live two-way sync. A note system that commits every minute and a device trying to reconcile changes in both directions would spend all its time resolving conflicts with itself, the classic failure mode of forcing eager, continuous synchronization onto something that only needed to be asked a question once in a while.
+
+---
+
+## Streaming before the file exists, which sounds impossible until you name it right
+
+The library is whatever Jellyfin already has fully downloaded, but plenty of what you'd want to watch isn't downloaded yet, and eager evaluation's version of that problem is: wait for the whole file before you're allowed to look at any of it. *oikos* streams torrents directly instead, pick a title, playback starts while the file is still arriving, with subtitles pulled live from OpenSubtitles when the local library doesn't have a match. What looks like magic, watching something that technically doesn't exist as a complete file yet, is just laziness applied to bytes instead of chapters: you don't need the whole value, you need the next few frames of it, computed just in time and not a moment before.
+
+---
+
+## The one place the same rule doesn't apply, and why that's the point
+
+A TV kiosk, the Home Screen, runs on the television itself, navigable by d-pad, no phone required to browse. It's the one surface that breaks the pattern slightly on purpose: a focused item in a shelf comes forward and its neighbors recede in depth, motion the phone interface never uses. That's not laziness failing, it's laziness correctly recognizing a different kind of demand. A ten-foot interface has to signal state to someone who isn't holding it and can't read a one-pixel border from across a room, so the state has to be computed and shown eagerly, in advance, the instant something is focused, not lazily deferred until asked twice. Knowing where laziness stops applying turned out to matter as much as applying it everywhere else.
+
+---
+
+## Where this goes
+
+None of these decisions started from a design principle. They started from specific annoyances, a mode switch that felt dumb, a Kindle that ran out of space, a download bar that made someone wait. What ties them together in hindsight is that every fix was the same fix: stop computing something before you know it's wanted, and ask again, cheaply, right when it's needed instead of once, expensively, in advance. A homelab doesn't need a name for that instinct to work. But naming it is what let me stop rediscovering it project by project and start reaching for it on purpose, the same way a language designer doesn't need to have read a paper on lazy evaluation to write a caching layer that behaves like one, but having the name makes it obvious the fifth time, not just the first.
+
+</En>
+
+<Pt>
+
+Avaliação preguiçosa, a estratégia que linguagens como Haskell usam onde uma expressão só é computada quando o valor dela é de fato exigido, normalmente é ensinada como curiosidade de design de compilador. Ninguém ensina como filosofia de vida pra um servidor de mídia doméstico, mas é a descrição mais próxima do que o *oikos*, o nome do meu homelab inteiro, grego pra "a casa como unidade," de fato virou. Toda superfície que ele ganha segue a mesma regra: não busca, não sincroniza, não precomputa nada até o exato momento em que algo pede. A regra apareceu primeiro por acidente e agora eu busco ela de propósito.
+
+---
+
+## O controle que não existe até você tocar em algo
+
+O caso mais claro é o celular. Abre a página, toca numa capa de filme, e o celular vira controle remoto do `mpv` rodando na TV via socket. Toca numa capa de jogo em vez disso, e a mesma página vira um gamepad, `uinput`, a interface do kernel Linux pra dispositivos de input virtuais, deixa o backend registrar um controle falso que o PCSX2 ou RetroArch trata exatamente como um real plugado por USB. O celular nunca tem dois apps, um app de controle remoto e um app de gamepad, esperando em algum estado ocioso pra você escolher um. Tem uma página só que computa a própria identidade a partir do que você acabou de tocar, do mesmo jeito que uma expressão preguiçosa não tem um valor parado por aí, tem uma promessa que vira valor no instante em que algo precisa dela.
+
+A alternativa, um switch de modo que você troca na mão, é a versão ansiosa da mesma funcionalidade: computa o estado antes, guarda, torce pra ainda bater com a realidade quando precisar. Essa versão existiu por um tempo curto, e era pior de um jeito específico, me fazia segurar na cabeça algo que a máquina já tinha informação suficiente pra saber.
+
+---
+
+## Uma biblioteca que responde perguntas em vez de enviar o conteúdo inteiro
+
+O mesmo instinto aparece num aparelho que nem é uma tela. Um Kindle jailbroken rodando KOReader lê livro, paper e mangá do homelab pela própria stack pequena, uma biblioteca com feed ao vivo, um serviço que busca um livro sob pedido, uma fonte de mangá que serve capítulo um por vez. O Kindle tem 1,8GB de armazenamento, insuficiente pra segurar sequer uma série de mangá, então nada é empurrado antes. O leitor abre o feed e puxa um capítulo só, bem antes de você ler.
+
+Isso não é uma otimização de armazenamento que eu colei depois de bater num limite, é a mesma postura de avaliação preguiçosa que a interface do celular já tinha, só forçada à luz por uma restrição que tornou a alternativa impossível. Avaliação ansiosa tentaria sincronizar a biblioteca inteira e ficaria sem espaço na hora. Preguiça não fica sem espaço, porque nunca segurou mais do que o compromisso de um capítulo por vez.
+
+O mesmo Kindle carrega uma cópia só-leitura das minhas notas e devolve grifos no sentido contrário, deliberadamente um sentido em cada direção em vez de sincronização bidirecional ao vivo. Um sistema de notas que commita a cada minuto e um aparelho tentando reconciliar mudanças nas duas direções passaria o tempo todo resolvendo conflito consigo mesmo, o modo de falha clássico de forçar sincronização ansiosa e contínua em algo que só precisava ser perguntado de vez em quando.
+
+---
+
+## Streaming antes do arquivo existir, o que soa impossível até você nomear direito
+
+A biblioteca é o que o Jellyfin já tem totalmente baixado, mas boa parte do que você quer assistir ainda não foi baixada, e a versão ansiosa desse problema é: espera o arquivo inteiro antes de poder olhar qualquer parte dele. O *oikos* toca torrent direto em vez disso, escolhe um título, o playback começa enquanto o arquivo ainda está chegando, com legenda puxada ao vivo do OpenSubtitles quando a biblioteca local não tem correspondência. O que parece mágica, assistir algo que tecnicamente ainda não existe como arquivo completo, é só preguiça aplicada a byte em vez de capítulo: você não precisa do valor inteiro, precisa dos próximos quadros dele, computados na hora e não um instante antes.
+
+---
+
+## O único lugar onde a mesma regra não se aplica, e por que isso é o ponto
+
+Um kiosk de TV, a Home Screen, roda na própria televisão, navegável por d-pad, sem precisar do celular pra navegar. É a única superfície que quebra o padrão levemente, de propósito: um item focado numa prateleira vem pra frente e os vizinhos recuam em profundidade, movimento que a interface do celular nunca usa. Isso não é a preguiça falhando, é a preguiça reconhecendo corretamente um tipo diferente de demanda. Uma interface de três metros precisa sinalizar estado pra alguém que não está segurando ela e não consegue ler uma borda de um pixel do outro lado da sala, então o estado precisa ser computado e mostrado com antecedência, no instante em que algo é focado, não adiado preguiçosamente até ser perguntado duas vezes. Saber onde a preguiça para de se aplicar acabou importando tanto quanto aplicá-la em todo o resto.
+
+---
+
+## Pra onde isso vai
+
+Nenhuma dessas decisões começou de um princípio de design. Começaram de irritações específicas, um switch de modo que parecia bobo, um Kindle que ficou sem espaço, uma barra de download que fazia alguém esperar. O que amarra tudo isso em retrospecto é que todo conserto foi o mesmo conserto: parar de computar algo antes de saber que é desejado, e perguntar de novo, barato, bem na hora que precisa, em vez de uma vez, caro, com antecedência. Um homelab não precisa de um nome pra esse instinto funcionar. Mas nomear foi o que me deixou parar de redescobrir isso projeto por projeto e passar a buscar de propósito, do mesmo jeito que quem projeta uma linguagem não precisa ter lido um paper sobre avaliação preguiçosa pra escrever uma camada de cache que se comporta como uma, mas ter o nome torna óbvio da quinta vez, não só da primeira.
+
+</Pt>

@@ -1,0 +1,99 @@
+---
+title: "What a support-automation project taught me about specs that go stale in real time"
+title_pt: "O que um projeto de automação de suporte me ensinou sobre specs que desatualizam em tempo real"
+date: 2026-08-09
+description: "The map is not the territory" is quoted so often it stops meaning anything. I didn't understand it as an operational fact until I spent a month building automation against a process diagram that got redrawn three times while I was implementing it.
+description_pt: "O mapa não é o território" é citado tantas vezes que para de significar algo. Só entendi isso como fato operacional depois de passar um mês construindo automação em cima de um diagrama de processo redesenhado três vezes enquanto eu implementava.
+tags: [technology, notes]
+---
+
+import En from '../../components/En.astro';
+import Pt from '../../components/Pt.astro';
+
+<En>
+
+Alfred Korzybski's line, "the map is not the territory," gets quoted so often it's stopped meaning anything to most people who say it. I didn't understand it as an operational fact, something with actual failure modes attached, until I spent a month building an automated triage system against a process diagram that got redrawn three times while I was implementing it.
+
+The system itself is unremarkable: a gate that reads live signal data off the device a support ticket is about, and decides whether the case needs a human or can route itself automatically. Most operational teams eventually build something like it. What's worth writing down isn't the automation. It's what building against a moving document does to how you have to think, and the fact that none of what I relearned was new. It just stopped being abstract.
+
+---
+
+## The contradiction that only existed at the seam
+
+A requirement, written by one person, asked for a column on the triage screen: mark whether a ticket was a repeat case. A separate requirement, written earlier by someone else, defined the gate deciding which tickets reach that screen at all, and it excluded repeat cases on purpose, routing them elsewhere before they ever arrive. Neither requirement was wrong. Read alone, each one made complete sense to the person who wrote it. Put them next to each other and you get a column asking for data that can never populate on the screen it's supposed to live on, by construction.
+
+This is Goodhart's Law's quieter cousin. Goodhart's is about a measure breaking once you optimize for it; this is about two correct local decisions producing a global contradiction that neither author could have seen, because neither had the other's half of the picture in view. A diagram draws boxes and arrows. It does not draw what a record looks like by the time it has passed through every box upstream of the one you're looking at. That's not a gap you close by drawing a better diagram. It's a gap you close by running an actual record through the actual logic, in your head or on a keyboard, before you trust what a box claims to contain.
+
+When I did that, traced a real case through the gate before writing the screen, the contradiction was immediate and impossible to miss. When I raised it, the answer wasn't "fix the gate." It was "leave the column, it's forward-looking, the exclusion rule might change later." A defensible answer. But arriving at a defensible answer required refusing to trust the diagram as a complete description of what data would exist, which is a different posture than reading a spec and building what it says.
+
+---
+
+## The map only knows what the mapmaker believed at the time
+
+The same spec listed five channel codes as the input sources for that queue. I didn't build against the list. I queried thirty days of real traffic instead, grouped by channel, and found the single highest-volume source, more tickets than every other automated channel combined, wasn't among the five. A close look at the listed codes explained it: one of them was almost certainly the missing channel, mistyped by a single digit, sometime before the document reached me.
+
+It didn't matter in the end. The actual routing logic never filtered by channel, so the wrong list cost nothing. But that's not the lesson. The lesson is what a spec actually is: a snapshot of what someone believed, at one moment, was true about a system that keeps moving after they stop looking at it. It has no mechanism for flagging its own decay. Production does, not because it's more virtuous, but because it's the thing actually happening, and a query against it can't be a typo. Trusting the document over the traffic would have been trusting a claim over an observation, for no reason better than the claim being written down first.
+
+---
+
+## Fusing what you measure with what you decide breaks both
+
+The clearest bug in the project traced back to a single `if` statement: skip a signal calculation whenever a mass outage is active, on the reasoning that the value wouldn't matter in that case. It broke something the author never intended: a status field, meant to show a customer's live connection state, went blank for anyone caught inside an outage window, whether or not their individual case had anything to do with it. The calculation and the reason someone once thought it should be skipped had been welded into a single piece of code that only made sense under one reading of when it should run.
+
+Pulling them apart was the whole fix. The code that computes a signal's current state is a fact about the world, what does this connection actually look like right now, and a fact doesn't stop being true because something else is happening elsewhere in the system. The code that decides what to *do* with a bad signal, whether to escalate it automatically, is a policy, and policies are allowed to have exceptions like "not during an outage." The bug wasn't that the exception existed. It was that the exception had been written inside the fact instead of beside it, so changing the policy silently broke the measurement too, in a place nobody was watching, because nobody expected a policy change to be capable of doing that.
+
+A fact and a policy about the fact will always have different lifespans. Policies change on business reasoning, facts change on physics. Code that fuses them inherits the shorter lifespan for both.
+
+---
+
+## Where this goes
+
+None of these three came from an unusually chaotic project. They came from the ordinary condition of any system that's actually running: a description of it, written down, starts drifting from what's true the moment it's finished, and nothing forces that drift to announce itself. The diagram doesn't know it's out of date. The spec doesn't know its channel list has a typo. The `if` statement doesn't know it's quietly emptying a field nobody meant to touch.
+
+The habits that held up weren't about getting the document right; no document stays right for long. They were about treating every document as a claim rather than a fact, and keeping a way to check the claim against what the system is actually doing before building on top of it. Korzybski's line is usually deployed as a warning against confusing abstraction with reality. In practice, on a team, it's less philosophical than that. It's just: the diagram was accurate when someone drew it. Check whether that's still true before you trust it with the next six weeks of your work.
+
+</En>
+
+<Pt>
+
+A frase de Alfred Korzybski, "o mapa não é o território," é citada tantas vezes que parou de significar algo pra maioria de quem a repete. Só entendi como fato operacional, algo com modo de falha real associado, depois de passar um mês construindo um sistema automático de triagem em cima de um diagrama de processo redesenhado três vezes enquanto eu implementava.
+
+O sistema em si é banal: um gate que lê dado de sinal ao vivo do equipamento de um chamado de suporte, e decide se o caso precisa de um humano ou pode se rotear sozinho automaticamente. A maioria dos times operacionais acaba construindo algo parecido. O que vale escrever não é a automação. É o que construir em cima de um documento em movimento faz com a forma de pensar, e o fato de que nada do que reaprendi era novo. Só parou de ser abstrato.
+
+---
+
+## A contradição que só existia na costura
+
+Um requisito, escrito por uma pessoa, pedia uma coluna na tela de triagem: marcar se um chamado era reincidente. Um requisito separado, escrito antes por outra pessoa, definia o gate que decide quais chamados chegam nessa tela, e ele excluía reincidentes de propósito, roteando pra outro lugar antes de chegarem. Nenhum dos dois requisitos estava errado. Lidos sozinhos, cada um fazia sentido completo pra quem escreveu. Colocados lado a lado, você tem uma coluna pedindo um dado que nunca pode popular na tela em que deveria viver, por construção.
+
+Essa é a prima quieta da Lei de Goodhart. A de Goodhart é sobre uma métrica quebrar quando você otimiza pra ela; essa é sobre duas decisões locais corretas produzindo uma contradição global que nenhum dos dois autores conseguiria ver, porque nenhum tinha a metade do outro em vista. Um diagrama desenha caixa e seta. Não desenha como um registro fica no momento em que passou por toda caixa a montante da que você está olhando. Não é uma lacuna que se fecha desenhando um diagrama melhor. É uma lacuna que se fecha rodando um registro de verdade pela lógica de verdade, na cabeça ou no teclado, antes de confiar no que uma caixa afirma conter.
+
+Quando fiz isso, rastreei um caso real pelo gate antes de escrever a tela, a contradição foi imediata e impossível de ignorar. Quando levantei, a resposta não foi "conserta o gate." Foi "deixa a coluna, é pensando à frente, a regra de exclusão pode mudar depois." Uma resposta defensável. Mas chegar numa resposta defensável exigiu recusar confiar no diagrama como descrição completa de que dado existiria, que é uma postura diferente de ler uma spec e construir o que ela diz.
+
+---
+
+## O mapa só sabe o que o cartógrafo acreditava naquele momento
+
+A mesma spec listava cinco códigos de canal como fonte de entrada pra essa fila. Não construí em cima da lista. Consultei trinta dias de tráfego real, agrupado por canal, e achei que a fonte de maior volume, sozinha responsável por mais chamados que todos os outros canais automáticos somados, não estava entre os cinco. Um olhar mais de perto nos códigos listados explicou: um deles era quase certamente o canal que faltava, digitado errado num único dígito.
+
+No fim não importou. A lógica de roteamento de fato nunca filtrava por canal, então a lista errada não custou nada. Mas não é essa a lição. A lição é o que uma spec de fato é: uma foto do que alguém acreditava, num momento, ser verdade sobre um sistema que continua se movendo depois que a pessoa para de olhar. Não tem mecanismo pra sinalizar sua própria decadência. Produção tem, não porque é mais virtuosa, mas porque é a coisa de fato acontecendo, e uma consulta contra ela não pode ser um erro de digitação. Confiar no documento em vez do tráfego seria confiar numa afirmação em vez de uma observação, por nenhum motivo melhor que a afirmação ter sido escrita primeiro.
+
+---
+
+## Fundir o que você mede com o que você decide quebra os dois
+
+O bug mais claro do projeto veio de um único `if`: pular um cálculo de sinal sempre que uma massiva estava ativa, no raciocínio de que o valor não importaria nesse caso. Quebrou algo que o autor não pretendia: um campo de status, feito pra mostrar o estado de conexão ao vivo de um cliente, ficava vazio pra qualquer um pego dentro de uma janela de massiva, tivesse ou não o caso individual algo a ver com ela. O cálculo e o motivo pelo qual alguém um dia achou que devia ser pulado tinham sido soldados num único pedaço de código que só fazia sentido sob uma leitura de quando devia rodar.
+
+Separar os dois foi o conserto inteiro. O código que calcula o estado atual de um sinal é um fato sobre o mundo, como essa conexão de fato está agora, e um fato não para de ser verdade porque outra coisa está acontecendo em outro lugar do sistema. O código que decide o que *fazer* com um sinal ruim, se escala automaticamente, é uma política, e políticas têm permissão de ter exceção do tipo "não durante massiva." O bug não foi a exceção existir. Foi a exceção ter sido escrita dentro do fato em vez de ao lado dele, então mudar a política silenciosamente quebrava a medição também, num lugar que ninguém estava olhando, porque ninguém esperava que uma mudança de política fosse capaz disso.
+
+Um fato e uma política sobre o fato sempre terão prazos de validade diferentes. Política muda por raciocínio de negócio, fato muda por física. Código que funde os dois herda o prazo mais curto pros dois.
+
+---
+
+## Pra onde isso vai
+
+Nenhuma dessas três veio de um projeto incomumente caótico. Vieram da condição comum de qualquer sistema que de fato está rodando: uma descrição dele, escrita, começa a se distanciar do que é verdade no instante em que termina de ser escrita, e nada força essa distância a se anunciar. O diagrama não sabe que está desatualizado. A spec não sabe que a lista de canal tem erro de digitação. O `if` não sabe que está silenciosamente esvaziando um campo que ninguém pretendia tocar.
+
+Os hábitos que se sustentaram não eram sobre acertar o documento; nenhum documento fica certo por muito tempo. Eram sobre tratar todo documento como uma afirmação em vez de um fato, e manter um jeito de conferir a afirmação contra o que o sistema de fato está fazendo antes de construir em cima. A frase de Korzybski é normalmente usada como aviso contra confundir abstração com realidade. Na prática, num time, é menos filosófico que isso. É só: o diagrama estava certo quando alguém desenhou. Confira se ainda é verdade antes de confiar nele com as próximas seis semanas do seu trabalho.
+
+</Pt>
