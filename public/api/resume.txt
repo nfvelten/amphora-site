@@ -1,0 +1,90 @@
+# Nicholas Velten
+
+Software Engineer · Maringa, PR, Brazil
+nicholasfvelten@gmail.com · https://www.linkedin.com/in/nicholasvelten · https://github.com/nfvelten · https://nicholas-velten.xyz
+
+## Summary
+
+Software engineer with five years building and operating production systems for Brazilian ISPs, currently at one of the country's largest fiber providers. My current domain is telecom, but the through-line is broader: full-stack delivery, distributed workflows, correctness under production pressure, safe reprocessing, service automation, and systems that fail quietly unless you know where to look.
+
+Most of my work starts with a system misbehaving in production and no correct explanation for why: silent integration failures, provisioning that reports success and does not take, work orders opening when they should not. I find the mechanism, then make the smallest safe change in a network where a wrong change disconnects subscribers.
+
+Outside work I build in Rust, currently a security proxy for AI agents and MCP tools with auth, policy enforcement, audit, human-in-the-loop approval and schema validation, and I write publicly about support automation, security in legacy Java stacks, and agent security. Looking for remote software engineering, backend, full-stack, platform, distributed systems, production automation, and agent infrastructure work. C2 English.
+
+## Experience
+
+### Alloha Fiber · Software Engineer
+Jul 2023 - Present · Sao Paulo, Brazil (remote)
+
+- Traced a multi-million-record ticket backlog to its root cause: an upstream bot had silently stopped populating the field the nightly cleanup routine filtered on, leaving roughly six months of records invisible to automated closure while the visible pipeline looked healthy. Delivered the fix and the controlled backfill.
+- Built automatic recovery for failed PPPoE/RADIUS provisioning, a scheduled routine reprocessing failed logins on a short interval, and gated it with a creation-date cutoff after auditing the backlog, protecting several hundred long-dormant legacy accounts whose reprocessing would have risked bouncing live sessions. Validated against a single record before widening the window.
+- Delivered ONU reprovisioning end to end across three services and the operator UI for a fleet of roughly 1.7 million devices spanning four vendors, including normalization of inconsistent model identifiers and handling of cross-vendor alien ONT cases, replacing a process that previously required backend intervention.
+- Added server-side enforcement blocking work-order creation for subscribers inside an active outage area, closing a rule that until then existed only in the UI, then extended it with exemptions for activation queues and an authorized-override permission so installations were never blocked during outages.
+- Analyzed work orders opened during mass outages against alarm timing, establishing that automated outage detection registered within 15-24 minutes while manually registered events had a median near eight hours, and quantifying which orders were genuinely improper rather than timing artifacts.
+- Identified an unauthenticated endpoint exposing customer PII across nine distinct surfaces and built the remediation: AES-256-GCM field encryption with a zero-downtime key rotation strategy and a migration path for 554k records across three services.
+- Migrated shared database access from an internal legacy library to Spring JdbcTemplate across eight-plus microservices in a phased rollout, removing a coupling that made upgrades risky across unrelated services; authored the architectural assessment for a Java 8 to 17 and Spring Boot 1.5 to 3.x migration, mapping 301 files into a four-phase plan.
+- Built a support-triage automation spanning four services: live signal data, outage state and routing rules, including the ordered production rollout plan across the services it touches.
+- Reviewed and merged across 12-plus repositories and onboarded new engineers onto the platform.
+
+Stack: Java, Spring Boot, Maven, Vue.js, Python, PostgreSQL, MySQL, Redis, Kafka, Docker, Kubernetes, GitLab CI, Grafana, Loki, New Relic, Sentry
+
+### Ligue Telecom · Mid-level Full-stack Developer
+May 2022 - Jul 2023 · Maringa, PR, Brazil
+
+- Built TDA, a web modernization of a legacy Java desktop application, delivering a multi-layer customer service platform with a Vue.js frontend, Node.js BFF and features API handling address transfers, payment agreements and installment flows.
+- Built a REST service integrating with a geospatial provider to determine fiber coverage, PON availability, installation cost and service viability by customer address.
+- Implemented an async job queue with Redis for processing telecom service operations at scale.
+- Managed roles and permissions in Keycloak and maintained API endpoints through a Kong gateway.
+
+Stack: Vue.js, Node.js, TypeScript, PostgreSQL, MySQL, Redis, Keycloak, Kong
+
+### Kinebot / GetHash · Junior Full-stack Developer
+Oct 2021 - May 2022
+
+- Built client-facing applications with Node.js, React, TypeScript and Next.js; provisioned and maintained Docker/Kubernetes infrastructure and CI/CD pipelines.
+- Led client meetings in Portuguese and English.
+
+Stack: Node.js, React, TypeScript, Next.js, Docker, Kubernetes, CI/CD
+
+## AI Systems and Automation
+
+- Arbitus: Security proxy between AI agents and MCP servers. Per-agent auth, tool allow and denylists, request schema validation, payload filtering, rate limiting, human-in-the-loop approval and audit logging. https://github.com/arbitusgateway/arbitus
+- Agent Code Buddy: Mobile approval surface for agent tool calls. A pre-execution hook intercepts file writes, shell commands and API calls, pushes the payload to a phone, and returns allow, trust or deny to the agent in real time, with a JSONL audit trail. https://github.com/nfvelten/agent-code-buddy-unified
+- agent-memory: Persistent project and preference memory across sessions, with full-text search, staleness checks on stored facts and promotion of session findings into durable notes. https://github.com/nfvelten/agent-memory
+
+## Projects
+
+- Paperboy: Keyboard-first, local-first browser extension replacing the new tab with an RSS reader and podcast player; published on Firefox Add-ons. Companion terminal UI built in Rust. https://github.com/harbefas/paperboy
+- Arbitus: Open-source proxy that enforces per-agent policies before any tool call reaches an MCP server: auth, allow and denylists, schema validation, payload filtering, rate limiting, HITL and audit. https://github.com/arbitusgateway/arbitus
+- agent-memory: Persistent memory for AI agents via an Obsidian vault: full-text search, staleness checks on stored facts, project summaries and promotion of session findings into durable notes. https://github.com/nfvelten/agent-memory
+- Mate Creations: Design system with DTCG tokens compiled through Style Dictionary, component wrappers over native elements, contrast checks and CSS variable drift checks. Five consumers in production. https://github.com/mateCreations
+- keybinds-tui: Rust TUI that parses eight real config sources, including querying a headless Neovim for live mappings, so it cannot drift from the configs it documents. https://github.com/harbefas/keybinds-tui
+- Amphora: PKMS built on Obsidian and Neovim, with automation for voice capture, meeting transcription, content ingestion, Claude Code workflows and persistent agent memory. https://github.com/nfvelten/amphora-setup
+- Agent Code Buddy: Python HTTP server intercepts Claude agent tool calls via pre-tool-use hook. Native Android app lets you approve, trust or deny from the notification shade. Long-poll, no push infrastructure needed. https://github.com/nfvelten/agent-code-buddy-unified
+- Phone Development Deck: Go CLI across an Arch Linux PC, Android/Termux phone and k3s on Contabo. Includes native Android apps for ops, security lab workflows and mobile HITL for AI agents. https://github.com/nfvelten
+
+## Writing
+
+- Creatures (1996) and the accidental invention of AI alignment problems: Reads the 1998 Creatures/Norns community as an early documented case of reward hacking, specification gaming and emergent misuse. https://nicholas-velten.xyz/posts/creatures-norn-alignment
+- Auditing a PII exposure across a Java microservice stack: Production security write-up. https://nicholas-velten.xyz/posts/pii-exposure-audit
+- MCP gateway: Design argument behind Arbitus. https://nicholas-velten.xyz/posts/mcp-gateway
+- JDBC migration: Engineering write-up from production migration work. https://nicholas-velten.xyz/posts/jdbc-migration
+
+## Education
+
+- Centro Universitario Integrado: Associate's Degree, Systems Analysis and Development (2018 - 2021)
+
+## Certifications
+
+- English Certificate C2 Proficient (EF SET)
+- The Missing Semester of Your CS Education (MIT)
+
+## Skills
+
+- Languages: Java, TypeScript, Python, Rust, Go
+- Backend: Spring Boot, Node.js, Keycloak, Kong API Gateway, REST, Kafka
+- Frontend: Vue.js, React
+- Data & Infra: PostgreSQL, MySQL, Redis, Docker, Kubernetes, GitLab CI, AWS, GCP
+- Observability: Grafana, Loki, New Relic, Sentry, OpenTelemetry
+- Telecom: FTTH/ONU provisioning, RADIUS/PPPoE, OSS/BSS workflows, service assurance, WFM/field service
+- Architecture: Microservices, DDD, Hexagonal, Event-Driven, zero-downtime migrations

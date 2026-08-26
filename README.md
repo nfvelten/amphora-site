@@ -40,6 +40,16 @@ src/
 | `npm run build`   | Build para `./dist/`                   |
 | `npm run preview` | Preview do build antes de fazer deploy |
 
+## Acesso por agentes
+
+O site publica uma superfície MCP read-only no mesmo domínio do Cloudflare Pages:
+
+```text
+https://www.nicholas-velten.xyz/mcp
+```
+
+A Pages Function em `functions/mcp.ts` expõe `get_resume`, `get_projects`, `get_availability` e `prepare_intro`, usando `src/data/portfolio.js` como fonte única. As superfícies estáticas ficam disponíveis em `/api/resume.json`, `/api/resume.txt`, `/AGENTS.md` e `/connect.md`.
+
 ## Deploy k3s
 
 O site está publicado no cluster k3s pessoal via Docker + Helm:

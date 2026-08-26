@@ -1,33 +1,39 @@
 # Nicholas Velten
 
-> Personal site of Nicholas Velten — full-stack software engineer focused on scalable, well-structured systems. Publishes writing about technology, reading logs and technical learnings.
+> Software engineer building full-stack products, production automation, distributed workflows, and AI agent infrastructure.
 
-## About the author
+Software engineer with five years building and operating production systems for Brazilian ISPs, currently at one of the country's largest fiber providers. My current domain is telecom, but the through-line is broader: full-stack delivery, distributed workflows, correctness under production pressure, safe reprocessing, service automation, and systems that fail quietly unless you know where to look.
 
-Nicholas Velten is a full-stack software engineer with around four years of professional experience. Currently works at Alloha Fibra, building applications and services with Java, TypeScript, Vue.js and Node.js. Experience spans telecommunications, fintechs and product startups.
+## Agent-Readable Files
 
-Uses Linux with Hyprland, Neovim as editor and Obsidian for personal and technical knowledge management.
+- [Resume JSON](https://nicholas-velten.xyz/api/resume.json): structured resume, projects, skills and links
+- [Resume text](https://nicholas-velten.xyz/api/resume.txt): plain-text resume for LLM ingestion
+- [Agent guide](https://nicholas-velten.xyz/AGENTS.md): instructions for agents reading this site
+- [Connect guide](https://nicholas-velten.xyz/connect.md): how to use these files with an agent
 
-Based in Maringá, Paraná, Brazil.
+## Human Pages
 
-## Available content
+- [Home](https://nicholas-velten.xyz)
+- [About](https://nicholas-velten.xyz/about)
+- [Resume](https://nicholas-velten.xyz/resume)
+- [Projects](https://nicholas-velten.xyz/projects)
+- [Blog](https://nicholas-velten.xyz/blog)
+- [RSS](https://nicholas-velten.xyz/rss.xml)
 
-- **Writing** (`/posts`): reflections on technology, tools, development and learnings
-- **Readings** (`/readings`): reading logs — science fiction, comics and technical books
-- **Resume** (`/resume`): professional experience, technical skills and education
-- **About** (`/about`): who Nicholas Velten is
-- **Amphora** (`/amphora`): personal knowledge management system built on Obsidian and Neovim
-- **Mate Creations** (`/matecreations`): theme ecosystem for Neovim, VSCode, Obsidian and Zen Browser
+## Projects
 
-## Contact
+- [Paperboy](https://nicholas-velten.xyz/paperboy): RSS reader and podcast player as your new tab
+- [Arbitus](https://nicholas-velten.xyz/arbitus): Security proxy for AI agents and MCP servers
+- [agent-memory](https://github.com/nfvelten/agent-memory): MCP server that turns an Obsidian vault into AI agent memory
+- [Mate Creations](https://nicholas-velten.xyz/matecreations): Design system with a written spec, tokens and automated checks
+- [keybinds-tui](https://github.com/harbefas/keybinds-tui): Terminal UI that reads live keybinding configuration instead of drifting from it
+- [Amphora](https://nicholas-velten.xyz/amphora): Personal knowledge management system
+- [Agent Code Buddy](https://nicholas-velten.xyz/agent-code-buddy): Mobile HITL companion for AI coding agents
+- [Phone Development Deck](https://nicholas-velten.xyz/deck): Distributed dev platform across Arch Linux, Android/Termux and Kubernetes
 
-- Email: nikvelten@gmail.com
-- LinkedIn: https://www.linkedin.com/in/nicholasveltenfullstack
-- GitHub: https://github.com/nfvelten
+## Writing
 
-## Technical information
-
-- Primary language: English (en), with Portuguese (pt-BR) toggle
-- RSS feed: /rss.xml
-- Sitemap: /sitemap-index.xml
-- Content license: texts may be cited with attribution to the author
+- [Creatures (1996) and the accidental invention of AI alignment problems](https://nicholas-velten.xyz/posts/creatures-norn-alignment): Reads the 1998 Creatures/Norns community as an early documented case of reward hacking, specification gaming and emergent misuse.
+- [Auditing a PII exposure across a Java microservice stack](https://nicholas-velten.xyz/posts/pii-exposure-audit): Production security write-up.
+- [MCP gateway](https://nicholas-velten.xyz/posts/mcp-gateway): Design argument behind Arbitus.
+- [JDBC migration](https://nicholas-velten.xyz/posts/jdbc-migration): Engineering write-up from production migration work.

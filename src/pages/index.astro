@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import { portfolio } from '../data/portfolio.js';
+
+const { person, positioning, projects, writing } = portfolio;
+const featuredProjects = projects.filter((project) => ['Arbitus', 'agent-memory', 'Paperboy', 'Mate Creations'].includes(project.name));
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -11,23 +15,15 @@ const faqSchema = {
       name: 'Who is Nicholas Velten?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nicholas Velten is a Senior Software Engineer with 4+ years at Alloha Fibra — Brazil\'s largest independent ISP — owning platform-level infrastructure across a distributed Java/Spring Boot microservices stack. He has led cross-cutting framework migrations, remediated a critical LGPD violation, and operates with end-to-end feature ownership without dedicated PM support.',
+        text: `${person.publicName} is a ${person.title} with five years building and operating production systems, currently in telecom, with a focus on full-stack delivery, distributed workflows, production automation and AI agent infrastructure.`,
       },
     },
     {
       '@type': 'Question',
-      name: 'What technologies does Nicholas Velten work with?',
+      name: 'What has Nicholas Velten shipped?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nicholas Velten primarily works with Java, TypeScript, Vue.js, Node.js, NestJS, Spring Boot, React and Next.js. For infrastructure he uses Docker, Kubernetes, AWS, GCP and Terraform. His personal setup runs Linux with Hyprland, Neovim and Obsidian.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What open source projects has Nicholas Velten built?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Nicholas Velten built Arbitus, an open-source security proxy for AI agents and MCP servers written in Rust. He also maintains Amphora, a personal knowledge management system built on Obsidian and Neovim with AI integrations, and Mate Creations, a theme ecosystem for Neovim, Obsidian, VS Code and Zen Browser.',
+        text: 'Nicholas has shipped PPPoE/RADIUS provisioning recovery, ONU reprovisioning across multiple services, outage-aware work-order enforcement, PII remediation with AES-256-GCM and zero-downtime JDBC migration across eight-plus Java/Spring Boot microservices.',
       },
     },
     {
@@ -35,7 +31,7 @@ const faqSchema = {
       name: 'How can I contact Nicholas Velten?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'You can reach Nicholas Velten by email at nikvelten@gmail.com, on LinkedIn at linkedin.com/in/nicholasvelten, or on GitHub at github.com/nfvelten.',
+        text: `You can reach Nicholas Velten by email at ${person.email}, on LinkedIn at linkedin.com/in/nicholasvelten, or on GitHub at github.com/nfvelten.`,
       },
     },
   ],
@@ -43,8 +39,8 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="Nicholas Velten — Senior Software Engineer"
-  description="Nicholas Velten — Senior Software Engineer with 4+ years of experience. Java, Spring Boot, distributed systems. Open source: Arbitus, Paperboy, Mate Creations."
+  title="Nicholas Velten — Software Engineer"
+  description={positioning.headline}
   jsonLd={faqSchema}
 >
   <Sidebar slot="sidebar" />
@@ -52,178 +48,108 @@ const faqSchema = {
     <header class="post-header reveal">
       <h1 class="gradient-heading">Nicholas Velten</h1>
       <div class="meta">
-        <span class="lang-en">Senior Software Engineer · Maringá, Brazil</span>
-        <span class="lang-pt">Engenheiro de Software Backend · Maringá, Brasil</span>
+        <span class="lang-en">{person.title} · {person.location}</span>
+        <span class="lang-pt">Engenheiro Backend · {person.locationPt}</span>
       </div>
     </header>
-    <div class="prose lang-en">
-      <p class="reveal reveal-delay-1">
-        Backend software engineer with <strong>4+ years of experience</strong> at Brazil's largest
-        independent ISP, owning platform-level infrastructure across a distributed Java/Spring Boot
-        microservices stack serving millions of customers. End-to-end feature ownership — requirements,
-        alignment, refinement, and implementation — without dedicated PM support.
-      </p>
 
-      <p class="reveal reveal-delay-2">
-        I like understanding systems end to end — from the shared library to the UI component.
-        I care about clean code, architecture that makes sense and tools that stay the way
-        you set them up. Main stack: Java and Spring Boot at work, Rust and TypeScript on the side.
-      </p>
+    <div class="prose lang-en">
+      {positioning.summary.slice(0, 2).map((paragraph, i) => (
+        <p class={`reveal reveal-delay-${i + 1}`}>{paragraph}</p>
+      ))}
 
       <h2 class="reveal">On this site</h2>
       <ul class="reveal reveal-delay-1">
-        <li><a href="/about">About</a> — who I am, full stack, experience and personal projects</li>
-        <li><a href="/blog">Blog</a> — writing about technology, tools and learnings</li>
-        <li><a href="/readings">Readings</a> — books read, in progress and on the queue</li>
-        <li><a href="/projects">Projects</a> — open source: Arbitus, Amphora, Mate Creations</li>
+        <li><a href="/about">About</a> — background, stack, work and projects</li>
+        <li><a href="/projects">Projects</a> — Arbitus, agent-memory, Paperboy, Mate Creations</li>
         <li><a href="/resume">Resume</a> — full professional background</li>
+        <li><a href="/blog">Blog</a> — writing about production systems, AI agents and tooling</li>
+        <li><a href="/api/resume.json">Resume JSON</a> — machine-readable profile for agents</li>
       </ul>
 
-      <h2 class="reveal">Open source</h2>
+      <h2 class="reveal">Open Source</h2>
       <p class="reveal reveal-delay-1">
-        I build open source tools around areas I care about — AI security, personal knowledge
-        management and developer tooling. My main projects:
+        I build tools around production correctness, agent safety and personal infrastructure.
+        The strongest thread is systems that leave evidence instead of relying on convention.
       </p>
       <ul class="reveal reveal-delay-2">
-        <li>
-          <strong><a href="/arbitus">Arbitus</a></strong> — security proxy for AI agents and MCP servers.
-          Enforces per-agent policies: authentication, rate limiting, payload filtering,
-          Human-in-the-Loop (HITL) and audit log. Written in Rust.
-        </li>
-        <li>
-          <strong><a href="/amphora">Amphora</a></strong> — personal knowledge management system
-          built on Obsidian and Neovim with AI-powered automations for meetings, content
-          ingestion and note-taking. Bash, Python, Claude API.
-        </li>
-        <li>
-          <strong><a href="/matecreations">Mate Creations</a></strong> — theme ecosystem for Neovim,
-          Obsidian, VS Code and Zen Browser, inspired by mate and tererê. Supports automatic
-          light/dark switching via systemd.
-        </li>
+        {featuredProjects.map((project) => (
+          <li><strong><a href={project.href}>{project.name}</a></strong> — {project.description}</li>
+        ))}
       </ul>
 
-      <h2 class="reveal">Frequently asked questions</h2>
+      <h2 class="reveal">Writing</h2>
+      <ul class="reveal reveal-delay-1">
+        {writing.map((post) => <li><a href={post.href}>{post.title}</a> — {post.summary}</li>)}
+      </ul>
+
+      <h2 class="reveal">Frequently Asked Questions</h2>
       <dl class="reveal reveal-delay-1">
         <div class="faq-item">
           <dt><strong>Who is Nicholas Velten?</strong></dt>
-          <dd>
-            A Senior Software Engineer with 4+ years at Brazil's largest ISP, owning platform-level
-            Java/Spring Boot infrastructure. Led cross-cutting JDBC migration across 8 microservices,
-            remediated a critical LGPD violation, and operates with end-to-end feature ownership.
-            Previously at LIGUE, Kinebot and GetHash.
-          </dd>
+          <dd>{person.publicName} is a {person.title} working across full-stack products, distributed workflows, production automation and AI agent infrastructure, with current domain experience in ISP OSS/BSS and service assurance.</dd>
         </div>
-
         <div class="faq-item">
-          <dt><strong>What technologies does Nicholas Velten work with?</strong></dt>
-          <dd>
-            At work: Java, TypeScript, Vue.js, Node.js, NestJS and Spring Boot. Infrastructure:
-            Docker, Kubernetes, AWS, GCP and Terraform. Personal stack: Linux with Hyprland,
-            Neovim and Obsidian. Also writes Rust and Python for personal projects.
-          </dd>
+          <dt><strong>What has Nicholas shipped?</strong></dt>
+          <dd>PPPoE/RADIUS provisioning recovery, ONU reprovisioning, outage-aware work-order enforcement, PII remediation with AES-256-GCM, zero-downtime JDBC migration and agent tooling with policy, audit, memory and human approval.</dd>
         </div>
-
-        <div class="faq-item">
-          <dt><strong>What open source projects has Nicholas Velten built?</strong></dt>
-          <dd>
-            Arbitus (Rust) — a security proxy for AI agents and MCP servers.
-            Amphora — a knowledge management system integrating Obsidian, Neovim and Claude AI.
-            Mate Creations — a theme suite for Neovim, Obsidian, VS Code and Zen Browser.
-          </dd>
-        </div>
-
         <div class="faq-item">
           <dt><strong>How can I contact Nicholas Velten?</strong></dt>
           <dd>
-            By email at <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>,
-            on <a href="https://www.linkedin.com/in/nicholasvelten" target="_blank" rel="noopener">LinkedIn</a>
-            or on <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+            By email at <a href={`mailto:${person.email}`}>{person.email}</a>,
+            on <a href={person.links.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+            or on <a href={person.links.github} target="_blank" rel="noopener">GitHub</a>.
           </dd>
         </div>
       </dl>
     </div>
 
     <div class="prose lang-pt">
-      <p class="reveal reveal-delay-1">
-        Engenheiro de software backend com <strong>4+ anos de experiência</strong> no maior ISP
-        independente do Brasil, responsável por infraestrutura de plataforma em um stack distribuído
-        de microsserviços Java/Spring Boot servindo milhões de clientes. Ownership completo de features
-        — requisitos, alinhamento, refinamento e implementação — sem PM dedicado.
-      </p>
-
-      <p class="reveal reveal-delay-2">
-        Gosto de entender sistemas por inteiro — da biblioteca compartilhada ao componente de interface.
-        Tenho apreço por código limpo, arquitetura que faz sentido e ferramentas que ficam do
-        jeito que você quer. Stack principal: Java e Spring Boot no trabalho, Rust e TypeScript nos projetos.
-      </p>
+      {positioning.summaryPt.slice(0, 2).map((paragraph, i) => (
+        <p class={`reveal reveal-delay-${i + 1}`}>{paragraph}</p>
+      ))}
 
       <h2 class="reveal">Neste site</h2>
       <ul class="reveal reveal-delay-1">
-        <li><a href="/about">Sobre</a> — quem sou, stack, experiência e projetos pessoais</li>
-        <li><a href="/blog">Blog</a> — escrita sobre tecnologia, ferramentas e aprendizados</li>
-        <li><a href="/readings">Leituras</a> — livros lidos, em andamento e na fila</li>
-        <li><a href="/projects">Projetos</a> — open source: Arbitus, Amphora, Mate Creations</li>
-        <li><a href="/resume">Currículo</a> — trajetória profissional completa</li>
+        <li><a href="/about">Sobre</a> — contexto, stack, trabalho e projetos</li>
+        <li><a href="/projects">Projetos</a> — Arbitus, agent-memory, Paperboy, Mate Creations</li>
+        <li><a href="/resume">Curriculo</a> — trajetoria profissional completa</li>
+        <li><a href="/blog">Blog</a> — escrita sobre producao, agentes de IA e ferramentas</li>
+        <li><a href="/api/resume.json">Resume JSON</a> — perfil legivel por agentes</li>
       </ul>
 
-      <h2 class="reveal">Open source</h2>
+      <h2 class="reveal">Open Source</h2>
       <p class="reveal reveal-delay-1">
-        Construo ferramentas open source em áreas que me interessam — segurança em IA, gestão
-        de conhecimento pessoal e ferramentas de desenvolvimento. Meus projetos principais:
+        Construo ferramentas em torno de corretude em producao, seguranca de agentes e infraestrutura pessoal.
+        O fio mais forte sao sistemas que deixam evidencia em vez de depender de convencao.
       </p>
       <ul class="reveal reveal-delay-2">
-        <li>
-          <strong><a href="/arbitus">Arbitus</a></strong> — proxy de segurança para agentes de IA e servidores MCP.
-          Aplica políticas por agente: autenticação, rate limiting, filtragem de payload,
-          Human-in-the-Loop (HITL) e auditoria. Escrito em Rust.
-        </li>
-        <li>
-          <strong><a href="/amphora">Amphora</a></strong> — sistema de gestão de conhecimento pessoal
-          construído sobre Obsidian e Neovim com automações via IA para reuniões, ingestão de conteúdo
-          e captura de notas. Bash, Python, Claude API.
-        </li>
-        <li>
-          <strong><a href="/matecreations">Mate Creations</a></strong> — ecossistema de temas para Neovim,
-          Obsidian, VS Code e Zen Browser, inspirado no mate e tererê. Suporta alternância automática
-          claro/escuro via systemd.
-        </li>
+        {featuredProjects.map((project) => (
+          <li><strong><a href={project.href}>{project.name}</a></strong> — {project.descriptionPt ?? project.description}</li>
+        ))}
+      </ul>
+
+      <h2 class="reveal">Escrita</h2>
+      <ul class="reveal reveal-delay-1">
+        {writing.map((post) => <li><a href={post.href}>{post.title}</a> — {post.summary}</li>)}
       </ul>
 
       <h2 class="reveal">Perguntas frequentes</h2>
       <dl class="reveal reveal-delay-1">
         <div class="faq-item">
-          <dt><strong>Quem é Nicholas Velten?</strong></dt>
-          <dd>
-            Engenheiro de software backend com 4+ anos de experiência construindo sistemas em produção.
-            Atualmente na Alloha Fibra desenvolvendo APIs, monitoramento e migrações de sistema.
-            Anteriormente na LIGUE (adquirida pela Alloha), Kinebot e GetHash.
-          </dd>
+          <dt><strong>Quem e Nicholas Velten?</strong></dt>
+          <dd>{person.publicName} e engenheiro backend trabalhando com workflows distribuidos, corretude em producao, automacao backend e infraestrutura de agentes de IA, com experiencia atual em OSS/BSS e service assurance de ISP.</dd>
         </div>
-
         <div class="faq-item">
-          <dt><strong>Com quais tecnologias Nicholas Velten trabalha?</strong></dt>
-          <dd>
-            No trabalho: Java, TypeScript, Vue.js, Node.js, NestJS e Spring Boot. Infraestrutura:
-            Docker, Kubernetes, AWS, GCP e Terraform. Setup pessoal: Linux com Hyprland,
-            Neovim e Obsidian. Também escreve Rust e Python em projetos pessoais.
-          </dd>
+          <dt><strong>O que Nicholas entregou?</strong></dt>
+          <dd>Recuperacao de provisionamento PPPoE/RADIUS, reprovisionamento de ONU, enforcement de OS em massiva, remediacao de PII com AES-256-GCM, migracao JDBC zero-downtime e tooling de agentes com politica, auditoria, memoria e aprovacao humana.</dd>
         </div>
-
-        <div class="faq-item">
-          <dt><strong>Quais projetos open source Nicholas Velten construiu?</strong></dt>
-          <dd>
-            Arbitus (Rust) — proxy de segurança para agentes de IA e servidores MCP.
-            Amphora — sistema de gestão de conhecimento integrando Obsidian, Neovim e Claude AI.
-            Mate Creations — suite de temas para Neovim, Obsidian, VS Code e Zen Browser.
-          </dd>
-        </div>
-
         <div class="faq-item">
           <dt><strong>Como entrar em contato com Nicholas Velten?</strong></dt>
           <dd>
-            Por email em <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>,
-            no <a href="https://www.linkedin.com/in/nicholasvelten" target="_blank" rel="noopener">LinkedIn</a>
-            ou no <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>.
+            Por email em <a href={`mailto:${person.email}`}>{person.email}</a>,
+            no <a href={person.links.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+            ou no <a href={person.links.github} target="_blank" rel="noopener">GitHub</a>.
           </dd>
         </div>
       </dl>

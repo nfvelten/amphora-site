@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "services": [
+    {
+      "name": "Nicholas Velten Portfolio",
+      "description": "Agent-readable portfolio and resume surfaces.",
+      "url": "https://nicholas-velten.xyz/",
+      "serverCard": "https://nicholas-velten.xyz/.well-known/mcp-server.json"
+    }
+  ]
+}

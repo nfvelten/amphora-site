@@ -1,0 +1,438 @@
+{
+  "meta": {
+    "version": "2026-08-26",
+    "source": "Pessoal/CV.md updated 2026-08-23",
+    "site": "https://nicholas-velten.xyz"
+  },
+  "person": {
+    "name": "Nicholas F. Velten",
+    "publicName": "Nicholas Velten",
+    "title": "Software Engineer",
+    "alternateTitle": "Full-stack, Automation & AI Agent Infrastructure",
+    "location": "Maringa, PR, Brazil",
+    "locationPt": "Maringa, PR, Brasil",
+    "email": "nicholasfvelten@gmail.com",
+    "links": {
+      "site": "https://nicholas-velten.xyz",
+      "linkedin": "https://www.linkedin.com/in/nicholasvelten",
+      "github": "https://github.com/nfvelten",
+      "resume": "https://nicholas-velten.xyz/resume",
+      "resumeJson": "https://nicholas-velten.xyz/api/resume.json",
+      "resumeText": "https://nicholas-velten.xyz/api/resume.txt",
+      "agentGuide": "https://nicholas-velten.xyz/AGENTS.md",
+      "llms": "https://nicholas-velten.xyz/llms.txt"
+    },
+    "languages": [
+      {
+        "name": "Portuguese",
+        "level": "Native",
+        "namePt": "Portugues",
+        "levelPt": "Nativo"
+      },
+      {
+        "name": "English",
+        "level": "C2 proficient",
+        "namePt": "Ingles",
+        "levelPt": "C2 fluente"
+      }
+    ]
+  },
+  "positioning": {
+    "headline": "Software engineer building full-stack products, production automation, distributed workflows, and AI agent infrastructure.",
+    "headlinePt": "Engenheiro de software construindo produtos full-stack, automacao de producao, workflows distribuidos e infraestrutura de agentes de IA.",
+    "summary": [
+      "Software engineer with five years building and operating production systems for Brazilian ISPs, currently at one of the country's largest fiber providers. My current domain is telecom, but the through-line is broader: full-stack delivery, distributed workflows, correctness under production pressure, safe reprocessing, service automation, and systems that fail quietly unless you know where to look.",
+      "Most of my work starts with a system misbehaving in production and no correct explanation for why: silent integration failures, provisioning that reports success and does not take, work orders opening when they should not. I find the mechanism, then make the smallest safe change in a network where a wrong change disconnects subscribers.",
+      "Outside work I build in Rust, currently a security proxy for AI agents and MCP tools with auth, policy enforcement, audit, human-in-the-loop approval and schema validation, and I write publicly about support automation, security in legacy Java stacks, and agent security. Looking for remote software engineering, backend, full-stack, platform, distributed systems, production automation, and agent infrastructure work. C2 English."
+    ],
+    "summaryPt": [
+      "Engenheiro de software com cinco anos construindo e operando sistemas de producao para ISPs brasileiros, hoje em um dos maiores provedores de fibra do pais. Meu dominio atual e telecom, mas o fio condutor e mais amplo: entrega full-stack, workflows distribuidos, corretude sob pressao de producao, reprocessamento seguro, automacao de servicos e sistemas que falham em silencio se voce nao souber onde olhar.",
+      "Meu trabalho normalmente comeca com um sistema falhando em producao e nenhuma explicacao correta: integracoes silenciosas, provisionamento que reporta sucesso mas nao aplica, ordens abertas quando nao deveriam. Eu encontro o mecanismo e faco a menor mudanca segura em uma rede onde uma mudanca errada derruba assinantes.",
+      "Fora do trabalho construo em Rust, hoje um proxy de seguranca para agentes de IA e ferramentas MCP com autenticacao, politicas, auditoria, aprovacao humana e validacao de schema, e escrevo publicamente sobre automacao de suporte, seguranca em stacks Java legados e seguranca de agentes. Aberto a trabalho remoto em engenharia de software, backend, full-stack, platform, sistemas distribuidos, automacao de producao e infraestrutura de agentes. Ingles C2."
+    ],
+    "availability": "Open to remote software engineering, backend, full-stack, platform, distributed systems, production automation, agent infrastructure, and selected telecom OSS/BSS or service assurance roles."
+  },
+  "experience": [
+    {
+      "company": "Alloha Fiber",
+      "companyPt": "Alloha Fibra",
+      "role": "Software Engineer",
+      "rolePt": "Engenheiro de Software",
+      "period": "Jul 2023 - Present",
+      "periodPt": "jul. 2023 - presente",
+      "location": "Sao Paulo, Brazil (remote)",
+      "locationPt": "Sao Paulo, Brasil (remoto)",
+      "summary": "Telecom operational stack across Java/Spring Boot microservices and Vue operational frontends: FTTH/ONU provisioning, RADIUS/PPPoE, outages, service orders, field service, WFM, payment, CRM and messaging integrations.",
+      "summaryPt": "Stack operacional telecom em microsservicos Java/Spring Boot e frontends operacionais Vue: provisionamento FTTH/ONU, RADIUS/PPPoE, massivas, ordens de servico, field service, WFM, pagamentos, CRM e mensageria.",
+      "highlights": [
+        "Traced a multi-million-record ticket backlog to its root cause: an upstream bot had silently stopped populating the field the nightly cleanup routine filtered on, leaving roughly six months of records invisible to automated closure while the visible pipeline looked healthy. Delivered the fix and the controlled backfill.",
+        "Built automatic recovery for failed PPPoE/RADIUS provisioning, a scheduled routine reprocessing failed logins on a short interval, and gated it with a creation-date cutoff after auditing the backlog, protecting several hundred long-dormant legacy accounts whose reprocessing would have risked bouncing live sessions. Validated against a single record before widening the window.",
+        "Delivered ONU reprovisioning end to end across three services and the operator UI for a fleet of roughly 1.7 million devices spanning four vendors, including normalization of inconsistent model identifiers and handling of cross-vendor alien ONT cases, replacing a process that previously required backend intervention.",
+        "Added server-side enforcement blocking work-order creation for subscribers inside an active outage area, closing a rule that until then existed only in the UI, then extended it with exemptions for activation queues and an authorized-override permission so installations were never blocked during outages.",
+        "Analyzed work orders opened during mass outages against alarm timing, establishing that automated outage detection registered within 15-24 minutes while manually registered events had a median near eight hours, and quantifying which orders were genuinely improper rather than timing artifacts.",
+        "Identified an unauthenticated endpoint exposing customer PII across nine distinct surfaces and built the remediation: AES-256-GCM field encryption with a zero-downtime key rotation strategy and a migration path for 554k records across three services.",
+        "Migrated shared database access from an internal legacy library to Spring JdbcTemplate across eight-plus microservices in a phased rollout, removing a coupling that made upgrades risky across unrelated services; authored the architectural assessment for a Java 8 to 17 and Spring Boot 1.5 to 3.x migration, mapping 301 files into a four-phase plan.",
+        "Built a support-triage automation spanning four services: live signal data, outage state and routing rules, including the ordered production rollout plan across the services it touches.",
+        "Reviewed and merged across 12-plus repositories and onboarded new engineers onto the platform."
+      ],
+      "highlightsPt": [
+        "Rastreei um backlog de varios milhoes de registros ate a causa raiz: um bot upstream tinha parado silenciosamente de preencher o campo usado pelo filtro da rotina noturna, deixando cerca de seis meses de registros invisiveis para o fechamento automatico enquanto o pipeline visivel parecia saudavel. Entreguei o fix e o backfill controlado.",
+        "Construí recuperacao automatica para falhas de provisionamento PPPoE/RADIUS, uma rotina agendada que reprocessa logins com falha em intervalo curto, e protegi com corte por data de criacao apos auditar o backlog, evitando reprocessar centenas de contas legadas dormentes que poderiam derrubar sessoes ativas. Validei em um unico registro antes de ampliar a janela.",
+        "Entreguei reprovisionamento de ONU de ponta a ponta em tres servicos e na UI operacional para uma frota de cerca de 1,7 milhao de dispositivos em quatro fabricantes, incluindo normalizacao de modelos inconsistentes e casos de ONT alien, substituindo um processo que exigia intervencao backend.",
+        "Adicionei enforcement server-side bloqueando abertura de ordens de servico para assinantes em area de massiva ativa, fechando uma regra que antes existia so no frontend, e depois estendi com excecoes para filas de ativacao e permissao de override autorizado.",
+        "Analisei ordens abertas durante massivas contra o horario dos alarmes, estabelecendo que a deteccao automatica registrava em 15-24 minutos enquanto eventos manuais tinham mediana perto de oito horas, separando ordens improprias reais de artefatos de timing.",
+        "Identifiquei um endpoint nao autenticado expondo PII de clientes em nove superficies distintas e construí a remediacao: criptografia AES-256-GCM em campo, estrategia de rotacao de chave zero-downtime e caminho de migracao para 554k registros em tres servicos.",
+        "Migrei acesso compartilhado a banco de uma biblioteca legada interna para Spring JdbcTemplate em mais de oito microsservicos, em rollout faseado, removendo acoplamento que tornava upgrades arriscados; tambem escrevi o assessment de migracao Java 8 para 17 e Spring Boot 1.5 para 3.x, mapeando 301 arquivos em quatro fases.",
+        "Construí automacao de triagem de suporte atravessando quatro servicos: dados de sinal em tempo real, estado de massiva e regras de roteamento, incluindo o plano ordenado de rollout em producao.",
+        "Revisei e mergeei em mais de 12 repositorios e fiz onboarding de novos engenheiros na plataforma."
+      ],
+      "stack": [
+        "Java",
+        "Spring Boot",
+        "Maven",
+        "Vue.js",
+        "Python",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "Kafka",
+        "Docker",
+        "Kubernetes",
+        "GitLab CI",
+        "Grafana",
+        "Loki",
+        "New Relic",
+        "Sentry"
+      ]
+    },
+    {
+      "company": "Ligue Telecom",
+      "companyPt": "LIGUE",
+      "note": "acquired by Alloha Fiber",
+      "notePt": "adquirida pela Alloha Fibra",
+      "role": "Mid-level Full-stack Developer",
+      "rolePt": "Desenvolvedor Full-stack Pleno",
+      "period": "May 2022 - Jul 2023",
+      "periodPt": "mai. 2022 - jul. 2023",
+      "location": "Maringa, PR, Brazil",
+      "locationPt": "Maringa, PR, Brasil",
+      "highlights": [
+        "Built TDA, a web modernization of a legacy Java desktop application, delivering a multi-layer customer service platform with a Vue.js frontend, Node.js BFF and features API handling address transfers, payment agreements and installment flows.",
+        "Built a REST service integrating with a geospatial provider to determine fiber coverage, PON availability, installation cost and service viability by customer address.",
+        "Implemented an async job queue with Redis for processing telecom service operations at scale.",
+        "Managed roles and permissions in Keycloak and maintained API endpoints through a Kong gateway."
+      ],
+      "highlightsPt": [
+        "Construí o TDA, modernizacao web de uma aplicacao desktop Java legada, entregando uma plataforma de atendimento multicamada com frontend Vue.js, BFF Node.js e API de funcionalidades para transferencias de endereco, acordos de pagamento e parcelamentos.",
+        "Construí um servico REST integrado a um provedor geoespacial para determinar cobertura de fibra, disponibilidade de PON, custo de instalacao e viabilidade por endereco.",
+        "Implementei fila assincrona com Redis para processar operacoes de servicos telecom em escala.",
+        "Gerenciei roles e permissoes no Keycloak e mantive endpoints de API atraves de um gateway Kong."
+      ],
+      "stack": [
+        "Vue.js",
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "Keycloak",
+        "Kong"
+      ]
+    },
+    {
+      "company": "Kinebot / GetHash",
+      "role": "Junior Full-stack Developer",
+      "rolePt": "Desenvolvedor Full-stack Junior",
+      "period": "Oct 2021 - May 2022",
+      "periodPt": "out. 2021 - mai. 2022",
+      "highlights": [
+        "Built client-facing applications with Node.js, React, TypeScript and Next.js; provisioned and maintained Docker/Kubernetes infrastructure and CI/CD pipelines.",
+        "Led client meetings in Portuguese and English."
+      ],
+      "highlightsPt": [
+        "Construí aplicacoes para clientes com Node.js, React, TypeScript e Next.js; provisionei e mantive infraestrutura Docker/Kubernetes e pipelines CI/CD.",
+        "Conduzi reunioes com clientes em portugues e ingles."
+      ],
+      "stack": [
+        "Node.js",
+        "React",
+        "TypeScript",
+        "Next.js",
+        "Docker",
+        "Kubernetes",
+        "CI/CD"
+      ]
+    }
+  ],
+  "aiSystems": [
+    {
+      "name": "Arbitus",
+      "stack": [
+        "Rust",
+        "MCP",
+        "Security"
+      ],
+      "url": "https://github.com/arbitusgateway/arbitus",
+      "description": "Security proxy between AI agents and MCP servers. Per-agent auth, tool allow and denylists, request schema validation, payload filtering, rate limiting, human-in-the-loop approval and audit logging.",
+      "descriptionPt": "Proxy de seguranca entre agentes de IA e servidores MCP. Autenticacao por agente, allow/denylist de tools, validacao de schema, filtragem de payload, rate limiting, aprovacao humana e auditoria."
+    },
+    {
+      "name": "Agent Code Buddy",
+      "stack": [
+        "Java/Android",
+        "Python",
+        "Bash"
+      ],
+      "url": "https://github.com/nfvelten/agent-code-buddy-unified",
+      "description": "Mobile approval surface for agent tool calls. A pre-execution hook intercepts file writes, shell commands and API calls, pushes the payload to a phone, and returns allow, trust or deny to the agent in real time, with a JSONL audit trail.",
+      "descriptionPt": "Superficie mobile de aprovacao para tool calls de agentes. Um hook pre-execucao intercepta escrita de arquivos, comandos shell e chamadas de API, envia o payload ao telefone e retorna allow, trust ou deny em tempo real, com auditoria JSONL."
+    },
+    {
+      "name": "agent-memory",
+      "stack": [
+        "MCP",
+        "Obsidian",
+        "FTS5"
+      ],
+      "url": "https://github.com/nfvelten/agent-memory",
+      "description": "Persistent project and preference memory across sessions, with full-text search, staleness checks on stored facts and promotion of session findings into durable notes.",
+      "descriptionPt": "Memoria persistente de projetos e preferencias entre sessoes, com busca full-text, checagem de validade de fatos e promocao de achados de sessao para notas duraveis."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Paperboy",
+      "tagline": "RSS reader and podcast player as your new tab",
+      "taglinePt": "Leitor de RSS e podcast player como nova aba do browser",
+      "description": "Keyboard-first, local-first browser extension replacing the new tab with an RSS reader and podcast player; published on Firefox Add-ons. Companion terminal UI built in Rust.",
+      "descriptionPt": "Extensao de browser keyboard-first e local-first que substitui a nova aba por um leitor RSS e podcast player; publicada no Firefox Add-ons. Interface terminal companion em Rust.",
+      "href": "/paperboy",
+      "github": "https://github.com/harbefas/paperboy",
+      "logo": "/paperboy-logo.png",
+      "tags": [
+        "JavaScript",
+        "Rust",
+        "Firefox"
+      ]
+    },
+    {
+      "name": "Arbitus",
+      "tagline": "Security proxy for AI agents and MCP servers",
+      "taglinePt": "Proxy de seguranca para agentes de IA e servidores MCP",
+      "description": "Open-source proxy that enforces per-agent policies before any tool call reaches an MCP server: auth, allow and denylists, schema validation, payload filtering, rate limiting, HITL and audit.",
+      "descriptionPt": "Proxy open-source que aplica politicas por agente antes que qualquer tool call chegue ao servidor MCP: autenticacao, allow/denylist, validacao de schema, filtragem de payload, rate limiting, HITL e auditoria.",
+      "href": "/arbitus",
+      "github": "https://github.com/arbitusgateway/arbitus",
+      "logo": "/arbitus-logo.png",
+      "tags": [
+        "Rust",
+        "MCP",
+        "Security"
+      ]
+    },
+    {
+      "name": "agent-memory",
+      "tagline": "MCP server that turns an Obsidian vault into AI agent memory",
+      "taglinePt": "Servidor MCP que transforma um vault Obsidian em memoria para agentes de IA",
+      "description": "Persistent memory for AI agents via an Obsidian vault: full-text search, staleness checks on stored facts, project summaries and promotion of session findings into durable notes.",
+      "descriptionPt": "Memoria persistente para agentes de IA via vault Obsidian: busca full-text, checagem de validade de fatos, resumos de projeto e promocao de achados de sessao para notas duraveis.",
+      "href": "https://github.com/nfvelten/agent-memory",
+      "github": "https://github.com/nfvelten/agent-memory",
+      "logo": null,
+      "tags": [
+        "MCP",
+        "Obsidian",
+        "AI"
+      ]
+    },
+    {
+      "name": "Mate Creations",
+      "tagline": "Design system with a written spec, tokens and automated checks",
+      "taglinePt": "Design system com spec escrita, tokens e checks automatizados",
+      "description": "Design system with DTCG tokens compiled through Style Dictionary, component wrappers over native elements, contrast checks and CSS variable drift checks. Five consumers in production.",
+      "descriptionPt": "Design system com tokens DTCG compilados via Style Dictionary, wrappers de componentes sobre elementos nativos, checks de contraste e verificacao de drift de variaveis CSS. Cinco consumidores em producao.",
+      "href": "/matecreations",
+      "github": "https://github.com/mateCreations",
+      "logo": "/mate-logo.png",
+      "tags": [
+        "Design System",
+        "CSS",
+        "TypeScript"
+      ]
+    },
+    {
+      "name": "keybinds-tui",
+      "tagline": "Terminal UI that reads live keybinding configuration instead of drifting from it",
+      "taglinePt": "TUI que le configuracao real de atalhos em vez de virar tabela desatualizada",
+      "description": "Rust TUI that parses eight real config sources, including querying a headless Neovim for live mappings, so it cannot drift from the configs it documents.",
+      "descriptionPt": "TUI em Rust que parseia oito fontes reais de configuracao, incluindo um Neovim headless para ler mappings vivos, para nao divergir das configs que documenta.",
+      "href": "https://github.com/harbefas/keybinds-tui",
+      "github": "https://github.com/harbefas/keybinds-tui",
+      "logo": null,
+      "tags": [
+        "Rust",
+        "TUI",
+        "Developer Tools"
+      ]
+    },
+    {
+      "name": "Amphora",
+      "tagline": "Personal knowledge management system",
+      "taglinePt": "Sistema pessoal de gestao de conhecimento",
+      "description": "PKMS built on Obsidian and Neovim, with automation for voice capture, meeting transcription, content ingestion, Claude Code workflows and persistent agent memory.",
+      "descriptionPt": "PKMS construido sobre Obsidian e Neovim, com automacao de captura por voz, transcricao de reunioes, ingestao de conteudo, workflows Claude Code e memoria persistente para agentes.",
+      "href": "/amphora",
+      "github": "https://github.com/nfvelten/amphora-setup",
+      "logo": "/icon.webp",
+      "tags": [
+        "Obsidian",
+        "Neovim",
+        "AI"
+      ]
+    },
+    {
+      "name": "Agent Code Buddy",
+      "tagline": "Mobile HITL companion for AI coding agents",
+      "taglinePt": "Companion mobile de HITL para agentes de IA",
+      "description": "Python HTTP server intercepts Claude agent tool calls via pre-tool-use hook. Native Android app lets you approve, trust or deny from the notification shade. Long-poll, no push infrastructure needed.",
+      "descriptionPt": "Servidor Python intercepta tool calls de agentes Claude via hook de pre-tool-use. App Android nativo permite aprovar, confiar ou negar pela aba de notificacoes. Long-poll, sem infra de push.",
+      "href": "/agent-code-buddy",
+      "github": "https://github.com/nfvelten/agent-code-buddy-unified",
+      "logo": null,
+      "tags": [
+        "Python",
+        "Android",
+        "HITL"
+      ]
+    },
+    {
+      "name": "Phone Development Deck",
+      "tagline": "Distributed dev platform across Arch Linux, Android/Termux and Kubernetes",
+      "taglinePt": "Plataforma distribuida de dev entre Arch Linux, Android/Termux e Kubernetes",
+      "description": "Go CLI across an Arch Linux PC, Android/Termux phone and k3s on Contabo. Includes native Android apps for ops, security lab workflows and mobile HITL for AI agents.",
+      "descriptionPt": "CLI Go conectando um PC Arch Linux, telefone Android/Termux e k3s no Contabo. Inclui apps Android nativos para ops, lab de seguranca e HITL mobile para agentes de IA.",
+      "href": "/deck",
+      "github": "https://github.com/nfvelten",
+      "logo": null,
+      "tags": [
+        "Go",
+        "Android",
+        "k3s"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Centro Universitario Integrado",
+      "degree": "Associate's Degree, Systems Analysis and Development",
+      "degreePt": "Tecnologo em Analise e Desenvolvimento de Sistemas",
+      "period": "2018 - 2021"
+    }
+  ],
+  "certifications": [
+    "English Certificate C2 Proficient (EF SET)",
+    "The Missing Semester of Your CS Education (MIT)"
+  ],
+  "skills": [
+    {
+      "group": "Languages",
+      "groupPt": "Linguagens",
+      "items": [
+        "Java",
+        "TypeScript",
+        "Python",
+        "Rust",
+        "Go"
+      ]
+    },
+    {
+      "group": "Backend",
+      "groupPt": "Back-end",
+      "items": [
+        "Spring Boot",
+        "Node.js",
+        "Keycloak",
+        "Kong API Gateway",
+        "REST",
+        "Kafka"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "groupPt": "Front-end",
+      "items": [
+        "Vue.js",
+        "React"
+      ]
+    },
+    {
+      "group": "Data & Infra",
+      "groupPt": "Dados & Infra",
+      "items": [
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "Docker",
+        "Kubernetes",
+        "GitLab CI",
+        "AWS",
+        "GCP"
+      ]
+    },
+    {
+      "group": "Observability",
+      "groupPt": "Observabilidade",
+      "items": [
+        "Grafana",
+        "Loki",
+        "New Relic",
+        "Sentry",
+        "OpenTelemetry"
+      ]
+    },
+    {
+      "group": "Telecom",
+      "groupPt": "Telecom",
+      "items": [
+        "FTTH/ONU provisioning",
+        "RADIUS/PPPoE",
+        "OSS/BSS workflows",
+        "service assurance",
+        "WFM/field service"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "groupPt": "Arquitetura",
+      "items": [
+        "Microservices",
+        "DDD",
+        "Hexagonal",
+        "Event-Driven",
+        "zero-downtime migrations"
+      ]
+    }
+  ],
+  "writing": [
+    {
+      "title": "Creatures (1996) and the accidental invention of AI alignment problems",
+      "href": "/posts/creatures-norn-alignment",
+      "summary": "Reads the 1998 Creatures/Norns community as an early documented case of reward hacking, specification gaming and emergent misuse."
+    },
+    {
+      "title": "Auditing a PII exposure across a Java microservice stack",
+      "href": "/posts/pii-exposure-audit",
+      "summary": "Production security write-up."
+    },
+    {
+      "title": "MCP gateway",
+      "href": "/posts/mcp-gateway",
+      "summary": "Design argument behind Arbitus."
+    },
+    {
+      "title": "JDBC migration",
+      "href": "/posts/jdbc-migration",
+      "summary": "Engineering write-up from production migration work."
+    }
+  ]
+}

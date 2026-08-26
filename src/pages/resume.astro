@@ -1,760 +1,201 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import { portfolio } from '../data/portfolio.js';
+
+const { person, positioning, experience, aiSystems, projects, education, certifications, skills } = portfolio;
 ---
 
 <BaseLayout
-  title="Resume — Nicholas Velten, Backend Engineer"
-  description="Professional background of Nicholas Velten — backend engineer with experience in Java, Spring Boot, TypeScript, distributed systems, and platform-level infrastructure."
+  title="Resume — Nicholas Velten, Software Engineer"
+  description="Professional background of Nicholas Velten — software engineer working across full-stack products, distributed workflows, production automation, and AI agent infrastructure."
 >
   <Sidebar slot="sidebar" />
   <article>
     <header class="post-header reveal">
-      <h1><span class="lang-en">Resume</span><span class="lang-pt">Currículo</span></h1>
+      <h1><span class="lang-en">Resume</span><span class="lang-pt">Curriculo</span></h1>
       <div class="meta">
-        <a href="mailto:nikvelten@gmail.com">nikvelten@gmail.com</a>
-        · <span class="lang-en">Paraná, Brazil</span><span class="lang-pt">Paraná, Brasil</span>
-        · <a href="https://www.linkedin.com/in/nicholasvelten" target="_blank" rel="noopener">LinkedIn</a>
-        · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">GitHub</a>
+        <a href={`mailto:${person.email}`}>{person.email}</a>
+        · <span class="lang-en">{person.location}</span><span class="lang-pt">{person.locationPt}</span>
+        · <a href={person.links.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+        · <a href={person.links.github} target="_blank" rel="noopener">GitHub</a>
       </div>
     </header>
 
     <div class="prose lang-en">
-
-      <p class="reveal reveal-delay-1">
-        Backend engineer with 4+ years at Brazil's largest independent ISP, owning
-        platform-level infrastructure across a distributed Java/Spring Boot microservices stack
-        serving millions of customers. Operates with end-to-end feature ownership —
-        requirements gathering, stakeholder alignment, technical refinement, and implementation
-        — without dedicated PM support. Led cross-cutting framework migrations, proactively
-        identified and remediated a critical LGPD violation exposing customer PII, and
-        integrated payment, CRM, and field-ops systems at scale. Builds at the frontier of AI
-        infrastructure security with Arbitus (Rust-based MCP security proxy). C2 English.
-      </p>
+      {positioning.summary.map((paragraph, i) => (
+        <p class={`reveal reveal-delay-${Math.min(i + 1, 2)}`}>{paragraph}</p>
+      ))}
 
       <h2 class="reveal">Experience</h2>
 
-      <details class="cv-entry reveal reveal-delay-1" open>
-        <summary>
-          <div class="cv-header">
-            <strong>Alloha Fibra</strong>
-            <span class="cv-period">Jul. 2023 – present · 2 years 10 months</span>
+      {experience.map((job, index) => (
+        <details class="cv-entry reveal reveal-delay-1" open={index === 0}>
+          <summary>
+            <div class="cv-header">
+              <strong>{job.company}</strong>
+              {job.note && <span class="cv-note">({job.note})</span>}
+              <span class="cv-period">{job.period}</span>
+            </div>
+            <div class="cv-role">{job.role}{job.location ? ` · ${job.location}` : ''}</div>
+            {job.summary && <p class="cv-preview">{job.summary}</p>}
+          </summary>
+          <div class="cv-body">
+            <ul>
+              {job.highlights.map((item) => <li>{item}</li>)}
+              <li><strong>Stack:</strong> {job.stack.join(', ')}</li>
+            </ul>
           </div>
-          <div class="cv-role">Backend Engineer · São Paulo (remote)</div>
-          <p class="cv-preview">Platform-level infrastructure across 8+ Java/Spring Boot microservices — led JDBC migration, remediated LGPD violation, authored Java 17 migration assessment.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Maintained and evolved <code>air-spring-boot-starter</code>, the internal Java library used across all 8+ microservices — led zero-downtime JDBC migration (MySqlRepository → JdbcTemplate), fixed IN-list expansion bug in shared layer, coordinated phased rollout across 8 repos via GMUDs.</li>
-            <li>Proactively identified and remediated a critical LGPD violation: 9 distinct attack surfaces exposing customer PII (password, CPF, RG, name) via unauthenticated endpoint — implemented AES-256-GCM encryption with zero-downtime key rotation, migration job for 554k records, across 3 microservices.</li>
-            <li>Authored architectural assessment for Java 8→17 + Spring Boot 1.5→3.x migration of the core commercial service — mapped 301 files, identified critical blockers, defined 4-phase rollout plan.</li>
-            <li>Developed and maintained Java/Spring Boot microservices covering commercial operations, billing, CRM, telephony, customer support, and device management.</li>
-            <li>Integrated payment gateway CycloPay into the financial microservice, handling invoice generation and refund flows.</li>
-            <li>Integrated RADIUS session extraction via <code>radius-reg</code> API, replacing legacy polling with accurate session data and disconnect causes.</li>
-            <li>Integrated the CRM platform with Salesforce to automatically trigger the Welcome &amp; Activation Journey on contract creation and service activation, replacing manual operations.</li>
-            <li>Migrated invoice delivery (individual and batch) from Infobip to Salesforce, adding email and SMS channels and decommissioning the legacy integration.</li>
-            <li>Developed features across commercial, internet, and logistics Vue.js frontends — contract management, OTT provisioning flows, async RADIUS status, WFM scheduling, and field operations interfaces.</li>
-            <li>Built voice channel monitoring system in Python/Flask tracking inbound/outbound calls and IVR interactions across all brand channels.</li>
-            <li><strong>Stack:</strong> Java, Spring Boot, Maven, Vue.js, Node.js, TypeScript, Python, Flask, PostgreSQL, MySQL, Redis, Docker, Kubernetes, GitLab CI, New Relic, Grafana, Sentry, AWS, GCP</li>
-          </ul>
-        </div>
-      </details>
+        </details>
+      ))}
 
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
+      <h2 class="reveal">AI Systems and Automation</h2>
+
+      <p class="reveal reveal-delay-1">
+        I run a personal agent platform against real work: policy enforcement at the tool boundary,
+        human approval for sensitive calls, persistent memory across sessions, and closed-loop execution
+        over a durable queue. Each piece exists because using agents against production systems surfaced
+        the failure it prevents.
+      </p>
+
+      {aiSystems.map((system) => (
+        <div class="cv-entry reveal reveal-delay-1">
+          <div class="cv-header"><strong><a href={system.url} target="_blank" rel="noopener">{system.name}</a></strong></div>
+          <p>{system.description}</p>
+          <div class="cv-role">{system.stack.join(' · ')}</div>
+        </div>
+      ))}
+
+      <h2 class="reveal">Personal Projects</h2>
+
+      {projects.map((project) => (
+        <div class="cv-entry reveal reveal-delay-1">
           <div class="cv-header">
-            <strong>LIGUE</strong> <span class="cv-note">(acquired by Alloha Fibra)</span>
-            <span class="cv-period">May 2022 – Jul. 2023 · 1 year 3 months</span>
+            <strong><a href={project.href}>{project.name}</a></strong>
           </div>
-          <div class="cv-role">Mid-level Full-stack Developer · Maringá, PR</div>
-          <p class="cv-preview">Multi-layer service platform (TDA) covering address transfers, payment agreements and installment flows — async queues, fiber coverage APIs.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Built and maintained TDA — a multi-layer service platform (React frontend, Node.js BFF, features API) covering address transfers, payment agreements and installment flows.</li>
-            <li>Implemented asynchronous queue management with Arena + Redis to process telecom service operations at scale.</li>
-            <li>Developed a financial negotiation flow for overdue invoices in the customer portal hybrid mobile app.</li>
-            <li>Built REST APIs integrated with the GeoGrid geographic system to determine fiber optic availability, installation costs and coverage by address.</li>
-            <li>Contributed to Ares, a DDD-architecture API for voice operations and address transfers.</li>
-            <li><strong>Stack:</strong> Node.js, NestJS, React, Vue.js, Nuxt.js, TypeScript, PostgreSQL, Redis, Docker, Kubernetes</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
-          <div class="cv-header">
-            <strong>Kinebot</strong>
-            <span class="cv-period">Feb. 2022 – May 2022 · 4 months</span>
+          <p>{project.description}</p>
+          <div class="cv-role">
+            {project.tags.join(' · ')}{project.github ? ' · ' : ''}
+            {project.github && <a href={project.github} target="_blank" rel="noopener">{project.github.replace('https://', '')}</a>}
           </div>
-          <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remote)</div>
-          <p class="cv-preview">Web applications with Node.js, React, Redux and AWS.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Developed features with Node.js, React, Redux and AWS (Lambda, S3, RDS).</li>
-          </ul>
         </div>
-      </details>
-
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
-          <div class="cv-header">
-            <strong>GetHash</strong>
-            <span class="cv-period">Oct. 2021 – Feb. 2022 · 5 months</span>
-          </div>
-          <div class="cv-role">Junior Full-stack Developer · São Paulo (remote)</div>
-          <p class="cv-preview">Solutions for multiple clients with Node.js, React, TypeScript — cloud infra with Docker, Kubernetes, DigitalOcean.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Built solutions for multiple clients with Node.js, React, TypeScript and Next.js.</li>
-            <li>Provisioned and maintained cloud infrastructure with DigitalOcean, Docker, Kubernetes and Rancher; implemented CI/CD pipelines.</li>
-            <li>Led client meetings in Portuguese and English for expectation alignment and progress presentations.</li>
-          </ul>
-        </div>
-      </details>
-
-      <h2 class="reveal">Personal projects</h2>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
-        <p>
-          PKMS (Personal Knowledge Management System) built to reduce cognitive load and
-          externalize thinking into structured, retrievable notes. The system goes beyond
-          capture: native Neovim integration for vault editing and navigation, custom Claude
-          Code commands for knowledge management operations directly from the terminal, and
-          cohesive styling of the entire environment (Obsidian, Neovim, terminal) with the
-          same visual theme as Mate Creations. Automation pipeline: voice recording →
-          Whisper transcription → structured notes; YouTube/article ingestion with AI
-          summarization; git hooks generating contextual notes in the background.
-          Transcription also applied to meeting recordings for automatic summary and action
-          item generation.
-        </p>
-        <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
-        <p>
-          Cross-application theme ecosystem (Obsidian, Neovim, VS Code, Zen Browser) with
-          automated release pipeline via GitHub Actions. Two variants with automatic
-          light/dark switching based on time via systemd.
-        </p>
-        <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/arbitus">Arbitus</a></strong></div>
-        <p>
-          Open-source security proxy for AI agents and MCP servers. Enforces per-agent policies:
-          auth (API key, JWT/OIDC, mTLS), rate limiting, payload filtering, Human-in-the-Loop
-          approval and audit log with CloudEvents support.
-        </p>
-        <div class="cv-role">Rust · <a href="https://github.com/arbitusgateway/arbitus" target="_blank" rel="noopener">github.com/arbitusgateway/arbitus</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Ralph Explorer</strong></div>
-        <p>
-          CLI that parses Java and Vue.js source code to generate dependency graphs and visual
-          dev portals — maps service relationships, controller routes, and component trees
-          across a multi-repo codebase.
-        </p>
-        <div class="cv-role">TypeScript · React · <a href="https://github.com/nfvelten/ralph-explorer" target="_blank" rel="noopener">github.com/nfvelten/ralph-explorer</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/paperboy">Paperboy</a></strong></div>
-        <p>
-          Keyboard-first RSS reader and podcast player as a new tab replacement. Published on
-          Firefox Add-ons. Also available as a terminal UI built with Ratatui.
-        </p>
-        <div class="cv-role">JavaScript · Rust · <a href="https://github.com/harbefas/paperboy" target="_blank" rel="noopener">github.com/harbefas/paperboy</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Agent Code Buddy</strong></div>
-        <p>
-          Mobile HITL companion for AI coding agents. Python HTTP server intercepts Claude agent
-          tool calls via pre-tool-use hook; native Android app (no Gradle) approves or denies
-          from the notification shade. Long-poll architecture, no push infrastructure needed.
-        </p>
-        <div class="cv-role">Python · Java (Android) · <a href="https://github.com/nfvelten/agent-code-buddy-unified" target="_blank" rel="noopener">github.com/nfvelten/agent-code-buddy-unified</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Amphora Zero</strong></div>
-        <p>
-          Firmware-style security lab console for Android. Module catalog for security research
-          on owned and authorized devices — each module maps to a Termux script, results returned
-          via Android broadcasts. Active modules: Wi-Fi recon (iproute2, bettercap).
-        </p>
-        <div class="cv-role">Java (Android) · Termux · Bash · <a href="https://github.com/nfvelten/amphora-zero" target="_blank" rel="noopener">github.com/nfvelten/amphora-zero</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Phone Development Deck</strong></div>
-        <p>
-          Distributed dev platform across three nodes: Arch Linux (orchestration),
-          Android/Termux (LineageOS + root) and Kubernetes (k3s on Contabo). Go CLI
-          (<code>deck</code>) bridges all three. Three native Android apps: Field Console (ops),
-          Amphora Zero (security lab), Agent Code Buddy (mobile HITL). Full k8s setup:
-          cert-manager, Cloudflare DNS, Uptime Kuma, systemd backups.
-        </p>
-        <div class="cv-role">Go · Java (Android) · Python · k3s · Bash</div>
-      </div>
+      ))}
 
       <h2 class="reveal">Education</h2>
 
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
-        <div class="cv-role">Associate's in Systems Analysis and Development</div>
-      </div>
+      {education.map((item) => (
+        <div class="cv-entry reveal reveal-delay-1">
+          <div class="cv-header"><strong>{item.institution}</strong><span class="cv-period">{item.period}</span></div>
+          <div class="cv-role">{item.degree}</div>
+        </div>
+      ))}
 
       <h2 class="reveal">Skills</h2>
 
       <div class="cv-skills">
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Languages</span>
-          <div class="cv-skill-tags">
-            <span class="tag">TypeScript</span><span class="tag">JavaScript</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Rust</span><span class="tag">PHP</span>
+        {skills.map((group) => (
+          <div class="cv-skill-group reveal reveal-delay-1">
+            <span class="cv-skill-label">{group.group}</span>
+            <div class="cv-skill-tags">
+              {group.items.map((item) => <span class="tag">{item}</span>)}
+            </div>
           </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Front-end</span>
-          <div class="cv-skill-tags">
-            <span class="tag">React</span><span class="tag">Next.js</span><span class="tag">Vue.js</span><span class="tag">Nuxt.js</span><span class="tag">Tailwind CSS</span><span class="tag">React Native</span><span class="tag">CSS</span><span class="tag">HTML</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Back-end</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Node.js</span><span class="tag">NestJS</span><span class="tag">Express</span><span class="tag">Spring Boot</span><span class="tag">Flask</span><span class="tag">Keycloak</span><span class="tag">Kong API Gateway</span><span class="tag">Strapi</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Databases</span>
-          <div class="cv-skill-tags">
-            <span class="tag">PostgreSQL</span><span class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">Prisma</span><span class="tag">Knex</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Infrastructure</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">AWS</span><span class="tag">GCP</span><span class="tag">OCI</span><span class="tag">Terraform</span><span class="tag">Ansible</span><span class="tag">CI/CD</span><span class="tag">GitOps</span><span class="tag">Linux</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Observability</span>
-          <div class="cv-skill-tags">
-            <span class="tag">New Relic</span><span class="tag">Grafana</span><span class="tag">Loki</span><span class="tag">Sentry</span><span class="tag">OpenTelemetry</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Architecture</span>
-          <div class="cv-skill-tags">
-            <span class="tag">DDD</span><span class="tag">Hexagonal Architecture</span><span class="tag">Clean Architecture</span><span class="tag">SOLID</span><span class="tag">Event-Driven</span><span class="tag">Microservices</span><span class="tag">TDD</span><span class="tag">API REST</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Web3 & Blockchain</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Ethereum</span><span class="tag">Solana</span><span class="tag">Web3</span><span class="tag">DeFi</span><span class="tag">Blockchain</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">AI</span>
-          <div class="cv-skill-tags">
-            <span class="tag">LLMs</span><span class="tag">Prompt Engineering</span><span class="tag">Claude API</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Methodologies</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Scrum</span><span class="tag">Kanban</span><span class="tag">Agile</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Languages</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Portuguese (native)</span><span class="tag">English (C2)</span>
-          </div>
-        </div>
+        ))}
       </div>
 
       <h2 class="reveal">Certifications</h2>
 
-      <details class="cv-cert-group reveal reveal-delay-1" open>
-        <summary>AI & Engineering</summary>
-        <ul class="cv-cert-list">
-          <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, Mar. 2026</em></li>
-          <li>The Missing Semester of your CS Education — <em>MIT, Feb. 2026</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1" open>
-        <summary>Entrepreneurship</summary>
-        <ul class="cv-cert-list">
-          <li>MIT 15.390 New Enterprises — <em>MIT, Nov. 2025</em></li>
-          <li>Startup Secrets — <em>Harvard Innovation Labs, Jan. 2026</em></li>
-          <li>How to Start a Startup — <em>Y Combinator, Dec. 2025</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Software Architecture</summary>
-        <ul class="cv-cert-list">
-          <li>Microservices-based Architecture — <em>Full Cycle, Mar. 2025</em></li>
-          <li>EDA - Event Driven Architecture — <em>Full Cycle, Aug. 2024</em></li>
-          <li>Hexagonal Architecture — <em>Full Cycle, Aug. 2023</em></li>
-          <li>Domain Driven Design (DDD) — <em>Full Cycle, Aug. 2022</em></li>
-          <li>SOLID — <em>Full Cycle, Jul. 2022</em></li>
-          <li>Software Architecture Fundamentals — <em>Full Cycle, Jul. 2022</em></li>
-          <li>Communication Between Systems — <em>Full Cycle, Aug. 2023</em></li>
-          <li>Event Storming — <em>Full Cycle, Aug. 2022</em></li>
-          <li>Authentication and Keycloak — <em>Full Cycle, Mar. 2025</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>DevOps & Infrastructure</summary>
-        <ul class="cv-cert-list">
-          <li>Terraform — <em>Full Cycle, Oct. 2023</em></li>
-          <li>Kubernetes — <em>Full Cycle, Mar. 2022</em></li>
-          <li>Docker — <em>Full Cycle, Feb. 2022</em></li>
-          <li>Ansible — <em>Full Cycle, Oct. 2022</em></li>
-          <li>GitOps — <em>Full Cycle, Sep. 2022</em></li>
-          <li>Continuous Integration — <em>Full Cycle, Jul. 2022</em></li>
-          <li>API Gateway with Kong and Kubernetes — <em>Full Cycle, Jan. 2023</em></li>
-          <li>Service Mesh with Istio — <em>Full Cycle, Jul. 2023</em></li>
-          <li>GitOps Fundamentals — <em>Codefresh, Apr. 2022</em></li>
-          <li>Advanced Patterns and Techniques with Git and Github — <em>Full Cycle, Feb. 2022</em></li>
-          <li>Foundations of Git — <em>GitKraken, Oct. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Observability</summary>
-        <ul class="cv-cert-list">
-          <li>OpenTelemetry — <em>Full Cycle, Nov. 2022</em></li>
-          <li>Observability — <em>Full Cycle, Mar. 2023</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Apache Kafka & Messaging</summary>
-        <ul class="cv-cert-list">
-          <li>Apache Kafka — <em>Full Cycle, Oct. 2023</em></li>
-          <li>RabbitMQ — <em>Full Cycle, Jul. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Web & JavaScript Development</summary>
-        <ul class="cv-cert-list">
-          <li>NLW Expert — Node.js — <em>Rocketseat, Feb. 2024</em></li>
-          <li>TestJS Summit 2023 — <em>GitNation, Dec. 2023</em></li>
-          <li>React Summit US 2023 — <em>GitNation, Nov. 2023</em></li>
-          <li>Codecon 2023 / 2022 — <em>Codecon</em></li>
-          <li>Discover Especializar / Fundamentar / Conectar — <em>Rocketseat, 2022</em></li>
-          <li>TypeScript Full-stack — <em>OneBitCode, Oct. 2021</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Go</summary>
-        <ul class="cv-cert-list">
-          <li>Video Encoder Microservice with GoLang — <em>Full Cycle, Nov. 2022</em></li>
-          <li>Advanced Go / Getting Started with Go — <em>School of Net, 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Web3 & Blockchain</summary>
-        <ul class="cv-cert-list">
-          <li>Bankless Circuit: The Future of DeFi — <em>Bankless Brasil DAO, Sep. 2023</em></li>
-          <li>How does Ethereum work? A deepdive — <em>Metaschool, Aug. 2023</em></li>
-          <li>The Web3 Rabbit Hole Course — <em>Web3 Academy, Jul. 2023</em></li>
-          <li>Intro to Push Protocol — <em>Push Chain, Jul. 2023</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Security</summary>
-        <ul class="cv-cert-list">
-          <li>Introduction to Pentesting in Practice — <em>Desec Security, May 2022</em></li>
-          <li>Cybersecurity Fundamentals — <em>IBSEC, May 2022</em></li>
-          <li>Cybersecurity Best Practices — <em>IBSEC, Apr. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Soft Skills & Leadership</summary>
-        <ul class="cv-cert-list">
-          <li>Smart Productivity — <em>Escola Conquer, Feb. 2023</em></li>
-          <li>Building Champions: Leadership F.C. — <em>Escola Conquer, Jan. 2023</em></li>
-          <li>Emotional Intelligence 2.0 — <em>Escola Conquer, Apr. 2022</em></li>
-          <li>Agile Mindset — <em>wBrain, Mar. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Languages</summary>
-        <ul class="cv-cert-list">
-          <li>English Certificate C2 Proficient — <em>EF SET, Apr. 2022</em></li>
-        </ul>
-      </details>
-
+      <ul class="cv-cert-list reveal reveal-delay-1">
+        {certifications.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
 
     <div class="prose lang-pt">
+      {positioning.summaryPt.map((paragraph, i) => (
+        <p class={`reveal reveal-delay-${Math.min(i + 1, 2)}`}>{paragraph}</p>
+      ))}
 
-      <p>
-        Engenheiro de software backend com 4+ anos no maior ISP independente do Brasil, responsável
-        por infraestrutura de plataforma em um stack distribuído de microsserviços Java/Spring
-        Boot servindo milhões de clientes. Atua com ownership completo de features — levantamento
-        de requisitos, alinhamento com stakeholders, refinamento técnico e implementação — sem
-        suporte dedicado de PM. Liderou migrações cross-cutting, identificou e remediou
-        proativamente uma violação crítica de LGPD expondo PII de clientes, e integrou sistemas
-        de pagamento, CRM e operações de campo em escala. Constrói na fronteira de segurança
-        para infraestrutura de IA com Arbitus (proxy MCP em Rust). Inglês C2.
+      <h2 class="reveal">Experiencia</h2>
+
+      {experience.map((job, index) => (
+        <details class="cv-entry reveal reveal-delay-1" open={index === 0}>
+          <summary>
+            <div class="cv-header">
+              <strong>{job.companyPt ?? job.company}</strong>
+              {job.notePt && <span class="cv-note">({job.notePt})</span>}
+              <span class="cv-period">{job.periodPt}</span>
+            </div>
+            <div class="cv-role">{job.rolePt ?? job.role}{job.locationPt ? ` · ${job.locationPt}` : ''}</div>
+            {job.summaryPt && <p class="cv-preview">{job.summaryPt}</p>}
+          </summary>
+          <div class="cv-body">
+            <ul>
+              {(job.highlightsPt ?? job.highlights).map((item) => <li>{item}</li>)}
+              <li><strong>Stack:</strong> {job.stack.join(', ')}</li>
+            </ul>
+          </div>
+        </details>
+      ))}
+
+      <h2 class="reveal">Sistemas de IA e automacao</h2>
+
+      <p class="reveal reveal-delay-1">
+        Opero uma plataforma pessoal de agentes em trabalho real: politica na fronteira de tools,
+        aprovacao humana para chamadas sensiveis, memoria persistente entre sessoes e execucao em loop
+        fechado sobre fila duravel. Cada peca existe porque usar agentes contra sistemas de producao
+        revelou a falha que ela previne.
       </p>
 
-<h2 class="reveal">Experiência</h2>
-
-      <details class="cv-entry reveal reveal-delay-1" open>
-        <summary>
-          <div class="cv-header">
-            <strong>Alloha Fibra</strong>
-            <span class="cv-period">jul. 2023 – presente · 2 anos e 10 meses</span>
-          </div>
-          <div class="cv-role">Engenheiro de Software Backend · São Paulo (remoto)</div>
-          <p class="cv-preview">Infraestrutura de plataforma em 8+ microsserviços Java/Spring Boot — migração JDBC, remediação de violação LGPD, avaliação arquitetural Java 17.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Mantive e evoluí o <code>air-spring-boot-starter</code>, biblioteca Java interna usada por todos os 8+ microsserviços — liderei migração JDBC zero-downtime (MySqlRepository → JdbcTemplate), corrigi bug de expansão de IN-list na camada compartilhada, coordenei rollout faseado via GMUDs.</li>
-            <li>Identifiquei e remedirei proativamente uma violação crítica de LGPD: 9 vetores de ataque expondo PII de clientes (senha, CPF, RG, nome) via endpoint não autenticado — implementei criptografia AES-256-GCM com rotação de chave zero-downtime, job de migração para 554k registros, em 3 microsserviços.</li>
-            <li>Elaborei avaliação arquitetural para migração Java 8→17 + Spring Boot 1.5→3.x do serviço comercial principal — mapeei 301 arquivos, identifiquei blockers críticos, defini plano de 4 fases.</li>
-            <li>Desenvolvi e mantive microsserviços Java/Spring Boot cobrindo operações comerciais, faturamento, CRM, telefonia, suporte ao cliente e gestão de dispositivos.</li>
-            <li>Integrei gateway de pagamento CycloPay ao microsserviço financeiro, cobrindo geração de faturas e fluxos de reembolso.</li>
-            <li>Integrei extração de sessões RADIUS via API <code>radius-reg</code>, substituindo polling legado por dados precisos de sessão e causas de desconexão.</li>
-            <li>Integrei a plataforma CRM ao Salesforce para disparar automaticamente a Jornada de Boas-Vindas e Ativação, substituindo operações manuais.</li>
-            <li>Migrei envio de faturas da Infobip para Salesforce, adicionando canais de e-mail e SMS e desativando a integração legada.</li>
-            <li>Desenvolvi features nos frontends Vue.js comercial, internet e logística — gestão de contratos, fluxos de provisionamento OTT, status RADIUS assíncrono, agendamento WFM e interfaces de operações de campo.</li>
-            <li>Construí sistema de monitoramento de canais de voz em Python/Flask rastreando chamadas inbound/outbound e interações IVR.</li>
-            <li><strong>Stack:</strong> Java, Spring Boot, Maven, Vue.js, Node.js, TypeScript, Python, Flask, PostgreSQL, MySQL, Redis, Docker, Kubernetes, GitLab CI, New Relic, Grafana, Sentry, AWS, GCP</li>
-          </ul>
+      {aiSystems.map((system) => (
+        <div class="cv-entry reveal reveal-delay-1">
+          <div class="cv-header"><strong><a href={system.url} target="_blank" rel="noopener">{system.name}</a></strong></div>
+          <p>{system.descriptionPt ?? system.description}</p>
+          <div class="cv-role">{system.stack.join(' · ')}</div>
         </div>
-      </details>
-
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
-          <div class="cv-header">
-            <strong>LIGUE</strong> <span class="cv-note">(adquirida pela Alloha Fibra)</span>
-            <span class="cv-period">mai. 2022 – jul. 2023 · 1 ano e 3 meses</span>
-          </div>
-          <div class="cv-role">Mid-level Full-stack Developer · Maringá, PR</div>
-          <p class="cv-preview">Plataforma TDA multi-camada cobrindo transferências de endereço, acordos de pagamento e parcelamento — filas assíncronas, APIs de cobertura de fibra.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Construí e mantive o TDA — plataforma de atendimento multi-camada (frontend React, BFF Node.js, API de funcionalidades) cobrindo transferências de endereço, acordos de pagamento e fluxos de parcelamento.</li>
-            <li>Implementei gerenciamento de filas assíncronas com Arena + Redis para processar operações de serviço de telecom em escala.</li>
-            <li>Desenvolvi fluxo de negociação financeira para faturas em atraso no app híbrido mobile do portal do cliente.</li>
-            <li>Construí APIs REST integradas ao sistema geográfico GeoGrid para determinar disponibilidade de fibra óptica, custos de instalação e cobertura por endereço.</li>
-            <li>Contribuí para o Ares, API com arquitetura DDD para operações de voz e transferência de endereços.</li>
-            <li><strong>Stack:</strong> Node.js, NestJS, React, Vue.js, Nuxt.js, TypeScript, PostgreSQL, Redis, Docker, Kubernetes</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
-          <div class="cv-header">
-            <strong>Kinebot</strong>
-            <span class="cv-period">fev. 2022 – mai. 2022 · 4 meses</span>
-          </div>
-          <div class="cv-role">Junior Full-stack Developer · Curitiba, PR (remoto)</div>
-          <p class="cv-preview">Aplicações web com Node.js, React, Redux e AWS.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Desenvolvi features com Node.js, React, Redux e AWS (Lambda, S3, RDS).</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="cv-entry reveal reveal-delay-1">
-        <summary>
-          <div class="cv-header">
-            <strong>GetHash</strong>
-            <span class="cv-period">out. 2021 – fev. 2022 · 5 meses</span>
-          </div>
-          <div class="cv-role">Junior Full-stack Developer · São Paulo (remoto)</div>
-          <p class="cv-preview">Soluções para múltiplos clientes com Node.js, React, TypeScript — infraestrutura com Docker, Kubernetes e DigitalOcean.</p>
-        </summary>
-        <div class="cv-body">
-          <ul>
-            <li>Construí soluções para múltiplos clientes com Node.js, React, TypeScript e Next.js.</li>
-            <li>Provisionei e mantive infraestrutura em nuvem com DigitalOcean, Docker, Kubernetes e Rancher; implementei pipelines de CI/CD.</li>
-            <li>Conduzi reuniões com clientes em português e inglês para alinhamento de expectativas e apresentação de progresso.</li>
-          </ul>
-        </div>
-      </details>
+      ))}
 
       <h2 class="reveal">Projetos pessoais</h2>
 
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/amphora">Amphora</a></strong></div>
-        <p>PKMS (Personal Knowledge Management System) construído para reduzir carga cognitiva e externalizar o pensamento em notas estruturadas e recuperáveis. O sistema vai além da captura: integração nativa com Neovim para edição e navegação do vault, comandos customizados no Claude Code para operações de knowledge management diretamente do terminal, e estilização coesa de todo o ambiente (Obsidian, Neovim, terminal) com o mesmo tema visual do Mate Creations. Pipeline de automação: gravação de voz → transcrição via Whisper → notas estruturadas; ingestão de YouTube/artigos com sumarização por IA; git hooks gerando notas contextuais em background. Transcrição também aplicada a gravações de reuniões para geração automática de resumos e action items.</p>
-        <div class="cv-role">Bash · Python · Claude API · faster-whisper · Obsidian · Neovim · Lua</div>
-      </div>
+      {projects.map((project) => (
+        <div class="cv-entry reveal reveal-delay-1">
+          <div class="cv-header">
+            <strong><a href={project.href}>{project.name}</a></strong>
+          </div>
+          <p>{project.descriptionPt ?? project.description}</p>
+          <div class="cv-role">
+            {project.tags.join(' · ')}{project.github ? ' · ' : ''}
+            {project.github && <a href={project.github} target="_blank" rel="noopener">{project.github.replace('https://', '')}</a>}
+          </div>
+        </div>
+      ))}
 
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/matecreations">Mate Creations</a></strong></div>
-        <p>Ecossistema de temas cross-application (Obsidian, Neovim, VS Code, Zen Browser) com pipeline de release automatizado via GitHub Actions. Duas variantes com alternância automática claro/escuro baseada em horário via systemd.</p>
-        <div class="cv-role">CSS · Lua · TypeScript · <a href="https://github.com/nfvelten" target="_blank" rel="noopener">github.com/nfvelten</a></div>
-      </div>
+      <h2 class="reveal">Formacao</h2>
 
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/arbitus">Arbitus</a></strong></div>
-        <p>Proxy de segurança open-source para agentes de IA e servidores MCP. Aplica políticas por agente: autenticação (API key, JWT/OIDC, mTLS), rate limiting, filtragem de payload, aprovação Human-in-the-Loop e auditoria com suporte a CloudEvents.</p>
-        <div class="cv-role">Rust · <a href="https://github.com/arbitusgateway/arbitus" target="_blank" rel="noopener">github.com/arbitusgateway/arbitus</a></div>
-      </div>
+      {education.map((item) => (
+        <div class="cv-entry reveal reveal-delay-1">
+          <div class="cv-header"><strong>{item.institution}</strong><span class="cv-period">{item.period}</span></div>
+          <div class="cv-role">{item.degreePt ?? item.degree}</div>
+        </div>
+      ))}
 
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Ralph Explorer</strong></div>
-        <p>CLI que parseia código Java e Vue.js para gerar grafos de dependência e portais de dev visuais — mapeia relacionamentos entre serviços, rotas de controllers e árvores de componentes em um codebase multi-repo.</p>
-        <div class="cv-role">TypeScript · React · <a href="https://github.com/nfvelten/ralph-explorer" target="_blank" rel="noopener">github.com/nfvelten/ralph-explorer</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong><a href="/paperboy">Paperboy</a></strong></div>
-        <p>Leitor RSS e podcast player keyboard-first como substituto da nova aba. Publicado no Firefox Add-ons. Também disponível como TUI construída com Ratatui.</p>
-        <div class="cv-role">JavaScript · Rust · <a href="https://github.com/harbefas/paperboy" target="_blank" rel="noopener">github.com/harbefas/paperboy</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Agent Code Buddy</strong></div>
-        <p>Companion mobile de HITL para agentes de IA. Servidor Python intercepta tool calls de agentes Claude via hook de pre-tool-use; app Android nativo (sem Gradle) aprova ou nega da aba de notificações. Arquitetura long-poll, sem infra de push.</p>
-        <div class="cv-role">Python · Java (Android) · <a href="https://github.com/nfvelten/agent-code-buddy-unified" target="_blank" rel="noopener">github.com/nfvelten/agent-code-buddy-unified</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Amphora Zero</strong></div>
-        <p>Console de lab de segurança estilo firmware para Android. Catálogo de módulos para pesquisa de segurança em dispositivos próprios e autorizados — cada módulo mapeia para script Termux, resultados via broadcasts Android. Módulos ativos: recon Wi-Fi (iproute2, bettercap).</p>
-        <div class="cv-role">Java (Android) · Termux · Bash · <a href="https://github.com/nfvelten/amphora-zero" target="_blank" rel="noopener">github.com/nfvelten/amphora-zero</a></div>
-      </div>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Phone Development Deck</strong></div>
-        <p>Plataforma distribuída em três nós: Arch Linux (orquestração), Android/Termux (LineageOS + root) e Kubernetes (k3s no Contabo). CLI Go (<code>deck</code>) conecta os três. Três apps Android nativos: Field Console (ops), Amphora Zero (lab de segurança), Agent Code Buddy (HITL mobile). K8s completo: cert-manager, Cloudflare DNS, Uptime Kuma, backups systemd.</p>
-        <div class="cv-role">Go · Java (Android) · Python · k3s · Bash</div>
-      </div>
-
-      <h2 class="reveal">Formação</h2>
-
-      <div class="cv-entry reveal reveal-delay-1">
-        <div class="cv-header"><strong>Centro Universitário Integrado</strong><span class="cv-period">2018 – 2021</span></div>
-        <div class="cv-role">Tecnólogo em Análise e Desenvolvimento de Sistemas</div>
-      </div>
-
-      <h2 class="reveal">Competências</h2>
+      <h2 class="reveal">Competencias</h2>
 
       <div class="cv-skills">
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Linguagens</span>
-          <div class="cv-skill-tags">
-            <span class="tag">TypeScript</span><span class="tag">JavaScript</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Rust</span><span class="tag">PHP</span>
+        {skills.map((group) => (
+          <div class="cv-skill-group reveal reveal-delay-1">
+            <span class="cv-skill-label">{group.groupPt ?? group.group}</span>
+            <div class="cv-skill-tags">
+              {group.items.map((item) => <span class="tag">{item}</span>)}
+            </div>
           </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Front-end</span>
-          <div class="cv-skill-tags">
-            <span class="tag">React</span><span class="tag">Next.js</span><span class="tag">Vue.js</span><span class="tag">Nuxt.js</span><span class="tag">Tailwind CSS</span><span class="tag">React Native</span><span class="tag">CSS</span><span class="tag">HTML</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Back-end</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Node.js</span><span class="tag">NestJS</span><span class="tag">Express</span><span class="tag">Spring Boot</span><span class="tag">Flask</span><span class="tag">Keycloak</span><span class="tag">Kong API Gateway</span><span class="tag">Strapi</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Banco de dados</span>
-          <div class="cv-skill-tags">
-            <span class="tag">PostgreSQL</span><span class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">Prisma</span><span class="tag">Knex</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Infraestrutura</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">AWS</span><span class="tag">GCP</span><span class="tag">OCI</span><span class="tag">Terraform</span><span class="tag">Ansible</span><span class="tag">CI/CD</span><span class="tag">GitOps</span><span class="tag">Linux</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Observabilidade</span>
-          <div class="cv-skill-tags">
-            <span class="tag">New Relic</span><span class="tag">Grafana</span><span class="tag">Loki</span><span class="tag">Sentry</span><span class="tag">OpenTelemetry</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Arquitetura</span>
-          <div class="cv-skill-tags">
-            <span class="tag">DDD</span><span class="tag">Hexagonal Architecture</span><span class="tag">Clean Architecture</span><span class="tag">SOLID</span><span class="tag">Event-Driven</span><span class="tag">Microservices</span><span class="tag">TDD</span><span class="tag">API REST</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Web3 & Blockchain</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Ethereum</span><span class="tag">Solana</span><span class="tag">Web3</span><span class="tag">DeFi</span><span class="tag">Blockchain</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">IA</span>
-          <div class="cv-skill-tags">
-            <span class="tag">LLMs</span><span class="tag">Prompt Engineering</span><span class="tag">Claude API</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Metodologias</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Scrum</span><span class="tag">Kanban</span><span class="tag">Agile</span>
-          </div>
-        </div>
-        <div class="cv-skill-group reveal reveal-delay-1">
-          <span class="cv-skill-label">Idiomas</span>
-          <div class="cv-skill-tags">
-            <span class="tag">Português (nativo)</span><span class="tag">Inglês (C2)</span>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <h2 class="reveal">Certificações</h2>
+      <h2 class="reveal">Certificacoes</h2>
 
-      <details class="cv-cert-group reveal reveal-delay-1" open>
-        <summary>IA & Engenharia</summary>
-        <ul class="cv-cert-list">
-          <li>Introduction to LLMs and Prompt Engineering — <em>LinkedIn / Pearson, mar. 2026</em></li>
-          <li>The Missing Semester of your CS Education — <em>MIT, fev. 2026</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1" open>
-        <summary>Empreendedorismo</summary>
-        <ul class="cv-cert-list">
-          <li>MIT 15.390 New Enterprises — <em>MIT, nov. 2025</em></li>
-          <li>Startup Secrets — <em>Harvard Innovation Labs, jan. 2026</em></li>
-          <li>How to Start a Startup — <em>Y Combinator, dez. 2025</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Arquitetura de Software</summary>
-        <ul class="cv-cert-list">
-          <li>Arquitetura baseada em microsserviços — <em>Full Cycle, mar. 2025</em></li>
-          <li>EDA - Event Driven Architecture — <em>Full Cycle, ago. 2024</em></li>
-          <li>Arquitetura Hexagonal — <em>Full Cycle, ago. 2023</em></li>
-          <li>Domain Driven Design (DDD) — <em>Full Cycle, ago. 2022</em></li>
-          <li>SOLID — <em>Full Cycle, jul. 2022</em></li>
-          <li>Fundamentos da arquitetura de software — <em>Full Cycle, jul. 2022</em></li>
-          <li>Comunicação entre sistemas — <em>Full Cycle, ago. 2023</em></li>
-          <li>Event Storming — <em>Full Cycle, ago. 2022</em></li>
-          <li>Autenticação e Keycloak — <em>Full Cycle, mar. 2025</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>DevOps & Infraestrutura</summary>
-        <ul class="cv-cert-list">
-          <li>Terraform — <em>Full Cycle, out. 2023</em></li>
-          <li>Kubernetes — <em>Full Cycle, mar. 2022</em></li>
-          <li>Docker — <em>Full Cycle, fev. 2022</em></li>
-          <li>Ansible — <em>Full Cycle, out. 2022</em></li>
-          <li>GitOps — <em>Full Cycle, set. 2022</em></li>
-          <li>Integração Contínua — <em>Full Cycle, jul. 2022</em></li>
-          <li>API Gateway com Kong e Kubernetes — <em>Full Cycle, jan. 2023</em></li>
-          <li>Service Mesh com Istio — <em>Full Cycle, jul. 2023</em></li>
-          <li>GitOps Fundamentals — <em>Codefresh, abr. 2022</em></li>
-          <li>Padrões e técnicas avançadas com Git e Github — <em>Full Cycle, fev. 2022</em></li>
-          <li>Foundations of Git — <em>GitKraken, out. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Observabilidade</summary>
-        <ul class="cv-cert-list">
-          <li>OpenTelemetry — <em>Full Cycle, nov. 2022</em></li>
-          <li>Observabilidade — <em>Full Cycle, mar. 2023</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Apache Kafka & Mensageria</summary>
-        <ul class="cv-cert-list">
-          <li>Apache Kafka — <em>Full Cycle, out. 2023</em></li>
-          <li>RabbitMQ — <em>Full Cycle, jul. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Desenvolvimento Web & JavaScript</summary>
-        <ul class="cv-cert-list">
-          <li>NLW Expert — Node.js — <em>Rocketseat, fev. 2024</em></li>
-          <li>TestJS Summit 2023 — <em>GitNation, dez. 2023</em></li>
-          <li>React Summit US 2023 — <em>GitNation, nov. 2023</em></li>
-          <li>Codecon 2023 / 2022 — <em>Codecon</em></li>
-          <li>Discover Especializar / Fundamentar / Conectar — <em>Rocketseat, 2022</em></li>
-          <li>TypeScript Full-stack — <em>OneBitCode, out. 2021</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Go</summary>
-        <ul class="cv-cert-list">
-          <li>Microsserviço de Encoder de Vídeo com GoLang — <em>Full Cycle, nov. 2022</em></li>
-          <li>Avançando com Go / Iniciando com Go — <em>School of Net, 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Web3 & Blockchain</summary>
-        <ul class="cv-cert-list">
-          <li>Circuito Bankless: O Futuro do DeFi — <em>Bankless Brasil DAO, set. 2023</em></li>
-          <li>How does Ethereum work? A deepdive — <em>Metaschool, ago. 2023</em></li>
-          <li>The Web3 Rabbit Hole Course — <em>Web3 Academy, jul. 2023</em></li>
-          <li>Intro to Push Protocol — <em>Push Chain, jul. 2023</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Segurança</summary>
-        <ul class="cv-cert-list">
-          <li>Introdução ao Pentest na Prática — <em>Desec Security, mai. 2022</em></li>
-          <li>Fundamentos em Cibersegurança — <em>IBSEC, mai. 2022</em></li>
-          <li>Boas práticas de cibersegurança — <em>IBSEC, abr. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Soft Skills & Liderança</summary>
-        <ul class="cv-cert-list">
-          <li>Produtividade Inteligente — <em>Escola Conquer, fev. 2023</em></li>
-          <li>Formando Campeões: Liderança F.C. — <em>Escola Conquer, jan. 2023</em></li>
-          <li>Inteligência Emocional 2.0 — <em>Escola Conquer, abr. 2022</em></li>
-          <li>Mindset Ágil — <em>wBrain, mar. 2022</em></li>
-        </ul>
-      </details>
-
-      <details class="cv-cert-group reveal reveal-delay-1">
-        <summary>Idiomas</summary>
-        <ul class="cv-cert-list">
-          <li>English Certificate C2 Proficient — <em>EF SET, abr. 2022</em></li>
-        </ul>
-      </details>
-
+      <ul class="cv-cert-list reveal reveal-delay-1">
+        {certifications.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
   </article>
 </BaseLayout>
@@ -765,11 +206,11 @@ import Sidebar from '../components/Sidebar.astro';
 .cv-period { margin-left: auto; font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--tx-3); }
 .cv-note { font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--tx-3); font-style: italic; }
 .cv-role { font-family: system-ui, sans-serif; font-size: 0.85rem; color: var(--tx-2); margin-bottom: 0.6rem; }
+.cv-preview { color: var(--tx-2); }
 .cv-skills { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
 .cv-skill-group { font-family: system-ui, sans-serif; font-size: 0.875rem; color: var(--tx-2); }
 .cv-skill-label { font-weight: 600; color: var(--tx); margin-right: 0.5rem; }
-.cv-cert-group { margin-bottom: 1.5rem; }
-.cv-cert-label { font-family: system-ui, sans-serif; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--tx-3); display: block; margin-bottom: 0.4rem; }
+.cv-skill-tags { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; }
 .cv-cert-list { margin: 0; padding-left: 1.2rem; }
 .cv-cert-list li { font-family: system-ui, sans-serif; font-size: 0.875rem; color: var(--tx-2); margin-bottom: 0.25rem; }
 </style>

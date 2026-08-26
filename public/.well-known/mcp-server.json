@@ -1,0 +1,23 @@
+{
+  "name": "Nicholas Velten Portfolio",
+  "description": "Machine-readable resume and portfolio for Nicholas Velten, exposed through static surfaces and a read-only remote MCP endpoint.",
+  "url": "https://nicholas-velten.xyz/",
+  "status": "live",
+  "mcp": {
+    "endpoint": "https://www.nicholas-velten.xyz/mcp",
+    "transport": "streamable-http",
+    "tools": [
+      "get_resume",
+      "get_projects",
+      "get_availability",
+      "prepare_intro"
+    ]
+  },
+  "resources": {
+    "resumeJson": "https://nicholas-velten.xyz/api/resume.json",
+    "resumeText": "https://nicholas-velten.xyz/api/resume.txt",
+    "agentGuide": "https://nicholas-velten.xyz/AGENTS.md",
+    "connect": "https://nicholas-velten.xyz/connect.md",
+    "llms": "https://nicholas-velten.xyz/llms.txt"
+  }
+}

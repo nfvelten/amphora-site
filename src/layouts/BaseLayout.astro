@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import '@fontsource-variable/eb-garamond/wght.css';
 import '@fontsource-variable/eb-garamond/wght-italic.css';
 import ebVarUrl from '@fontsource-variable/eb-garamond/files/eb-garamond-latin-wght-normal.woff2?url';
+import { portfolio } from '../data/portfolio.js';
 
 interface Props {
   title?: string;
@@ -12,7 +13,7 @@ interface Props {
 }
 const {
   title = 'Nicholas Velten',
-  description = 'Site pessoal de Nicholas Velten — engenheiro de software full-stack. Escrita sobre tecnologia, leituras e aprendizados.',
+  description = portfolio.positioning.headline,
   image = '/icon.webp',
   jsonLd = null,
 } = Astro.props;
@@ -57,9 +58,9 @@ const personSchema = {
   name: 'Nicholas Velten',
   url: 'https://nicholas-velten.xyz/about',
   image: 'https://nicholas-velten.xyz/icon.webp',
-  jobTitle: 'Full-Stack Software Engineer',
+  jobTitle: portfolio.person.title,
   worksFor: { '@type': 'Organization', name: 'Alloha Fibra' },
-  email: 'nikvelten@gmail.com',
+  email: portfolio.person.email,
   sameAs: [
     'https://www.linkedin.com/in/nicholasvelten',
     'https://github.com/nfvelten',
