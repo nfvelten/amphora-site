@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { portfolio } from '../data/portfolio.js';
+
+const contributions = portfolio.contributions;
+---
+
+<BaseLayout
+  title="Open-Source Contributions — Merged PRs in Transmission, Cataclysm: Bright Nights, and more"
+  description="Merged pull requests by Nicholas Velten in third-party open-source projects: Transmission, Cataclysm: Bright Nights, rdrview, TorrServer, and more."
+>
+  <Sidebar slot="sidebar" />
+  <article>
+    <header class="post-header">
+      <h1>
+        <span class="lang-en">Open-Source Contributions</span>
+        <span class="lang-pt">Contribuições Open-Source</span>
+      </h1>
+      <p class="post-sub">
+        <span class="lang-en">Merged pull requests in third-party projects. For my own projects, see <a href="/projects">Projects</a>.</span>
+        <span class="lang-pt">Pull requests mergeadas em projetos de terceiros. Para meus próprios projetos, veja <a href="/projects">Projetos</a>.</span>
+      </p>
+    </header>
+    <div class="prose">
+      <div class="projects-list">
+        {contributions.map((c, i) => (
+          <a href={c.href} target="_blank" rel="noopener" class={`project-card reveal reveal-delay-${(i % 3) + 1}`}>
+            <div class="project-logo">
+              <img src={`https://github.com/${c.owner}.png`} alt={c.project} width="40" height="40" loading="lazy" />
+            </div>
+            <div class="project-body">
+              <div class="project-top">
+                <h2>{c.project}</h2>
+                <div class="project-tags">
+                  {c.tags.map(t => <span class="tag">{t}</span>)}
+                  <span class="tag tag-pr">PR #{c.pr}</span>
+                </div>
+              </div>
+              <p class="project-desc">
+                <span class="lang-en">{c.description}</span>
+                <span class="lang-pt">{c.descriptionPt}</span>
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-sub {
+    color: var(--tx-2);
+    margin-top: 0.5rem;
+  }
+
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .project-card {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--tx) 8%, transparent);
+    border-color: var(--ui-2);
+  }
+
+  .project-logo {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .project-logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .project-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .project-top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.2rem;
+  }
+
+  .project-top h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    background: var(--bg-2);
+    border: 1px solid var(--ui);
+    color: var(--tx-3);
+    font-family: system-ui, sans-serif;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .tag-pr {
+    color: var(--tx-2);
+  }
+
+  .project-card:hover .tag {
+    background: var(--bg-2);
+    border-color: var(--ui-2);
+  }
+
+  .project-desc {
+    font-size: 0.82rem;
+    color: var(--tx-3);
+    line-height: 1.5;
+    margin: 0;
+  }
+</style>
