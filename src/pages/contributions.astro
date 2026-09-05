@@ -25,7 +25,7 @@ const contributions = portfolio.contributions;
     <div class="prose">
       <div class="projects-list">
         {contributions.map((c, i) => (
-          <a href={c.href} target="_blank" rel="noopener" class={`project-card reveal reveal-delay-${(i % 3) + 1}`}>
+          <div class={`project-card reveal reveal-delay-${(i % 3) + 1}`}>
             <div class="project-logo">
               <img src={`https://github.com/${c.owner}.png`} alt={c.project} width="40" height="40" loading="lazy" />
             </div>
@@ -34,15 +34,21 @@ const contributions = portfolio.contributions;
                 <h2>{c.project}</h2>
                 <div class="project-tags">
                   {c.tags.map(t => <span class="tag">{t}</span>)}
-                  <span class="tag tag-pr">PR #{c.pr}</span>
                 </div>
               </div>
-              <p class="project-desc">
-                <span class="lang-en">{c.description}</span>
-                <span class="lang-pt">{c.descriptionPt}</span>
-              </p>
+              <ul class="pr-list">
+                {c.prs.map(p => (
+                  <li>
+                    <a href={p.href} target="_blank" rel="noopener">
+                      <span class="pr-num">#{p.pr}</span>
+                      <span class="lang-en">{p.description}</span>
+                      <span class="lang-pt">{p.descriptionPt}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </a>
+          </div>
         ))}
       </div>
     </div>
@@ -69,14 +75,11 @@ const contributions = portfolio.contributions;
     background: var(--bg-2);
     border: 1px solid var(--ui);
     border-radius: 8px;
-    text-decoration: none;
     color: inherit;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
   .project-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--tx) 8%, transparent);
     border-color: var(--ui-2);
   }
 
@@ -129,19 +132,33 @@ const contributions = portfolio.contributions;
     transition: background 0.15s, border-color 0.15s;
   }
 
-  .tag-pr {
-    color: var(--tx-2);
+  .pr-list {
+    list-style: none;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
   }
 
-  .project-card:hover .tag {
-    background: var(--bg-2);
-    border-color: var(--ui-2);
-  }
-
-  .project-desc {
+  .pr-list a {
+    display: block;
     font-size: 0.82rem;
     color: var(--tx-3);
     line-height: 1.5;
-    margin: 0;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .pr-list a:hover {
+    color: var(--tx-2);
+    text-decoration: underline;
+  }
+
+  .pr-num {
+    color: var(--tx-2);
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    margin-right: 0.35rem;
   }
 </style>
