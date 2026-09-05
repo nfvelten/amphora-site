@@ -269,6 +269,9 @@ export const portfolio = {
       project: 'Transmission',
       repo: 'transmission/transmission',
       owner: 'transmission',
+      category: 'BitTorrent client',
+      categoryPt: 'Cliente BitTorrent',
+      stars: 15160,
       tags: ['C++'],
       prs: [
         {
@@ -283,6 +286,9 @@ export const portfolio = {
       project: 'Cataclysm: Bright Nights',
       repo: 'cataclysmbn/Cataclysm-BN',
       owner: 'cataclysmbn',
+      category: 'Game',
+      categoryPt: 'Jogo',
+      stars: 1209,
       tags: ['C++'],
       prs: [
         {
@@ -297,6 +303,9 @@ export const portfolio = {
       project: 'rdrview',
       repo: 'eafer/rdrview',
       owner: 'eafer',
+      category: 'Firefox Reader View as a CLI',
+      categoryPt: 'Firefox Reader View via CLI',
+      stars: 939,
       tags: ['C'],
       prs: [
         {
@@ -311,6 +320,9 @@ export const portfolio = {
       project: 'TorrServer',
       repo: 'YouROK/TorrServer',
       owner: 'YouROK',
+      category: 'Torrent streaming server',
+      categoryPt: 'Servidor de streaming de torrent',
+      stars: 3008,
       tags: ['Go'],
       prs: [
         {
@@ -325,6 +337,9 @@ export const portfolio = {
       project: 'usage',
       repo: 'jdx/usage',
       owner: 'jdx',
+      category: 'CLI spec, used by mise',
+      categoryPt: 'Spec de CLI, usado pelo mise',
+      stars: 1008,
       tags: ['Rust'],
       prs: [
         {
@@ -339,6 +354,9 @@ export const portfolio = {
       project: 'cliamp',
       repo: 'bjarneo/cliamp',
       owner: 'bjarneo',
+      category: 'Terminal music player',
+      categoryPt: 'Player de música no terminal',
+      stars: 4005,
       tags: ['Rust'],
       prs: [
         {
@@ -353,6 +371,9 @@ export const portfolio = {
       project: 'Shelfmark',
       repo: 'calibrain/shelfmark',
       owner: 'calibrain',
+      category: 'Ebook search & download tool',
+      categoryPt: 'Busca e download de ebooks',
+      stars: 3841,
       tags: ['Python'],
       prs: [
         {
@@ -367,6 +388,9 @@ export const portfolio = {
       project: 'tuicr',
       repo: 'agavra/tuicr',
       owner: 'agavra',
+      category: 'Code review TUI',
+      categoryPt: 'TUI de code review',
+      stars: 3029,
       tags: ['Rust'],
       prs: [
         {
@@ -387,6 +411,8 @@ export const portfolio = {
       project: 'retransmission',
       repo: 'retransmission/retransmission',
       owner: 'retransmission',
+      category: 'Transmission fork',
+      categoryPt: 'Fork do Transmission',
       tags: ['C++'],
       prs: [
         {

@@ -33,9 +33,16 @@ const contributions = portfolio.contributions;
               <div class="project-top">
                 <h2>{c.project}</h2>
                 <div class="project-tags">
+                  {c.stars >= 500 && (
+                    <span class="tag tag-stars">★ {c.stars >= 1000 ? `${(c.stars / 1000).toFixed(1).replace(/\.0$/, '')}k` : c.stars}</span>
+                  )}
                   {c.tags.map(t => <span class="tag">{t}</span>)}
                 </div>
               </div>
+              <p class="project-category">
+                <span class="lang-en">{c.category}</span>
+                <span class="lang-pt">{c.categoryPt}</span>
+              </p>
               <ul class="pr-list">
                 {c.prs.map(p => (
                   <li>
@@ -130,6 +137,18 @@ const contributions = portfolio.contributions;
     color: var(--tx-3);
     font-family: system-ui, sans-serif;
     transition: background 0.15s, border-color 0.15s;
+  }
+
+  .tag-stars {
+    color: var(--tx-2);
+    font-weight: 600;
+  }
+
+  .project-category {
+    font-size: 0.78rem;
+    color: var(--tx-3);
+    font-family: system-ui, sans-serif;
+    margin: 0 0 0.5rem;
   }
 
   .pr-list {
